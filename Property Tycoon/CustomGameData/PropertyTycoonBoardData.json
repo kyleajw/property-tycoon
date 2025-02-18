@@ -1,0 +1,18 @@
+{
+	"tiles":[
+	{
+		"isPurchasable": false,
+		"position": 2,
+		"propertyName": "The Old Creek",
+		"group": "Brown",
+		"action": "None"
+	},
+	{
+		"isPurchasable": false,
+		"position": 2,
+		"propertyName": "NOT The Old Creek",
+		"group": "Brown",
+		"action": "None"
+	}
+	]
+}
