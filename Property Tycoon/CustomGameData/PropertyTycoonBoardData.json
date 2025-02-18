@@ -1,18 +1,27 @@
 {
-	"tiles":[
-	{
-		"isPurchasable": false,
-		"position": 2,
-		"propertyName": "The Old Creek",
-		"group": "Brown",
-		"action": "None"
-	},
-	{
-		"isPurchasable": false,
-		"position": 2,
-		"propertyName": "NOT The Old Creek",
-		"group": "Brown",
-		"action": "None"
-	}
+	"tiles": [
+		{
+			"spaceName": "The Old Creek",
+			"group": "Brown",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 60,
+			"rentPrices": [
+				2,
+				10,
+				30,
+				90,
+				160,
+				250
+			]
+		},
+		{
+			"spaceName": "Pot Luck",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		}
 	]
 }
