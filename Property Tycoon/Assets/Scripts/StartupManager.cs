@@ -8,7 +8,7 @@ public class StartupManager : MonoBehaviour
 {
     const string CUSTOM_GAME_DATA_DIRECTORY = "CustomGameData";
     const string BOARD_DATA_FILENAME = "PropertyTycoonBoardData.json";
-    string CUSTOM_GAME_BOARD_DATA_PATH = CUSTOM_GAME_DATA_DIRECTORY + BOARD_DATA_FILENAME;
+    string CUSTOM_GAME_BOARD_DATA_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + BOARD_DATA_FILENAME;
 
     private void Awake()
     {

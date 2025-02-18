@@ -31,7 +31,6 @@ public class BoardDataHandler : MonoBehaviour
         SetBoardData();
     }
 
-
     /// <summary>
     /// Converts & Assigns json data from PropertyTycoonBoardData.json to <see cref="BoardData"/> object.
     /// </summary>
