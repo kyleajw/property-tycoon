@@ -4,17 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+/// <summary>
+/// Manages and reads in data from converted board data (type JSON), which is parsed into the board during generation
+/// </summary>
 public class BoardDataHandler : MonoBehaviour
 {
-    /// <summary>
-    /// Manages and reads in data from converted board data (type JSON), which is parsed into the board during generation
-    /// </summary>
-
-
     BoardData boardData;
-    const string CUSTOM_GAME_DATA_DIRECTORY = "CustomGameData";
-    const string BOARD_DATA_FILENAME = "PropertyTycoonBoardData.json";
+    StartupManager startupManager;
+
     string customBoardDataPath;
+    string boardDataFileName;
 
     /// <summary>
     /// Initialises the boardData object and sets path for custom board data by the user, then verifies the existence of the path before the application starts.
@@ -22,40 +21,16 @@ public class BoardDataHandler : MonoBehaviour
     private void Awake()
     {
         boardData = gameObject.AddComponent<BoardData>();
-        customBoardDataPath = $"{CUSTOM_GAME_DATA_DIRECTORY}/{BOARD_DATA_FILENAME}";
-        VerifyCustomGameFiles();
+    }
+
+    private void Start()
+    {
+        startupManager = gameObject.GetComponent<StartupManager>();
+        customBoardDataPath = startupManager.GetCustomBoardDataPath();
+        boardDataFileName = startupManager.GetCustomBoardDataFileName();
         SetBoardData();
     }
 
-    /// <summary>
-    /// Scans application directory, checking if the CustomGameData folder exists, along with user-editable file PropertyTycoonBoardData.json
-    /// In the event either of these do not exist (i.e. user deleted folder, fresh start etc), the folder & file is created with default values
-    /// </summary>
-    void VerifyCustomGameFiles()
-    {
-        try
-        {
-            if (Directory.Exists(CUSTOM_GAME_DATA_DIRECTORY))
-            {
-                if (!File.Exists(customBoardDataPath))
-                {
-                    Debug.Log("Custom Data Directory Exists, but corresponding BoardData file does not.\nCreating board data file from defaults..");
-                    File.Copy($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}", customBoardDataPath);
-                }
-            }
-            else
-            {
-                Debug.Log("Custom Data Directory does not exist.\nCreating custom data directory w/ board data file from defaults");
-                Directory.CreateDirectory(CUSTOM_GAME_DATA_DIRECTORY);
-                File.Copy($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}", customBoardDataPath);
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Failed to Read / Write: {e}");
-            Application.Quit();
-        }
-    }
 
     /// <summary>
     /// Converts & Assigns json data from PropertyTycoonBoardData.json to <see cref="BoardData"/> object.
@@ -66,6 +41,10 @@ public class BoardDataHandler : MonoBehaviour
         {
             string data = File.ReadAllText(customBoardDataPath);
             JsonUtility.FromJsonOverwrite(data, boardData);
+            if (ScanForNullBoardData())
+            {
+                RevertToDefaults();
+            }
         }
         catch (Exception e)
         {
@@ -83,9 +62,8 @@ public class BoardDataHandler : MonoBehaviour
     {
         try
         {
-            string data = File.ReadAllText($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}");
+            string data = File.ReadAllText($"{Application.streamingAssetsPath}/{boardDataFileName}");
             JsonUtility.FromJsonOverwrite(data, boardData);
-            
         }
         catch (Exception e)
         {
@@ -93,6 +71,55 @@ public class BoardDataHandler : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// Searches through <see cref="BoardData"/> boardData, checking for any null / invalid data in each tile / property
+    /// </summary>
+    /// <returns>True if null / invalid data is found, false otherwise</returns>
+    bool ScanForNullBoardData()
+    {
+        if (boardData == null) return true;
+        if (boardData.tiles.Length == 0)
+        {
+            return true;
+        }
+        else
+        {
+            foreach(TileData tile in boardData.tiles)
+            {
+                if (tile == null || tile.spaceName == null || tile.group == null || tile.action == null) return true;
+                if (tile.purchasable)
+                {
+                    if (!(tile.purchaseCost > 0)) { 
+                        return true;
+                    }
+                    
+                    if(!(tile.group == "Station" || tile.group == "Utilities" || tile.group == "Unique"))
+                    {
+                        return tile.rentPrices.Length != 6;
+                    }
+                }
+                else
+                {
+                    if (tile.group == "Unique")
+                    {
+                        String[] actions = { "Collect", "Take", "Pay" };
+
+                        foreach (String action in actions)
+                        {
+                            if (tile.action.Contains(action)){
+                                return false;
+                            };
+                        }
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
 
     /// <summary>
     /// Generic getter method for initialised board data
