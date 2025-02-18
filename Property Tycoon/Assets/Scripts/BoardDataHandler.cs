@@ -6,12 +6,19 @@ using System.IO;
 
 public class BoardDataHandler : MonoBehaviour
 {
+    /// <summary>
+    /// Manages and reads in data from converted board data (type JSON), which is parsed into the board during generation
+    /// </summary>
+
+
     BoardData boardData;
     const string CUSTOM_GAME_DATA_DIRECTORY = "CustomGameData";
     const string BOARD_DATA_FILENAME = "PropertyTycoonBoardData.json";
     string customBoardDataPath;
 
-
+    /// <summary>
+    /// Initialises the boardData object and sets path for custom board data by the user, then verifies the existence of the path before the application starts.
+    /// </summary>
     private void Awake()
     {
         boardData = gameObject.AddComponent<BoardData>();
@@ -20,12 +27,10 @@ public class BoardDataHandler : MonoBehaviour
         SetBoardData();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    /// <summary>
+    /// Scans application directory, checking if the CustomGameData folder exists, along with user-editable file PropertyTycoonBoardData.json
+    /// In the event either of these do not exist (i.e. user deleted folder, fresh start etc), the folder & file is created with default values
+    /// </summary>
     void VerifyCustomGameFiles()
     {
         try
@@ -52,7 +57,9 @@ public class BoardDataHandler : MonoBehaviour
         }
     }
 
-    // reads board data json file,
+    /// <summary>
+    /// Converts & Assigns json data from PropertyTycoonBoardData.json to <see cref="BoardData"/> object.
+    /// </summary>
     void SetBoardData()
     {
         try
@@ -69,7 +76,9 @@ public class BoardDataHandler : MonoBehaviour
 
     }
 
-    // creates board data from streamingAssets, default json file, in case of errors
+    /// <summary>
+    /// Generates <see cref="BoardData"/> off of default values, in event of an invalid PropertyTycoonBoardData.json file
+    /// </summary>
     void RevertToDefaults()
     {
         try
@@ -83,5 +92,14 @@ public class BoardDataHandler : MonoBehaviour
             Debug.LogError($"Failed reverting to factory settings: {e}");
         }
 
+    }
+
+    /// <summary>
+    /// Generic getter method for initialised board data
+    /// </summary>
+    /// <returns>An instance of <see cref="BoardData"/> class, specifically <see cref="BoardData"/> boardData</returns>
+    public BoardData GetBoardData()
+    {
+        return boardData;
     }
 }
