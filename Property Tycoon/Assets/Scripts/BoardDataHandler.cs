@@ -9,6 +9,8 @@ using System.IO;
 /// </summary>
 public class BoardDataHandler : MonoBehaviour
 {
+    const int INTENDED_BOARD_SIZE = 40;
+
     BoardData boardData;
     StartupManager startupManager;
 
@@ -50,7 +52,7 @@ public class BoardDataHandler : MonoBehaviour
             Debug.LogError($"Failure processing custom board data, reverting to default values..\nError: {e}");
             RevertToDefaults();
         }
-        Debug.Log(JsonUtility.ToJson(boardData, true));
+        Debug.Log($"boardData values (JSON format):\n{JsonUtility.ToJson(boardData, true)}");
 
     }
 
@@ -59,6 +61,7 @@ public class BoardDataHandler : MonoBehaviour
     /// </summary>
     void RevertToDefaults()
     {
+        Debug.LogError("Invalid Custom Data, reverting to default values..");
         try
         {
             string data = File.ReadAllText($"{Application.streamingAssetsPath}/{boardDataFileName}");
@@ -78,8 +81,9 @@ public class BoardDataHandler : MonoBehaviour
     bool ScanForNullBoardData()
     {
         if (boardData == null) return true;
-        if (boardData.tiles.Length == 0)
+        if (boardData.tiles.Length != INTENDED_BOARD_SIZE)
         {
+            Debug.LogError($"Length of boardData does not match INTENDED_BOARD_DATA\nboardData.tiles.length: {boardData.tiles.Length} | INTENDED_BOARD_SIZE: {INTENDED_BOARD_SIZE}");
             return true;
         }
         else
