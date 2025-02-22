@@ -84,4 +84,8 @@ public class BoardDataHandler : MonoBehaviour
         }
 
     }
+    public BoardData GetBoardData()
+    {
+        return boardData; 
+    }
 }
