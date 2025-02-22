@@ -37,4 +37,5 @@ public class Tile : MonoBehaviour
     {
         ren.materials[1].SetColor("_Color", (Color)colorDictionary[tileData.group]);
     }
+
 }

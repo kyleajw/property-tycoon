@@ -5,6 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class TileData
 {
+    /// <summary>
+    /// Stores relevant data in relation to corresponding tile / property / space
+    /// </summary>
     public string spaceName;
     public string group;
     public string action;

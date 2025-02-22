@@ -6,5 +6,8 @@ using UnityEngine;
 
 public class BoardData : MonoBehaviour
 {
+    /// <summary>
+    /// Stores an array of type <see cref="TileData"/>, containing information of all defined tiles
+    /// </summary>
     public TileData[] tiles;
 }
