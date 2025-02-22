@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 76347363801735957}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -285,9 +285,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 739977000223046063}
   - {fileID: 1319189143705557477}
   - {fileID: 8413180682037959569}
-  - {fileID: 739977000223046063}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8202844850900168750
@@ -302,6 +302,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 087fdb49cec7b8044991adc829cf7ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileData:
+    spaceName: 
+    group: 
+    action: 
+    purchasable: 0
+    purchaseCost: 0
+    rentPrices: 
+  position: 0
+  nameText: {fileID: 0}
+  priceText: {fileID: 0}
+  ren: {fileID: 1877932831613584064}
 --- !u!1 &8869963249116601052
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,14 @@
 {
 	"tiles": [
 		{
+			"spaceName": "Go",
+			"group": "Unique",
+			"action": "Collect £200",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
 			"spaceName": "The Old Creek",
 			"group": "Brown",
 			"action": "None",
@@ -22,6 +30,449 @@
 			"purchasable": false,
 			"purchaseCost": -1,
 			"rentPrices": []
+		},
+		{
+			"spaceName": "Gangsters Paradise",
+			"group": "Brown",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 60,
+			"rentPrices": [
+				4,
+				20,
+				60,
+				180,
+				320,
+				450
+			]
+		},
+		{
+			"spaceName": "Income Tax",
+			"group": "Unique",
+			"action": "Pay £200",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Brighton Station",
+			"group": "Station",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 200,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "The Angels Delight",
+			"group": "Blue",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 100,
+			"rentPrices": [
+				6,
+				30,
+				90,
+				270,
+				400,
+				550
+			]
+		},
+		{
+			"spaceName": "Oppurtunity Knocks",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Potter Avenue",
+			"group": "Blue",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 100,
+			"rentPrices": [
+				6,
+				30,
+				90,
+				270,
+				400,
+				550
+			]
+		},
+		{
+			"spaceName": "Granger Drive",
+			"group": "Blue",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 120,
+			"rentPrices": [
+				8,
+				40,
+				100,
+				300,
+				450,
+				600
+			]
+		},
+		{
+			"spaceName": "Jail/Just visiting",
+			"group": "Unique",
+			"action": "None",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Skywalker Drive",
+			"group": "Purple",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 140,
+			"rentPrices": [
+				10,
+				50,
+				150,
+				450,
+				625,
+				750
+			]
+		},
+		{
+			"spaceName": "Tesla Power Co",
+			"group": "Utilities",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 150,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Wookie Hole",
+			"group": "Purple",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 140,
+			"rentPrices": [
+				10,
+				50,
+				150,
+				450,
+				625,
+				750
+			]
+		},
+		{
+			"spaceName": "Rey Lane",
+			"group": "Purple",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 160,
+			"rentPrices": [
+				12,
+				60,
+				180,
+				500,
+				700,
+				900
+			]
+		},
+		{
+			"spaceName": "Hove Station",
+			"group": "Station",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 200,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Bishop Drive",
+			"group": "Orange",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 180,
+			"rentPrices": [
+				14,
+				70,
+				200,
+				550,
+				750,
+				950
+			]
+		},
+		{
+			"spaceName": "Pot Luck",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Dunham Street",
+			"group": "Orange",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 180,
+			"rentPrices": [
+				14,
+				70,
+				200,
+				550,
+				750,
+				950
+			]
+		},
+		{
+			"spaceName": "Broyles Lane",
+			"group": "Orange",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 200,
+			"rentPrices": [
+				16,
+				80,
+				220,
+				600,
+				800,
+				1000
+			]
+		},
+		{
+			"spaceName": "Free Parking",
+			"group": "Unique",
+			"action": "Collect fines",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Yue Fei Square",
+			"group": "Red",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 220,
+			"rentPrices": [
+				18,
+				90,
+				250,
+				700,
+				875,
+				1050
+			]
+		},
+		{
+			"spaceName": "Oppurtunity Knocks",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Mulan Rouge",
+			"group": "Red",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 220,
+			"rentPrices": [
+				18,
+				90,
+				250,
+				700,
+				875,
+				1050
+			]
+		},
+		{
+			"spaceName": "Han Xin Gardens",
+			"group": "Red",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 240,
+			"rentPrices": [
+				20,
+				100,
+				300,
+				750,
+				925,
+				1100
+			]
+		},
+		{
+			"spaceName": "Falmer Station",
+			"group": "Station",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 200,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Shatner Close",
+			"group": "Yellow",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 260,
+			"rentPrices": [
+				22,
+				110,
+				330,
+				800,
+				975,
+				1150
+			]
+		},
+		{
+			"spaceName": "Picard Avenue",
+			"group": "Yellow",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 260,
+			"rentPrices": [
+				22,
+				110,
+				330,
+				800,
+				975,
+				1150
+			]
+		},
+		{
+			"spaceName": "Edison Water",
+			"group": "Utilities",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 150,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Crusher Creek",
+			"group": "Yellow",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 280,
+			"rentPrices": [
+				22,
+				120,
+				360,
+				850,
+				1025,
+				1200
+			]
+		},
+		{
+			"spaceName": "Go to Jail",
+			"group": "Unique",
+			"action": "None",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Sirat Mews",
+			"group": "Green",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 300,
+			"rentPrices": [
+				26,
+				130,
+				390,
+				900,
+				1100,
+				1275
+			]
+		},
+		{
+			"spaceName": "Ghengis Crescent",
+			"group": "Green",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 300,
+			"rentPrices": [
+				26,
+				130,
+				390,
+				900,
+				1100,
+				1275
+			]
+		},
+		{
+			"spaceName": "Pot Luck",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Ibis Close",
+			"group": "Green",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 320,
+			"rentPrices": [
+				28,
+				150,
+				450,
+				1000,
+				1200,
+				1400
+			]
+		},
+		{
+			"spaceName": "Portslade Station",
+			"group": "Station",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 200,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Oppurtunity Knocks",
+			"group": "Unique",
+			"action": "Take card",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "James Webb Way",
+			"group": "Deep Blue",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 350,
+			"rentPrices": [
+				35,
+				175,
+				500,
+				1100,
+				1300,
+				1500
+			]
+		},
+		{
+			"spaceName": "Super Tax",
+			"group": "Unique",
+			"action": "Pay £100",
+			"purchasable": false,
+			"purchaseCost": -1,
+			"rentPrices": []
+		},
+		{
+			"spaceName": "Turing Heights",
+			"group": "Deep Blue",
+			"action": "None",
+			"purchasable": true,
+			"purchaseCost": 400,
+			"rentPrices": [
+				50,
+				200,
+				600,
+				1400,
+				1700,
+				2000
+			]
 		}
 	]
 }
