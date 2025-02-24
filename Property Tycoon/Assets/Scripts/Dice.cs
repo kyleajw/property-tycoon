@@ -11,7 +11,7 @@ public class Dice : MonoBehaviour
         Rolling,
         Rolled
     }
-    [SerializeField]Status status = Status.Standby;
+    Status status = Status.Standby;
     [SerializeField] int standardForce = 15;
     [SerializeField] int forceNoiseUpperLimit = 4;
     [SerializeField] int forceNoiseLowerLimit = 2;
@@ -21,7 +21,6 @@ public class Dice : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        Roll(10);
     }
 
     // Update is called once per frame
@@ -91,5 +90,10 @@ public class Dice : MonoBehaviour
         }
         status = Status.Standby;
         return upFacingSide;
+    }
+
+    public bool isRolling()
+    {
+        return status == Status.Rolling;
     }
 }
