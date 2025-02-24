@@ -40,7 +40,7 @@ public class Dice : MonoBehaviour
         if (status == Status.Rolled)
         {
             
-            Debug.Log($"Rolled: {GetSideFacingUp()}");
+            Debug.Log($"{gameObject.name} Rolled: {GetSideFacingUp()}");
 
         }
 
@@ -65,7 +65,7 @@ public class Dice : MonoBehaviour
         rb.AddTorque(rotationForce);
 
         status = Status.Rolling;
-        Debug.Log("Rolling...");
+        Debug.Log($"{gameObject.name} Rolling...");
     }
 
     /// <summary>

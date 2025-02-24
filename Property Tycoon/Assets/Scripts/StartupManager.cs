@@ -10,9 +10,24 @@ public class StartupManager : MonoBehaviour
     const string BOARD_DATA_FILENAME = "PropertyTycoonBoardData.json";
     string CUSTOM_GAME_BOARD_DATA_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + BOARD_DATA_FILENAME;
 
+    private static StartupManager _instance;
+    public static StartupManager Instance
+    {
+        get { return _instance; }
+    }
+
     private void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if(_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+
+            DontDestroyOnLoad(this.gameObject);
         VerifyCustomGameFiles();
     }
 
