@@ -7,8 +7,10 @@ public class Board : MonoBehaviour
 {
     BoardDataHandler boardDataHandler;
     BoardData boardData;
+    Player player;
     GameObject[] tiles;
     int i;
+
     private void Start()
     {
         boardDataHandler = GameObject.Find("DataHandl").GetComponent<BoardDataHandler>();
