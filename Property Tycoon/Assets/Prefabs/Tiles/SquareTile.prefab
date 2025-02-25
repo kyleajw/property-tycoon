@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4288413536489826831}
   - component: {fileID: 8202844850900168750}
+  - component: {fileID: 8188347713072296677}
   m_Layer: 0
   m_Name: SquareTile
   m_TagString: Untagged
@@ -139,3 +140,24 @@ MonoBehaviour:
   position: 0
   nameText: {fileID: 0}
   priceText: {fileID: 0}
+--- !u!65 &8188347713072296677
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8634557552866106621}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9962941, y: 0.12170514, z: 2.0025997}
+  m_Center: {x: 0.000000059604645, y: -0.009458486, z: -0.0031528473}

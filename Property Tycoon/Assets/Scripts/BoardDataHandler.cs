@@ -23,10 +23,6 @@ public class BoardDataHandler : MonoBehaviour
     private void Awake()
     {
         boardData = gameObject.AddComponent<BoardData>();
-    }
-
-    private void Start()
-    {
         startupManager = gameObject.GetComponent<StartupManager>();
         customBoardDataPath = startupManager.GetCustomBoardDataPath();
         boardDataFileName = startupManager.GetCustomBoardDataFileName();

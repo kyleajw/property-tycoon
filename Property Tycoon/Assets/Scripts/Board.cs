@@ -13,7 +13,7 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-        boardDataHandler = GameObject.Find("DataHandl").GetComponent<BoardDataHandler>();
+        boardDataHandler = GameObject.Find("GameDataManager").GetComponent<BoardDataHandler>();
         GenerateBoard();
     }
     public void GenerateBoard()
