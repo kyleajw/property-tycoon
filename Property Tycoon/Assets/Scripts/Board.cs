@@ -39,4 +39,9 @@ public class Board : MonoBehaviour
         }
          
     }
+
+    public GameObject[] GetTileArray()
+    {
+        return tiles;
+    }
 }

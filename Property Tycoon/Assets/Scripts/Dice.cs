@@ -11,29 +11,26 @@ public class Dice : MonoBehaviour
         Rolling,
         Rolled
     }
-    Status status = Status.Standby;
+    [SerializeField]Status status = Status.Standby;
     [SerializeField] int standardForce = 15;
     [SerializeField] int forceNoiseUpperLimit = 4;
     [SerializeField] int forceNoiseLowerLimit = 2;
+    [SerializeField] int timeBeforeCheckingIfDiceRolled = 1;
 
-    Rigidbody rb;
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = gameObject.GetComponent<Rigidbody>();
-    }
+    [SerializeField] Rigidbody rb;
 
     // Update is called once per frame
     void Update()
     {
         if (status == Status.Rolling && rb.velocity == Vector3.zero && rb.angularVelocity == Vector3.zero)
         {
-            status = Status.Rolled;
+            StartCoroutine(CountdownToFullyRolled());
         }
-        else if ((rb.velocity != Vector3.zero || rb.angularVelocity != Vector3.zero) && status == Status.Rolled)
+        if ((rb.velocity != Vector3.zero || rb.angularVelocity != Vector3.zero) && status == Status.Rolled)
         {
             Debug.Log("nudged");
             status = Status.Rolling;
+            StopCoroutine(CountdownToFullyRolled());
         }
         
         if (status == Status.Rolled)
@@ -58,13 +55,12 @@ public class Dice : MonoBehaviour
         float rZ = (float)rnd.NextDouble() * rnd.Next(forceNoiseLowerLimit, forceNoiseUpperLimit);
 
         Vector3 force = rnd.Next(forceNoiseLowerLimit, forceNoiseUpperLimit) * multiplier * transform.forward * standardForce;
-        Vector3 rotationForce = new Vector3(rX,rY,rZ) * multiplier * standardForce;
+        Vector3 rotationForce = new Vector3(rX, rY, rZ) * multiplier * standardForce;
 
         rb.AddForce(force);
         rb.AddTorque(rotationForce);
 
         status = Status.Rolling;
-        Debug.Log($"{gameObject.name} Rolling...");
     }
 
     /// <summary>
@@ -95,5 +91,19 @@ public class Dice : MonoBehaviour
     public bool isRolling()
     {
         return status == Status.Rolling;
+    }
+
+    IEnumerator CountdownToFullyRolled()
+    {
+        float timer = 0;
+        while (timer < timeBeforeCheckingIfDiceRolled)
+        {
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        if (status == Status.Rolling && rb.velocity == Vector3.zero && rb.angularVelocity == Vector3.zero)
+        {
+            status = Status.Rolled;
+        }
     }
 }
