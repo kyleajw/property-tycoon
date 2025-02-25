@@ -20,11 +20,11 @@ public class HumanPlayer : MonoBehaviour
 
     private void Update()
     {
-        if (player.getIsPlayersTurn() && !canvas.activeInHierarchy)
+        if (player.IsPlayersTurn() && !canvas.activeInHierarchy && !player.IsPlayerMoving() && !player.HasPlayerThrown())
         {
             canvas.SetActive(true);
         }
-        else if (!player.getIsPlayersTurn() && canvas.activeInHierarchy)
+        else if (!player.IsPlayersTurn() && canvas.activeInHierarchy)
         {
             canvas.SetActive(false);
         }

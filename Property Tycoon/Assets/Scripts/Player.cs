@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
 
     int playerNumber;
     bool isMyTurn;
+    bool isMoving = false;
+    bool hasThrown = false;
     bool rolled = false;
     int dice1Value;
     int dice2Value;
@@ -53,12 +55,14 @@ public class Player : MonoBehaviour
     /// </summary>
     public void RollDice(float multiplier)
     {
+        hasThrown = true;
         StartCoroutine(WaitForDiceToFinishRolling(multiplier));
     }
 
     void MovePiece(int steps)
     {
         Debug.Log($"moving by {steps} steps");
+        isMoving = true;
         StartCoroutine(MovePlayerAnimation(steps));
 
     }
@@ -86,9 +90,19 @@ public class Player : MonoBehaviour
     {
         return playerNumber;
     }
-    public bool getIsPlayersTurn()
+    public bool IsPlayersTurn()
     {
         return isMyTurn;
+    }
+
+    public bool IsPlayerMoving()
+    {
+        return isMoving;
+    }
+
+    public bool HasPlayerThrown()
+    {
+        return hasThrown;
     }
 
     IEnumerator WaitForDiceToFinishRolling(float multiplier)
@@ -107,17 +121,28 @@ public class Player : MonoBehaviour
         dice2Value = dice2.GetComponent<Dice>().GetSideFacingUp();
         rolled = true;
 
+        yield return new WaitForSeconds(1.5f);
+
+        Destroy(dice1);
+        Destroy(dice2);
+
     }
 
     IEnumerator MovePlayerAnimation(int steps)
     {
         for(int i = 0; i < steps; i++)
         {
-            transform.position = board.GetTileArray()[position + 1].transform.position;
             position ++;
+            if(position>= board.GetTileArray().Length)
+            {
+                position = 0;
+            }
+            transform.position = board.GetTileArray()[position].transform.position;
             yield return new WaitForSeconds(0.5f);
         }
         yield return new WaitForSeconds(1);
         Debug.Log("player moved");
+        isMoving = false;
+        hasThrown = false;
     }
 }
