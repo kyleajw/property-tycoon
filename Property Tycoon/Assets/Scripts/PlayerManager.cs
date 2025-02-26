@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject startTile;
+    [SerializeField] GameObject gameCanvas;
+    [SerializeField] GameObject rollButtonGroup;
+    [SerializeField] GameObject cam;
+    [SerializeField] TMP_Text turnAnnouncer;
+    [SerializeField] Board board;
     [SerializeField] bool singlePlayerDebug = false;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
-    [SerializeField] GameObject cam;
-    [SerializeField] Board board;
+    [SerializeField] GameObject[] pieces;
+
     bool gameStarted = false;
     int playerCount;
     int turnNumber = 1;
@@ -16,12 +23,6 @@ public class PlayerManager : MonoBehaviour
     GameObject[] players;
     int currentPlayersTurn;
 
-    [SerializeField] GameObject playerPrefab;
-    [SerializeField] GameObject startTile;
-
-    [SerializeField] GameObject gameCanvas;
-    [SerializeField] GameObject rollButtonGroup;
-    [SerializeField] TMP_Text turnAnnouncer;
 
 
     // Start is called before the first frame update
@@ -35,9 +36,18 @@ public class PlayerManager : MonoBehaviour
         AnnounceTurn();
     }
 
+    public void AssignPlayerPiece(int i)
+    {
+        //temp until multiple players implemented
+        players[0].GetComponent<Player>().AssignPiece(pieces[i]);
+        gameStarted = true;
+        gameCanvas.SetActive(true);
+    }
+
     // Update is called once per frame
     void Update()
     {
+
         if (gameStarted)
         {
             if (players[currentPlayersTurn].GetComponent<Player>().HasFinishedTurn())
@@ -80,8 +90,8 @@ public class PlayerManager : MonoBehaviour
             players[i].GetComponent<Player>().SetDiceSpawnPosition(cam);
         }
         players[0].GetComponent<Player>().SetTurn(true);
-        gameStarted = true;
-        gameCanvas.SetActive(true);
+        //gameStarted = true;
+        //gameCanvas.SetActive(true);
     }
 
     GameObject InstantiateHumanPlayer()

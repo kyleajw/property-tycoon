@@ -28,9 +28,9 @@ public class Player : MonoBehaviour
     int dice2Value;
     int position = 0;
 
-    public void AssignPiece(int i)
+    public void AssignPiece(GameObject _piece)
     {
-        piece=pieces[i];
+        piece=_piece;
         Debug.Log(piece);
     }
 

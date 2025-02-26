@@ -205,9 +205,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -280,12 +280,12 @@ GameObject:
   - component: {fileID: 24631320}
   - component: {fileID: 24631319}
   m_Layer: 5
-  m_Name: PieceSelection
+  m_Name: PieceSelectionCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &24631319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,9 +1772,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3156,9 +3156,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4829,15 +4829,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7112855732028174388, guid: 6e98c309cfb475e4984f1d0cdc333c8d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.2907778
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7112855732028174388, guid: 6e98c309cfb475e4984f1d0cdc333c8d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.050000086
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7112855732028174388, guid: 6e98c309cfb475e4984f1d0cdc333c8d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.1060687
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7112855732028174388, guid: 6e98c309cfb475e4984f1d0cdc333c8d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6660,9 +6660,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7498,9 +7498,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7823,9 +7823,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, ScriptsAssembly
-        m_MethodName: AssignPiece
+      - m_Target: {fileID: 1275327881}
+        m_TargetAssemblyTypeName: PlayerManager, ScriptsAssembly
+        m_MethodName: AssignPlayerPiece
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8062,10 +8062,6 @@ PrefabInstance:
       propertyPath: rollButtonGroup
       value: 
       objectReference: {fileID: 665969814}
-    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
-      propertyPath: diceRollForceMultiplier
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 2442303129880731116, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
