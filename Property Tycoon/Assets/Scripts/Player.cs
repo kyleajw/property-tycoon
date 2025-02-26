@@ -4,35 +4,30 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] bool debuggingAsSinglePlayer = false;
     [SerializeField] GameObject[] pieces;
     [SerializeField] GameObject dicePrefab;
-    GameObject piece;
-    [SerializeField] int balance = 1500;
-
-    [SerializeField] float diceSpawnOffset = 0.1f;
-    [SerializeField] GameObject diceRollPosition;
-
+    [SerializeField] GameObject diceSpawnLocation;
     [SerializeField] Board board;
+    [SerializeField] float diceSpawnOffset = 0.1f;
+    [SerializeField] int balance = 1500;
+    [SerializeField] int jailTilePosition;
 
-    int playerNumber;
+    GameObject piece;
+
     bool isMyTurn;
+    bool isHuman;
     bool isMoving = false;
     bool hasThrown = false;
     bool rolled = false;
+    bool isInJail = false;
+    bool finishedTurn;
+
+    int doublesThisTurn =0;
+    int playerNumber;
     int dice1Value;
     int dice2Value;
-
     int position = 0;
 
-    private void Start()
-    {
-        if (debuggingAsSinglePlayer)
-        {
-            isMyTurn = true;
-            playerNumber = 0;
-        }
-    }
     public void AssignPiece(int i)
     {
         piece=pieces[i];
@@ -43,10 +38,18 @@ public class Player : MonoBehaviour
     {
         if (rolled)
         {
+            if(dice1Value == dice2Value)
+            {
+                doublesThisTurn++;
+
+                if(doublesThisTurn == 3)
+                {
+                    GoToJail();
+                }
+            }
             MovePiece(dice1Value + dice2Value);
             rolled = false;
-            dice1Value = 0;
-            dice2Value = 0;
+            
         }
     }
 
@@ -67,48 +70,10 @@ public class Player : MonoBehaviour
 
     }
 
-//-----------------to implement in later sprint cycle------------------
-    public void SetTurn(bool isTurn)
-    {
-        isMyTurn=isTurn;
-    }
-
-    public void SetPlayerNumber(int n)
-    {
-        playerNumber=n;
-    }
-
-    void OnNewTurn()
-    {
-    }
-
-    public int GetBalance()
-    {
-        return balance;
-    }
-    public int GetPlayerNumber()
-    {
-        return playerNumber;
-    }
-    public bool IsPlayersTurn()
-    {
-        return isMyTurn;
-    }
-
-    public bool IsPlayerMoving()
-    {
-        return isMoving;
-    }
-
-    public bool HasPlayerThrown()
-    {
-        return hasThrown;
-    }
-
     IEnumerator WaitForDiceToFinishRolling(float multiplier)
     {
-        GameObject dice1 = Instantiate(dicePrefab, diceRollPosition.transform.position, Quaternion.identity);
-        GameObject dice2 = Instantiate(dicePrefab,  new Vector3(diceRollPosition.transform.position.x + diceSpawnOffset, diceRollPosition.transform.position.y, diceRollPosition.transform.position.z), Quaternion.identity);
+        GameObject dice1 = Instantiate(dicePrefab, diceSpawnLocation.transform.position, diceSpawnLocation.transform.rotation);
+        GameObject dice2 = Instantiate(dicePrefab,  new Vector3(diceSpawnLocation.transform.position.x + diceSpawnOffset, diceSpawnLocation.transform.position.y, diceSpawnLocation.transform.position.z), diceSpawnLocation.transform.rotation);
 
         dice1.name = "Dice1";
         dice2.name = "Dice2";
@@ -144,5 +109,85 @@ public class Player : MonoBehaviour
         Debug.Log("player moved");
         isMoving = false;
         hasThrown = false;
+        if(dice1Value != dice2Value)
+        {
+            finishedTurn = true;
+        }
+        dice1Value = 0;
+        dice2Value = 0;
     }
+
+    public void GoToJail()
+    {
+        isInJail = true;
+        position = jailTilePosition;
+        transform.position = board.GetTileArray()[position].transform.position;
+        doublesThisTurn = 0;
+        finishedTurn = true;
+    }
+
+    public void SetTurn(bool isTurn)
+    {
+        isMyTurn=isTurn;
+        finishedTurn = !isTurn;
+    }
+
+    public void SetPlayerNumber(int n)
+    {
+        playerNumber=n;
+    }
+
+    public void SetIsHuman(bool human)
+    {
+        isHuman=human;
+    }
+
+    public void SetDiceSpawnPosition(GameObject obj)
+    {
+        diceSpawnLocation = obj;
+    }
+
+    public void SetBoardObject(Board _board)
+    {
+        board = _board;
+    }
+
+    public bool IsInJail()
+    {
+        return isInJail;
+    }
+
+    public bool IsHuman()
+    {
+        return isHuman;
+    }
+
+    public int GetBalance()
+    {
+        return balance;
+    }
+    public int GetPlayerNumber()
+    {
+        return playerNumber;
+    }
+    public bool IsPlayersTurn()
+    {
+        return isMyTurn;
+    }
+
+    public bool IsPlayerMoving()
+    {
+        return isMoving;
+    }
+
+    public bool HasPlayerThrown()
+    {
+        return hasThrown;
+    }
+
+    public bool HasFinishedTurn()
+    {
+        return finishedTurn;
+    }
+
 }

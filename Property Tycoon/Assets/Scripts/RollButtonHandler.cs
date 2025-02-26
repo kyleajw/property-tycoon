@@ -9,7 +9,7 @@ public class RollButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpH
     bool isHeld = false;
     float timer;
     [SerializeField] Slider slider;
-    [SerializeField] PlayerCanvas canvas;
+    [SerializeField] PlayerManager playerManager;
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -31,9 +31,9 @@ public class RollButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpH
             slider.value = timer;
             yield return new WaitForEndOfFrame();
         }
-        canvas.GetCanvasOwner().SetPlayerRollMultiplier(timer);
+        playerManager.OnRollButtonReleased(timer);
         timer = 0;
-        canvas.gameObject.SetActive(false);
+        slider.value = 0;
         yield return null;
     }
 }
