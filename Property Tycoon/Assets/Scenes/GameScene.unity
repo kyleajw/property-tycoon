@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 24631320}
   - component: {fileID: 24631319}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: PieceSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4964,9 +4964,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4055013486119077356, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_text
+      value: 'Player _''s Turn | Turn Number: '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055013486119077356, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_margin.z
+      value: -888.84314
+      objectReference: {fileID: 0}
     - target: {fileID: 4431124905190666519, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_Name
       value: GameCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4431124905190666519, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594047581408097213, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8085233916088795690, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: canvas

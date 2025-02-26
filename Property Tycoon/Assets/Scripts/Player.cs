@@ -47,6 +47,10 @@ public class Player : MonoBehaviour
                     GoToJail();
                 }
             }
+            else
+            {
+                doublesThisTurn = 0;
+            }
             MovePiece(dice1Value + dice2Value);
             rolled = false;
             

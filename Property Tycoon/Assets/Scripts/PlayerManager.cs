@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] Board board;
     bool gameStarted = false;
     int playerCount;
-
+    int turnNumber = 1;
 
     GameObject[] players;
     int currentPlayersTurn;
@@ -52,6 +52,7 @@ public class PlayerManager : MonoBehaviour
                     currentPlayersTurn++;
                 }
                 players[currentPlayersTurn].GetComponent<Player>().SetTurn(true);
+                turnNumber++;
                 AnnounceTurn();
             }
             else
@@ -103,7 +104,7 @@ public class PlayerManager : MonoBehaviour
 
     void AnnounceTurn()
     {
-        turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn");
+        turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn | Turn Number: {turnNumber}");
     }
 
     public void OnRollButtonReleased(float timeHeld)
