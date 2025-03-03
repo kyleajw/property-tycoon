@@ -99,15 +99,26 @@ public class Player : MonoBehaviour
 
     IEnumerator MovePlayerAnimation(int steps)
     {
+        MeshRenderer meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
         for(int i = 0; i < steps; i++)
         {
+
+            //meshRenderer.materials[1].DisableKeyword("_EMISSION");
+            SetEmissionKeywordToAll(false, meshRenderer.materials);
             position ++;
             if(position>= board.GetTileArray().Length)
             {
                 position = 0;
             }
             transform.position = board.GetTileArray()[position].transform.position;
+            meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
+            //meshRenderer.materials[1].EnableKeyword("_EMISSION");
+            SetEmissionKeywordToAll(true, meshRenderer.materials);
             yield return new WaitForSeconds(0.5f);
+
+            //todo:
+            // if tile not normal generic tile, assign emission position differently
+
         }
         yield return new WaitForSeconds(1);
         Debug.Log("player moved");
@@ -119,6 +130,22 @@ public class Player : MonoBehaviour
         }
         dice1Value = 0;
         dice2Value = 0;
+    }
+
+    void SetEmissionKeywordToAll(bool set, Material[] materials)
+    {
+
+        foreach (Material mat in materials)
+        {
+            if (set)
+            {
+                mat.EnableKeyword("_EMISSION");
+            }
+            else
+            {
+                mat.DisableKeyword("_EMISSION");
+            }
+        }
     }
 
     public void GoToJail()

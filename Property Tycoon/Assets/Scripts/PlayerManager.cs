@@ -16,6 +16,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float diceRollForceMultiplier = 5.0f;
     [SerializeField] GameObject[] pieces;
 
+    Camera mainCamera;
+
     bool gameStarted = false;
     int playerCount;
     int turnNumber = 1;
@@ -28,6 +30,7 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mainCamera = Camera.main;
         if (singlePlayerDebug)
         {
             playerCount = 1;
@@ -50,6 +53,8 @@ public class PlayerManager : MonoBehaviour
 
         if (gameStarted)
         {
+            mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
+
             if (players[currentPlayersTurn].GetComponent<Player>().HasFinishedTurn())
             {
                 players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
