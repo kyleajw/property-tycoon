@@ -8556,6 +8556,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6fd95e7213877304b85348f9e7d83a35, type: 2}
+    - target: {fileID: 7635155620508166633, guid: 6ba94bcbbfea379458a13c0c33f09aa1, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6fd95e7213877304b85348f9e7d83a35, type: 2}
     - target: {fileID: 8590860699264815707, guid: 6ba94bcbbfea379458a13c0c33f09aa1, type: 3}
       propertyPath: m_Name
       value: Board
