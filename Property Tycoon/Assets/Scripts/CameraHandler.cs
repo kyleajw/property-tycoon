@@ -23,7 +23,7 @@ public class CameraHandler : MonoBehaviour
 
     void FollowActivePlayer()
     {
-        transform.LookAt(target.transform.position); //temporary
+        //transform.LookAt(target.transform.position); //temporary
     }
 
     public void SetTarget(GameObject player)

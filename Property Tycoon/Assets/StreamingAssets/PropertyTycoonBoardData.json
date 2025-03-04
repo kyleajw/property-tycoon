@@ -3,7 +3,7 @@
 		{
 			"spaceName": "Go",
 			"group": "Unique",
-			"action": "Collect £200",
+			"action": "Collect ï¿½200",
 			"purchasable": false,
 			"purchaseCost": -1,
 			"rentPrices": []
@@ -25,7 +25,7 @@
 		},
 		{
 			"spaceName": "Pot Luck",
-			"group": "Unique",
+			"group": "Pot Luck",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -48,8 +48,8 @@
 		},
 		{
 			"spaceName": "Income Tax",
-			"group": "Unique",
-			"action": "Pay £200",
+			"group": "Tax",
+			"action": "Pay ï¿½200",
 			"purchasable": false,
 			"purchaseCost": -1,
 			"rentPrices": []
@@ -78,8 +78,8 @@
 			]
 		},
 		{
-			"spaceName": "Oppurtunity Knocks",
-			"group": "Unique",
+			"spaceName": "Opportunity Knocks",
+			"group": "Opportunity Knocks",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -201,7 +201,7 @@
 		},
 		{
 			"spaceName": "Pot Luck",
-			"group": "Unique",
+			"group": "Pot Luck",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -261,8 +261,8 @@
 			]
 		},
 		{
-			"spaceName": "Oppurtunity Knocks",
-			"group": "Unique",
+			"spaceName": "Opportunity Knocks",
+			"group": "Opportunity Knocks",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -399,7 +399,7 @@
 		},
 		{
 			"spaceName": "Pot Luck",
-			"group": "Unique",
+			"group": "Pot Luck",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -429,8 +429,8 @@
 			"rentPrices": []
 		},
 		{
-			"spaceName": "Oppurtunity Knocks",
-			"group": "Unique",
+			"spaceName": "Opportunity Knocks",
+			"group": "Opportunity Knocks",
 			"action": "Take card",
 			"purchasable": false,
 			"purchaseCost": -1,
@@ -453,8 +453,8 @@
 		},
 		{
 			"spaceName": "Super Tax",
-			"group": "Unique",
-			"action": "Pay £100",
+			"group": "Tax",
+			"action": "Pay ï¿½100",
 			"purchasable": false,
 			"purchaseCost": -1,
 			"rentPrices": []

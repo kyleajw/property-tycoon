@@ -32,7 +32,7 @@ public class RollButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpH
             slider.value = timer;
             yield return new WaitForEndOfFrame();
         }
-        playerManager.OnRollButtonReleased(Mathf.Clamp(timer,0, slider.maxValue));
+        playerManager.OnRollButtonReleased(Mathf.Clamp(timer, 0, slider.maxValue));
         timer = 0;
         slider.value = 0;
         yield return null;

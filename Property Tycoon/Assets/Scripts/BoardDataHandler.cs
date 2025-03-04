@@ -93,14 +93,14 @@ public class BoardDataHandler : MonoBehaviour
                         return true;
                     }
                     
-                    if(!(tile.group == "Station" || tile.group == "Utilities" || tile.group == "Unique"))
+                    if(!(tile.group == "Station" || tile.group == "Utilities" || tile.group == "Unique" || tile.group == "Opportunity Knocks" || tile.group == "Pot Luck" || tile.group == "Tax"))
                     {
                         return tile.rentPrices.Length != 6;
                     }
                 }
                 else
                 {
-                    if (tile.group == "Unique")
+                    if (tile.group == "Unique" || tile.group == "Pot Luck" || tile.group == "Opportunity Knocks" || tile.group == "Tax")
                     {
                         String[] actions = { "Collect", "Take", "Pay" };
 

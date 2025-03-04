@@ -28,11 +28,16 @@ public class Tile : MonoBehaviour
         colorDictionary.Add("Deep Blue", Color.blue);
     }
 
-    public void UpdateText()
+    public void UpdateNameText()
     {
         nameText.text=tileData.spaceName;
-        priceText.text=tileData.purchaseCost.ToString();
     }
+
+    public void UpdatePriceText()
+    {
+        priceText.text = $"£{ tileData.purchaseCost.ToString()}";
+    }
+
     public void UpdateColor()
     {
         ren.materials[1].SetColor("_Color", (Color)colorDictionary[tileData.group]);

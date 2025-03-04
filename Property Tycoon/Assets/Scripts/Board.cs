@@ -26,16 +26,23 @@ public class Board : MonoBehaviour
         for (i = 0; i < boardData.tiles.Length; i++)
         {
             //Finds the tile in position i and assigns the appropriate data to it
-            tiles[i].GetComponent<Tile>().tileData = boardData.tiles[i];
             //Update Text Mesh Pros and colours here
-            if (tiles[i].GetComponent<Tile>().tileData.group != "Unique")
+            tiles[i].GetComponent<Tile>().tileData = boardData.tiles[i];
+            string group = tiles[i].GetComponent<Tile>().tileData.group;
+            if (group != "Unique")
             {
-                tiles[i].GetComponent<Tile>().UpdateText();
-                if (tiles[i].GetComponent<Tile>().tileData.group != "Station" && tiles[i].GetComponent<Tile>().tileData.group != "Utilities")
+                    tiles[i].GetComponent<Tile>().UpdateNameText();
+                if (tiles[i].GetComponent<Tile>().tileData.purchasable)
+                {
+
+                    tiles[i].GetComponent<Tile>().UpdatePriceText();
+                }
+                if (group != "Station" && group != "Utilities" && group != "Tax" && group != "Opportunity Knocks" && group != "Pot Luck")
                 {
                     tiles[i].GetComponent<Tile>().UpdateColor();
                 }
             }
+
         }
          
     }
