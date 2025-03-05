@@ -508,6 +508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCardPrefab: {fileID: 2594035922420664079, guid: b159c87428dfc6245a7cac613966de80, type: 3}
   addPlayerButton: {fileID: 3357557458780843632}
+  beginGameButton: {fileID: 2038982261}
 --- !u!224 &267951004 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5431384252368378309, guid: b159c87428dfc6245a7cac613966de80, type: 3}
@@ -2635,7 +2636,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.254717, g: 0.254717, b: 0.254717, a: 0.92156863}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
