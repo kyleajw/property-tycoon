@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] GameObject[] pieces;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] GameObject diceSpawnLocation;
     [SerializeField] Board board;
@@ -12,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] int balance = 1500;
     [SerializeField] int jailTilePosition;
 
+    Color playerColour;
     GameObject piece;
 
     bool isMyTurn;
@@ -28,10 +28,12 @@ public class Player : MonoBehaviour
     int dice2Value;
     int position = 0;
 
+    string playerName;
+
     public void AssignPiece(GameObject _piece)
     {
         piece=_piece;
-        Debug.Log(piece);
+        
     }
 
     private void Update()
@@ -168,6 +170,16 @@ public class Player : MonoBehaviour
         playerNumber=n;
     }
 
+    public void SetPlayerName(string pName)
+    {
+        playerName = pName;
+    }
+
+    public void SetPlayerColour(Color colour)
+    {
+        playerColour = colour;
+    }
+
     public void SetIsHuman(bool human)
     {
         isHuman=human;
@@ -201,6 +213,22 @@ public class Player : MonoBehaviour
     {
         return playerNumber;
     }
+
+    public Color GetPlayerColour()
+    {
+        return playerColour;
+    }
+
+    public GameObject GetPlayerPiece()
+    {
+        return piece;
+    }
+
+    public string GetPlayerName()
+    {
+        return playerName;
+    }
+
     public bool IsPlayersTurn()
     {
         return isMyTurn;
