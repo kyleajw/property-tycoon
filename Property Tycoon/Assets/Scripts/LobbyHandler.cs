@@ -12,6 +12,7 @@ public class LobbyHandler : MonoBehaviour
     }
 
     List<GameObject> players;
+
     int gameVersion = 0; // 0 == standard, 1 == abridged, ...
 
     private void Awake()
@@ -35,7 +36,21 @@ public class LobbyHandler : MonoBehaviour
 
     public void LoadGame()
     {
-        SceneManager.LoadScene("GameScene");
+        switch (gameVersion)
+        {
+            case 0:
+                SceneManager.LoadScene("GameScene");
+                break;
+            case 1:
+                //load abridged
+                break;
+        }
+    }
+
+    public void ExitToMenu()
+    {
+        SceneManager.LoadScene("StartupScene");
+        Destroy(gameObject);
     }
 
     public void SetGameVersion(int version)

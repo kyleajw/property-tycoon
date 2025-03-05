@@ -9,10 +9,12 @@ public class PlayerCard : MonoBehaviour
     [SerializeField]TextMeshProUGUI nameText;
     int playerNumber;
     Color playerColour;
-    GameObject playerGameCharacter;
+    GameObject gamePiece;
 
     [SerializeField] Image playerCardBackground;
     [SerializeField] Image playerCharacterBorder;
+    [SerializeField] Image playerPieceImage;
+    [SerializeField] TextMeshProUGUI pieceName;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +31,7 @@ public class PlayerCard : MonoBehaviour
 
     public void Remove()
     {
-        gameObject.GetComponentInParent<PlayersList>().RemovePlayerCard(playerNumber, playerColour);
+        gameObject.GetComponentInParent<PlayersList>().RemovePlayerCard(playerNumber, playerColour, gamePiece);
         Destroy(this.gameObject);
     }
 
@@ -41,8 +43,12 @@ public class PlayerCard : MonoBehaviour
     }
 
 
-    public void SetAndDisplayChosenGamePiece()
+    public void SetAndDisplayChosenGamePiece(GameObject selectedPiece)
     {
+        gamePiece = selectedPiece;
+        Piece piece = selectedPiece.GetComponent<Piece>();
+        pieceName.text = piece.GetName();
+        playerPieceImage.sprite = piece.GetSprite();
 
     }
 
@@ -50,6 +56,16 @@ public class PlayerCard : MonoBehaviour
     {
         nameText.text = $"Player {playerNumber}";
         this.playerNumber = playerNumber;
+    }
+
+    public void ChangeCharacter()
+    {
+        SetAndDisplayChosenGamePiece(gameObject.GetComponentInParent<PlayersList>().ChangePlayerCharacter(gamePiece));
+    }
+
+    public void ChangeColour()
+    {
+        SetColours(gameObject.GetComponentInParent<PlayersList>().ChangePlayerColour(playerColour));
     }
 }
 

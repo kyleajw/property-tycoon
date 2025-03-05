@@ -8,8 +8,10 @@ public class PlayersList : MonoBehaviour
     [SerializeField] GameObject playerCardPrefab;
     [SerializeField] Transform addPlayerButton;
     [SerializeField] Button beginGameButton;
+    [SerializeField] GameObject[] gamePieces;
 
     Queue<Color> defaultPlayerColours = new Queue<Color> ();
+    Queue<GameObject> availablePieces = new Queue<GameObject>();
     List<GameObject> playerCards;
     const int MAX_PLAYERS = 5;
     const int MIN_PLAYERS = 1;
@@ -23,6 +25,11 @@ public class PlayersList : MonoBehaviour
         defaultPlayerColours.Enqueue(new Color32(234, 250, 117, 255));  // yellow
         defaultPlayerColours.Enqueue(new Color32(130, 255, 138, 255));  // green
         defaultPlayerColours.Enqueue(new Color32(110, 82, 236, 255));   // purple
+        defaultPlayerColours.Enqueue(new Color32(107, 76, 62, 255));    // brown
+        foreach (GameObject piece in gamePieces)
+        {
+            availablePieces.Enqueue(piece);
+        }
     }
 
     // Update is called once per frame
@@ -49,18 +56,21 @@ public class PlayersList : MonoBehaviour
     public void AddPlayerCard()
     {
         Color playerColour = defaultPlayerColours.Dequeue();
+        GameObject playerPiece = availablePieces.Dequeue();
         GameObject newPlayer = Instantiate(playerCardPrefab,transform.position, Quaternion.identity, this.gameObject.transform);
         PlayerCard playerCard = newPlayer.GetComponent<PlayerCard>();
         playerCards.Add(newPlayer);
+        playerCard.SetAndDisplayChosenGamePiece(playerPiece);
         playerCard.SetPlayerNumber(playerCards.Count);
         playerCard.SetColours(playerColour);
         addPlayerButton.SetAsLastSibling();
     }
 
-    public void RemovePlayerCard(int index, Color availableColour)
+    public void RemovePlayerCard(int index, Color availableColour, GameObject gamePiece)
     {
         playerCards.RemoveAt(index-1);
         defaultPlayerColours.Enqueue(availableColour);
+        availablePieces.Enqueue(gamePiece);
         UpdatePlayerNumbers();
     }
 
@@ -70,6 +80,18 @@ public class PlayersList : MonoBehaviour
         {
             playerCards[i].GetComponent<PlayerCard>().SetPlayerNumber(i+1);
         }
+    }
+
+    public GameObject ChangePlayerCharacter(GameObject currentPiece)
+    {
+        availablePieces.Enqueue(currentPiece);
+        return availablePieces.Dequeue();
+    }
+
+    public Color ChangePlayerColour(Color currentColor)
+    {
+        defaultPlayerColours.Enqueue(currentColor);
+        return defaultPlayerColours.Dequeue();
     }
 
 }
