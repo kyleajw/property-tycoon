@@ -67,5 +67,25 @@ public class PlayerCard : MonoBehaviour
     {
         SetColours(gameObject.GetComponentInParent<PlayersList>().ChangePlayerColour(playerColour));
     }
+
+    public GameObject GetPlayerPiece()
+    {
+        return gamePiece;
+    }
+
+    public Color GetPlayerColour()
+    {
+        return playerColour;
+    }
+
+    public int GetPlayerNumber()
+    {
+        return playerNumber;
+    }
+
+    public string GetPlayerName()
+    {
+        return $"Player {playerNumber}";
+    }
 }
 

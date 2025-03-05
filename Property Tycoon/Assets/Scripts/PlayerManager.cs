@@ -5,46 +5,31 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject startTile;
     [SerializeField] GameObject gameCanvas;
     [SerializeField] GameObject rollButtonGroup;
     [SerializeField] GameObject cam;
     [SerializeField] TMP_Text turnAnnouncer;
     [SerializeField] Board board;
-    [SerializeField] bool singlePlayerDebug = false;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
-    [SerializeField] GameObject[] pieces;
 
+    [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
 
     bool gameStarted = false;
-    int playerCount;
     int turnNumber = 1;
 
+    Player[] playerData;
     GameObject[] players;
     int currentPlayersTurn;
-
 
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
-        if (singlePlayerDebug)
-        {
-            playerCount = 1;
-        }
         InitialisePlayers();
         AnnounceTurn();
-    }
-
-    public void AssignPlayerPiece(int i)
-    {
-        //temp until multiple players implemented
-        players[0].GetComponent<Player>().AssignPiece(pieces[i]);
-        gameStarted = true;
-        gameCanvas.SetActive(true);
     }
 
     // Update is called once per frame
@@ -84,19 +69,28 @@ public class PlayerManager : MonoBehaviour
 
     void InitialisePlayers()
     {
-        players = new GameObject[playerCount];
+        //players = new GameObject[playerCount];
+        playerData = GameObject.FindWithTag("GameManager").GetComponent<GameManager>().GetPlayerData();
+        players = new GameObject[playerData.Length];
         for (int i = 0; i < players.Length; i++)
         {
-            players[i] = InstantiateHumanPlayer();
-            players[i].name = $"Player {i + 1}";
-            players[i].GetComponent<Player>().SetIsHuman(true);
-            players[i].GetComponent<Player>().SetPlayerNumber(i);
+            if (playerData[i].IsHuman())
+            {
+                players[i] = InstantiateHumanPlayer();
+                //players[i] = InstantiateHumanPlayer(players[i]);
+                players[i].GetComponent<Player>().SetIsHuman(true);
+            }
+            players[i].GetComponent<Player>().AssignPiece(playerData[i].GetPlayerPiece());
+            players[i].GetComponent<Player>().SetPlayerNumber(playerData[i].GetPlayerNumber());
+            players[i].GetComponent<Player>().SetPlayerName(playerData[i].GetPlayerName());
+            players[i].GetComponent<Player>().SetPlayerColour(playerData[i].GetPlayerColour());
+
             players[i].GetComponent<Player>().SetBoardObject(board);
             players[i].GetComponent<Player>().SetDiceSpawnPosition(cam);
         }
         players[0].GetComponent<Player>().SetTurn(true);
-        //gameStarted = true;
-        //gameCanvas.SetActive(true);
+        gameStarted = true;
+        gameCanvas.SetActive(true);
     }
 
     GameObject InstantiateHumanPlayer()

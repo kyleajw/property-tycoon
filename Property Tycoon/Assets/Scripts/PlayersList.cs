@@ -94,4 +94,9 @@ public class PlayersList : MonoBehaviour
         return defaultPlayerColours.Dequeue();
     }
 
+    public List<GameObject> GetPlayerCards()
+    {
+        return playerCards;
+    }
+
 }
