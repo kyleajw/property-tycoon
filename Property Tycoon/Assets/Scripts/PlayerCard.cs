@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCard : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class PlayerCard : MonoBehaviour
     int playerNumber;
     Color playerColour;
     GameObject playerGameCharacter;
+
+    [SerializeField] Image playerCardBackground;
+    [SerializeField] Image playerCharacterBorder;
 
     // Start is called before the first frame update
     void Start()
@@ -25,13 +29,15 @@ public class PlayerCard : MonoBehaviour
 
     public void Remove()
     {
-        gameObject.GetComponentInParent<PlayersList>().RemovePlayerCard(playerNumber);
+        gameObject.GetComponentInParent<PlayersList>().RemovePlayerCard(playerNumber, playerColour);
         Destroy(this.gameObject);
     }
 
     public void SetColours(Color colour)
     {
-
+        playerColour = colour;
+        playerCardBackground.color = colour;
+        playerCharacterBorder.color = colour;
     }
 
 

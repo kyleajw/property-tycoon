@@ -9,6 +9,7 @@ public class PlayersList : MonoBehaviour
     [SerializeField] Transform addPlayerButton;
     [SerializeField] Button beginGameButton;
 
+    Queue<Color> defaultPlayerColours = new Queue<Color> ();
     List<GameObject> playerCards;
     const int MAX_PLAYERS = 5;
     const int MIN_PLAYERS = 1;
@@ -17,6 +18,11 @@ public class PlayersList : MonoBehaviour
     void Start()
     {
         playerCards = new List<GameObject>();
+        defaultPlayerColours.Enqueue(new Color32(255, 130, 130, 255));  // red
+        defaultPlayerColours.Enqueue(new Color32(130, 155, 255, 255));  // blue
+        defaultPlayerColours.Enqueue(new Color32(234, 250, 117, 255));  // yellow
+        defaultPlayerColours.Enqueue(new Color32(130, 255, 138, 255));  // green
+        defaultPlayerColours.Enqueue(new Color32(110, 82, 236, 255));   // purple
     }
 
     // Update is called once per frame
@@ -42,18 +48,19 @@ public class PlayersList : MonoBehaviour
 
     public void AddPlayerCard()
     {
+        Color playerColour = defaultPlayerColours.Dequeue();
         GameObject newPlayer = Instantiate(playerCardPrefab,transform.position, Quaternion.identity, this.gameObject.transform);
         PlayerCard playerCard = newPlayer.GetComponent<PlayerCard>();
         playerCards.Add(newPlayer);
         playerCard.SetPlayerNumber(playerCards.Count);
-
-
+        playerCard.SetColours(playerColour);
         addPlayerButton.SetAsLastSibling();
     }
 
-    public void RemovePlayerCard(int index)
+    public void RemovePlayerCard(int index, Color availableColour)
     {
         playerCards.RemoveAt(index-1);
+        defaultPlayerColours.Enqueue(availableColour);
         UpdatePlayerNumbers();
     }
 

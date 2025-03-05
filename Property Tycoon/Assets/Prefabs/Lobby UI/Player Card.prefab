@@ -414,6 +414,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameText: {fileID: 3961186011963374065}
+  playerCardBackground: {fileID: 6959678909032500670}
+  playerCharacterBorder: {fileID: 6529984223926919251}
 --- !u!1 &3703652530843457267
 GameObject:
   m_ObjectHideFlags: 0
