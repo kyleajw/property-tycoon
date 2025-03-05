@@ -28,6 +28,11 @@ public class LobbyHandler : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    private void Update()
+    {
+
+    }
+
     public void LoadGame()
     {
         SceneManager.LoadScene("GameScene");

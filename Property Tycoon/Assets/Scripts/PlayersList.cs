@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayersList : MonoBehaviour
 {
     [SerializeField] GameObject playerCardPrefab;
     [SerializeField] Transform addPlayerButton;
+    [SerializeField] Button beginGameButton;
+
     List<GameObject> playerCards;
     const int MAX_PLAYERS = 5;
+    const int MIN_PLAYERS = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,15 @@ public class PlayersList : MonoBehaviour
         }else if (!addPlayerButton.gameObject.activeInHierarchy && playerCards.Count < MAX_PLAYERS)
         {
             addPlayerButton.gameObject.SetActive(true);
+        }
+
+        if (playerCards.Count < MIN_PLAYERS && beginGameButton.IsInteractable())
+        {
+            beginGameButton.interactable = false;
+        }
+        else if (playerCards.Count >= MIN_PLAYERS && !beginGameButton.IsInteractable())
+        {
+            beginGameButton.interactable = true;
         }
     }
 
