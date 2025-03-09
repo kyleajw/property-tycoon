@@ -8,7 +8,14 @@ public class StartupManager : MonoBehaviour
 {
     const string CUSTOM_GAME_DATA_DIRECTORY = "CustomGameData";
     const string BOARD_DATA_FILENAME = "PropertyTycoonBoardData.json";
-    string CUSTOM_GAME_BOARD_DATA_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + BOARD_DATA_FILENAME;
+    const string POT_LUCK_CARDS_FILENAME = "PropertyTycoonPotLuckData.json";
+    const string OPPORTUNITY_KNOCKS_CARDS_FILENAME = "PropertyTycoonOpportunityKnocksData.json";
+
+
+    const string CUSTOM_GAME_BOARD_DATA_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + BOARD_DATA_FILENAME;
+    const string CUSTOM_POT_LUCK_CARDS_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + POT_LUCK_CARDS_FILENAME;
+    const string CUSTOM_OPPORTUNITY_KNOCKS_CARDS_PATH = CUSTOM_GAME_DATA_DIRECTORY + "/" + OPPORTUNITY_KNOCKS_CARDS_FILENAME;
+
 
     private static StartupManager _instance;
     public static StartupManager Instance
@@ -43,15 +50,25 @@ public class StartupManager : MonoBehaviour
             {
                 if (!File.Exists(CUSTOM_GAME_BOARD_DATA_PATH))
                 {
-                    Debug.Log("Custom Data Directory Exists, but corresponding BoardData file does not.\nCreating board data file from defaults..");
+                    Debug.Log("Custom Data Directory Exists, but corresponding BoardData file does not.\nCreating boardData file from defaults..");
                     File.Copy($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}", CUSTOM_GAME_BOARD_DATA_PATH);
+                }
+                if (!File.Exists(CUSTOM_OPPORTUNITY_KNOCKS_CARDS_PATH))
+                {
+                    Debug.Log("Custom Data Directory Exists, but corresponding Opportunity Knocks file does not.\nCreating Opportunity Knocks file from defaults..");
+                    File.Copy($"{Application.streamingAssetsPath}/{OPPORTUNITY_KNOCKS_CARDS_FILENAME}", CUSTOM_OPPORTUNITY_KNOCKS_CARDS_PATH);
+                }
+                if (!File.Exists(CUSTOM_POT_LUCK_CARDS_PATH))
+                {
+                    Debug.Log("Custom Data Directory Exists, but corresponding Pot Luck file does not.\nCreating Pot Luck file from defaults..");
+                    File.Copy($"{Application.streamingAssetsPath}/{POT_LUCK_CARDS_FILENAME}", CUSTOM_POT_LUCK_CARDS_PATH);
                 }
             }
             else
             {
-                Debug.Log("Custom Data Directory does not exist.\nCreating custom data directory w/ board data file from defaults");
+                Debug.Log("Custom Data Directory does not exist.\nCreating custom data directory w/ all files from defaults");
                 Directory.CreateDirectory(CUSTOM_GAME_DATA_DIRECTORY);
-                File.Copy($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}", CUSTOM_GAME_BOARD_DATA_PATH);
+                CopyFromDefaults();
             }
         }
         catch (Exception e)
@@ -59,6 +76,14 @@ public class StartupManager : MonoBehaviour
             Debug.LogError($"Failed to Read / Write: {e}");
             Application.Quit();
         }
+    }
+
+    void CopyFromDefaults()
+    {
+        File.Copy($"{Application.streamingAssetsPath}/{BOARD_DATA_FILENAME}", CUSTOM_GAME_BOARD_DATA_PATH);
+        File.Copy($"{Application.streamingAssetsPath}/{OPPORTUNITY_KNOCKS_CARDS_FILENAME}", CUSTOM_OPPORTUNITY_KNOCKS_CARDS_PATH);
+        File.Copy($"{Application.streamingAssetsPath}/{POT_LUCK_CARDS_FILENAME}", CUSTOM_POT_LUCK_CARDS_PATH);
+
     }
 
     public string GetCustomGameDataDirectory()
@@ -76,4 +101,23 @@ public class StartupManager : MonoBehaviour
         return CUSTOM_GAME_BOARD_DATA_PATH;
     }
 
+    public string GetPotLuckCardsFileName()
+    {
+        return POT_LUCK_CARDS_FILENAME;
+    }
+
+    public string GetOpportunityKnocksCardsFileName()
+    {
+        return OPPORTUNITY_KNOCKS_CARDS_FILENAME;
+    }
+
+    public string GetCustomPotLuckCardsPath()
+    {
+        return CUSTOM_POT_LUCK_CARDS_PATH;
+    }
+
+    public string GetCustomOpportunityKnocksCardsPath()
+    {
+        return CUSTOM_OPPORTUNITY_KNOCKS_CARDS_PATH;
+    }
 }
