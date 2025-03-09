@@ -1,0 +1,68 @@
+{
+	"cards": [
+		{
+			"description": "Banks pays you divided of £50",
+			"action": "Bank pays player £50"
+		},
+		{
+			"description": "You have won a lip sync battle. Collect £100",
+			"action": "Bank pays player £100"
+		},
+		{
+			"description": "Advance to Turing Heights",
+			"action": "Player token moves forwards to Turing Heights"
+		},
+		{
+			"description": "Advance to Han Xin Gardens. If you pass GO, collect £200",
+			"action": "Player moves token"
+		},
+		{
+			"description": "Fined £15 for speeding",
+			"action": "Player puts £15 in free parking"
+		},
+		{
+			"description": "Pay university fees of £150",
+			"action": "Player pays £150 to the bank"
+		},
+		{
+			"description": "Take a trip to Hove Station. If you pass GO, collect £200",
+			"action": "Player moves token"
+		},
+		{
+			"description": "Loan matures, collect £150",
+			"action": "Bank pays £150 to the player"
+		},
+		{
+			"description": "You are assessed for repairs, £40/house, £115/hotel",
+			"action": "Player pays money to the bank"
+		},
+		{
+			"description": "Advance to GO",
+			"action": "Player moves token"
+		},
+		{
+			"description": "You are assessed for repairs, £25/house, £100/hotel",
+			"action": "Player pays money to the bank"
+		},
+		{
+			"description": "Go back 3 spaces",
+			"action": "Player moves token"
+		},
+		{
+			"description": "Advance to Skywalker Drive. If you pass GO, collect £200",
+			"action": "Player moves token"
+		},
+		{
+			"description": "Go to jail. Do not pas GO, do not collect £200",
+			"action": "As the card says"
+		},
+		{
+			"description": "Drunk in charge of a hoverboard. Fine £30",
+			"action": "Player puts £30 in free parking"
+		},
+		{
+			"description": "Get out of jail free",
+			"action": "Retained by the player until needed. No resale or trade value"
+		}
+	]
+}

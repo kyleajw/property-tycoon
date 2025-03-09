@@ -1,0 +1,72 @@
+{
+	"cards": [
+		{
+			"description": "You inherit £200",
+			"action": "Bank pays player £200"
+		},
+		{
+			"description": "You have won 2nd prize in a beauty contest, collect £50",
+			"action": "Bank pays player £50"
+		},
+		{
+			"description": "You are up the creek with no paddle - go back to the Old Creek",
+			"action": "Player token moves backwards to the Old Creek"
+		},
+		{
+			"description": "Student loan refund. Collect £20",
+			"action": "Bank pays player £20"
+		},
+		{
+			"description": "Bank error in your favour. Collect £200",
+			"action": "Bank pays player £200"
+		},
+		{
+			"description": "Pay bill for text books of £100",
+			"action": "Player pays £100 to the bank"
+		},
+		{
+			"description": "Mega late night taxi bill, pay £50",
+			"action": "Player pays £50 to the bank"
+		},
+		{
+			"description": "Advance to GO",
+			"action": "Player moves forwards to GO"
+		},
+		{
+			"description": "From sale of Bitcoin you get £50",
+			"action": "Bank pays player £50"
+		},
+		{
+			"description": "Bitcoin assets fall - pay off Bitcoin short fall of £50",
+			"action": "Player pays £50 to the bank"
+		},
+		{
+			"description": "Pay a $10 fine or take Opportunity Knocks",
+			"action": "If fine paid, player put £10 in free parking"
+		},
+		{
+			"description": "Pay insurance fee of £50",
+			"action": "Player puts £50 in free parking"
+		},
+		{
+			"description": "Savings bond matures. Collect £100",
+			"action": "Bank pays player £100"
+		},
+		{
+			"description": "Go to jail. Do not pas GO, do not collect £200",
+			"action": "As the card says"
+		},
+		{
+			"description": "Received intrest on shares of £25",
+			"action": "Bank pays player £25"
+		},
+		{
+			"description": "It's your birthday! Collect £10 from each player",
+			"action": "Player receives £10 from each player"
+		},
+		{
+			"description": "Get out of jail free",
+			"action": "Retained by the player until needed. No resale or trade value"
+		}
+	]
+}
