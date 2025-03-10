@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 963661108382799076}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,6 +51,37 @@ MonoBehaviour:
   diceSpawnOffset: 0.25
   balance: 1500
   jailTilePosition: 10
+  playerManager: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+  ownedProperties:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  completedCycle: 1
 --- !u!114 &963661108382799076
 MonoBehaviour:
   m_ObjectHideFlags: 0

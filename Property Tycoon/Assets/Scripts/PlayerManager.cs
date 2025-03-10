@@ -8,6 +8,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject startTile;
     [SerializeField] GameObject gameCanvas;
     [SerializeField] GameObject rollButtonGroup;
+    [SerializeField] GameObject finishTurnButton;
+    [SerializeField] GameObject buyButton;
+    [SerializeField] GameObject auctionButton;
     [SerializeField] GameObject cam;
     [SerializeField] TMP_Text turnAnnouncer;
     [SerializeField] Board board;
@@ -18,6 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     bool gameStarted = false;
     int turnNumber = 1;
+    int cyclesCompleted = 0;
 
     Player[] playerData;
     GameObject[] players;
@@ -64,6 +68,11 @@ public class PlayerManager : MonoBehaviour
                     HandleCanvasVisibility(currentPlayer);
                 }
             }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("E Pressed");
+                board.TogglePropertyMenu(players[currentPlayersTurn]);
+            }
         }
     }
 
@@ -100,14 +109,35 @@ public class PlayerManager : MonoBehaviour
 
     void HandleCanvasVisibility(Player currentPlayer)
     {
-
         if (currentPlayer.IsPlayersTurn() && !rollButtonGroup.activeInHierarchy && !currentPlayer.IsPlayerMoving() && !currentPlayer.HasPlayerThrown() && !currentPlayer.IsInJail())
         {
             rollButtonGroup.SetActive(true);
+            finishTurnButton.SetActive(false);
+            buyButton.SetActive(false);
+            auctionButton.SetActive(false);
         }
         else if (!currentPlayer.IsPlayersTurn() && rollButtonGroup.activeInHierarchy)
         {
             rollButtonGroup.SetActive(false);
+            finishTurnButton.SetActive(false);
+            buyButton.SetActive(false);
+            auctionButton.SetActive(false);
+        }
+        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
+        {
+            rollButtonGroup.SetActive(false);
+            finishTurnButton.SetActive(true);
+            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable){
+                buyButton.SetActive(true);
+                if (CheckCycles() >= 2)
+                {
+                    auctionButton.SetActive(true);
+                }
+                else
+                {
+                    auctionButton.SetActive(false);
+                }
+            }
         }
     }
 
@@ -120,5 +150,27 @@ public class PlayerManager : MonoBehaviour
     {
         rollButtonGroup.SetActive(false);
         players[currentPlayersTurn].GetComponent<Player>().RollDice(timeHeld * diceRollForceMultiplier);
+    }
+    public int CheckCycles()
+    {
+        cyclesCompleted = 0;
+        for(int i=0; i<players.Length; i++)
+        {
+            if (players[i].GetComponent<Player>().completedCycle)
+            {
+                cyclesCompleted++;
+            }
+        }
+        return cyclesCompleted;
+    }
+    public void OnFinishedTurn()
+    {
+        players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
+        players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
+    }
+    public void BuyPressed()
+    {
+        players[currentPlayersTurn].GetComponent<Player>().BuyProperty();
+        Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
     }
 }

@@ -5,11 +5,16 @@ using TMPro;
 
 public class Board : MonoBehaviour
 {
+    Bank bank;
     BoardDataHandler boardDataHandler;
     BoardData boardData;
     Player player;
     GameObject[] tiles;
+    List<GameObject> tempList = new List<GameObject>();
+    [SerializeField] GameObject propertyCardMenu;
+
     int i;
+    bool isMenuVisible = false;
 
     private void Start()
     {
@@ -31,10 +36,9 @@ public class Board : MonoBehaviour
             string group = tiles[i].GetComponent<Tile>().tileData.group;
             if (group != "Unique")
             {
-                    tiles[i].GetComponent<Tile>().UpdateNameText();
+                tiles[i].GetComponent<Tile>().UpdateNameText();
                 if (tiles[i].GetComponent<Tile>().tileData.purchasable)
                 {
-
                     tiles[i].GetComponent<Tile>().UpdatePriceText();
                 }
                 if (group != "Station" && group != "Utilities" && group != "Tax" && group != "Opportunity Knocks" && group != "Pot Luck")
@@ -44,9 +48,36 @@ public class Board : MonoBehaviour
             }
 
         }
-         
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        AssignBanker(players[0]);
+        for (i = 0; i < tiles.Length; i++)
+        {
+            if (tiles[i].GetComponent<Tile>().tileData.purchasable)
+            {
+                tempList.Add(tiles[i]);
+            }
+        }
+        bank.properties=new GameObject[tempList.Count];
+        bank.properties=tempList.ToArray();
     }
-
+    public void AssignBanker(GameObject p)
+    {
+        p.AddComponent<Bank>();
+        bank = p.GetComponent<Bank>();
+    }
+    public Bank GetBank()
+    {
+        return bank;
+    }
+    public void TogglePropertyMenu(GameObject p)
+    {
+        if (propertyCardMenu != null)
+        {
+            isMenuVisible = !isMenuVisible;
+            propertyCardMenu.SetActive(isMenuVisible);
+            //fill property menu with releveant players owned card data
+        }
+    }
     public GameObject[] GetTileArray()
     {
         return tiles;

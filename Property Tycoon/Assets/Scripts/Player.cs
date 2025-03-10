@@ -8,21 +8,25 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject diceSpawnLocation;
     [SerializeField] Board board;
     [SerializeField] float diceSpawnOffset = 0.1f;
-    [SerializeField] int balance = 1500;
+    [SerializeField] public int balance = 1500;
     [SerializeField] int jailTilePosition;
+    [SerializeField] PlayerManager playerManager;
 
+    public GameObject[] ownedProperties=new GameObject[28];
     Color playerColour;
     GameObject piece;
 
+    public bool completedCycle = true;
     bool isMyTurn;
     bool isHuman;
+    bool menuReady = false;
     bool isMoving = false;
     bool hasThrown = false;
     bool rolled = false;
     bool isInJail = false;
-    bool finishedTurn;
+    bool finishedTurn = false;
 
-    int doublesThisTurn =0;
+    int doublesThisTurn = 0;
     int playerNumber;
     int dice1Value;
     int dice2Value;
@@ -32,19 +36,18 @@ public class Player : MonoBehaviour
 
     public void AssignPiece(GameObject _piece)
     {
-        piece=_piece;
-        
+        piece = _piece;
     }
 
     private void Update()
     {
         if (rolled)
         {
-            if(dice1Value == dice2Value)
+            if (dice1Value == dice2Value)
             {
                 doublesThisTurn++;
 
-                if(doublesThisTurn == 3)
+                if (doublesThisTurn == 3)
                 {
                     GoToJail();
                 }
@@ -55,7 +58,6 @@ public class Player : MonoBehaviour
             }
             MovePiece(dice1Value + dice2Value);
             rolled = false;
-            
         }
     }
 
@@ -65,6 +67,7 @@ public class Player : MonoBehaviour
     public void RollDice(float multiplier)
     {
         hasThrown = true;
+        menuReady = false;
         StartCoroutine(WaitForDiceToFinishRolling(multiplier));
     }
 
@@ -73,13 +76,12 @@ public class Player : MonoBehaviour
         Debug.Log($"moving by {steps} steps");
         isMoving = true;
         StartCoroutine(MovePlayerAnimation(steps));
-
     }
 
     IEnumerator WaitForDiceToFinishRolling(float multiplier)
     {
         GameObject dice1 = Instantiate(dicePrefab, diceSpawnLocation.transform.position, diceSpawnLocation.transform.rotation);
-        GameObject dice2 = Instantiate(dicePrefab,  new Vector3(diceSpawnLocation.transform.position.x + diceSpawnOffset, diceSpawnLocation.transform.position.y, diceSpawnLocation.transform.position.z), diceSpawnLocation.transform.rotation);
+        GameObject dice2 = Instantiate(dicePrefab, new Vector3(diceSpawnLocation.transform.position.x + diceSpawnOffset, diceSpawnLocation.transform.position.y, diceSpawnLocation.transform.position.z), diceSpawnLocation.transform.rotation);
 
         dice1.name = "Dice1";
         dice2.name = "Dice2";
@@ -96,21 +98,22 @@ public class Player : MonoBehaviour
 
         Destroy(dice1);
         Destroy(dice2);
-
     }
 
     IEnumerator MovePlayerAnimation(int steps)
     {
         MeshRenderer meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
-        for(int i = 0; i < steps; i++)
+        for (int i = 0; i < steps; i++)
         {
 
             //meshRenderer.materials[1].DisableKeyword("_EMISSION");
             SetEmissionKeywordToAll(false, meshRenderer.materials);
-            position ++;
-            if(position>= board.GetTileArray().Length)
+            position++;
+            if (position >= board.GetTileArray().Length)
             {
                 position = 0;
+                completedCycle = true;
+                balance += 200; //money for passing go
             }
             transform.position = board.GetTileArray()[position].transform.position;
             meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
@@ -125,15 +128,10 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1);
         Debug.Log("player moved");
         isMoving = false;
-        hasThrown = false;
-        if(dice1Value != dice2Value)
-        {
-            finishedTurn = true;
-        }
+        menuReady = true;
         dice1Value = 0;
         dice2Value = 0;
     }
-
     void SetEmissionKeywordToAll(bool set, Material[] materials)
     {
 
@@ -163,6 +161,14 @@ public class Player : MonoBehaviour
     {
         isMyTurn=isTurn;
         finishedTurn = !isTurn;
+    }
+    public void SetBalance(int money)
+    {
+        balance = balance + money;
+    }
+    public void SetHasThrown(bool thrown)
+    {
+        hasThrown = thrown;
     }
 
     public void SetPlayerNumber(int n)
@@ -248,5 +254,39 @@ public class Player : MonoBehaviour
     {
         return finishedTurn;
     }
+    public bool IsMenuReady()
+    {
+        return menuReady;
+    }
+    public GameObject GetCurrentTile()
+    {
+        return board.GetTileArray()[position];
+    }
+    public string GetCurrentTileName()
+    {
+        string tileName = GetCurrentTile().GetComponent<Tile>().tileData.spaceName;
+        return tileName;
+    }
+    public void BuyProperty()
+    {
+        int index=0;
+        for(int i=0;i<board.GetBank().properties.Length; i++)
+        {
+            string currentTileName=GetCurrentTileName();
+            if (currentTileName==board.GetBank().properties[i].GetComponent<Tile>().tileData.spaceName)
+            {
+                index = i;
+            }
+        }
+        Debug.Log($"OPLenght {ownedProperties.Length} board prop length: {board.GetBank().properties.Length}");
+        ownedProperties[index] = board.GetBank().properties[index];
+        board.GetBank().properties[index] = null;
 
+        SetBalance(-GetCurrentTile().GetComponent<Tile>().tileData.purchaseCost);
+    }
+    public void AddProperty(GameObject[] from,int i)
+    {
+        ownedProperties[i] = from[i];
+        from[i]=null;
+    }
 }
