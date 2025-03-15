@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static Codice.CM.Common.CmCallContext;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -20,7 +22,9 @@ public class PlayerManager : MonoBehaviour
     Camera mainCamera;
 
     bool gameStarted = false;
+    bool buyButtonPressed = false;
     int turnNumber = 1;
+    int houseInp;
     int cyclesCompleted = 0;
 
     Player[] playerData;
@@ -127,15 +131,38 @@ public class PlayerManager : MonoBehaviour
         {
             rollButtonGroup.SetActive(false);
             finishTurnButton.SetActive(true);
-            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable){
-                buyButton.SetActive(true);
-                if (CheckCycles() >= 2)
+            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+            {
+                if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
                 {
-                    auctionButton.SetActive(true);
+                    buyButton.SetActive(true);
+                    if (buyButtonPressed)
+                    {
+                        buyButton.SetActive(false);
+                    }
+                    if (CheckCycles() >= 2)
+                    {
+                        auctionButton.SetActive(true);
+                    }
+                    else
+                    {
+                        auctionButton.SetActive(false);
+                    }
                 }
-                else
+                else if (GetOwner(currentPlayer.GetCurrentTile())==currentPlayer) // checks if the propery is owned by the player who landed on it
                 {
-                    auctionButton.SetActive(false);
+                    //display build property building buttons here
+                }
+                else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
+                {
+                    if(currentPlayer.GetBalance()<currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouses()])
+                    {
+                        //player needs to sell assets in order to pay for rent
+                    }
+                    else
+                    {
+                        currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()),currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouses()]);
+                    }
                 }
             }
         }
@@ -167,10 +194,52 @@ public class PlayerManager : MonoBehaviour
     {
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
         players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
+        buyButtonPressed=false;
     }
     public void BuyPressed()
     {
         players[currentPlayersTurn].GetComponent<Player>().BuyProperty();
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
+        buyButtonPressed = true;
+    }
+    public void AuctionPressed()
+    {
+
+    }
+    public void TradePressed()
+    {
+
+    }
+    public void BuildHousePressed()
+    {
+        //add houses to selected tile
+        //incremetn property house counter
+    }
+    public void MortgagePressed()
+    {
+        //mortgage selected tile back to the back for half purchase value
+        //property.isMortgaged=true
+        //add check for if property is mortgaged to disable rent payment
+    }
+    public void SellPressed()
+    {
+        //sell back to bank for full purchase price
+        //add back to bank property array and remove from player property array
+        //chnage 11 in here to the selected tiles position in players property arrray
+        //board.GetBank().properties[11] = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[11];
+        //players[currentPlayersTurn].GetComponent<Player>().ownedProperties[11] = null;
+        //players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().GetSelectedTile().GetComponent<Tile>().tileData.purchaseCost);
+        //board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().GetSelectedTile().GetComponent<Tile>().tileData.purchaseCost);
+    }
+    public GameObject GetOwner(GameObject curTile)
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (curTile.GetComponent<Property>().GetOwnedBy() == players[i])
+            {
+                return players[i];
+            }
+        }
+        return null;
     }
 }

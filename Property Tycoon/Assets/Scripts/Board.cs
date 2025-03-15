@@ -8,7 +8,6 @@ public class Board : MonoBehaviour
     Bank bank;
     BoardDataHandler boardDataHandler;
     BoardData boardData;
-    Player player;
     GameObject[] tiles;
     List<GameObject> tempList = new List<GameObject>();
     [SerializeField] GameObject propertyCardMenu;
