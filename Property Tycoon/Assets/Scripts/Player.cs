@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     Color playerColour;
     GameObject piece;
 
-    public bool completedCycle = true;
+    public bool completedCycle = true; //change to false after development
     bool isMyTurn;
     bool isHuman;
     bool menuReady = false;
@@ -273,13 +273,17 @@ public class Player : MonoBehaviour
         for(int i=0;i<board.GetBank().properties.Length; i++)
         {
             string currentTileName=GetCurrentTileName();
-            if (currentTileName==board.GetBank().properties[i].GetComponent<Tile>().tileData.spaceName)
+            if (board.GetBank().properties[i] != null)
             {
-                index = i;
+                if (currentTileName == board.GetBank().properties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    index = i;
+                }
             }
         }
         Debug.Log($"OPLenght {ownedProperties.Length} board prop length: {board.GetBank().properties.Length}");
         ownedProperties[index] = board.GetBank().properties[index];
+        board.GetBank().properties[index].GetComponent<Property>().SetOwnedBy(gameObject);
         board.GetBank().properties[index] = null;
 
         SetBalance(-GetCurrentTile().GetComponent<Tile>().tileData.purchaseCost);
@@ -288,5 +292,10 @@ public class Player : MonoBehaviour
     {
         ownedProperties[i] = from[i];
         from[i]=null;
+    }
+    public void PayRent(GameObject payee, GameObject receiver, int rent)
+    {
+        payee.GetComponent<Player>().SetBalance(-rent);
+        receiver.GetComponent<Player>().SetBalance(rent);
     }
 }
