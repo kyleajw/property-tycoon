@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject auctionButton;
     [SerializeField] GameObject cam;
     [SerializeField] TMP_Text turnAnnouncer;
+    [SerializeField] TMP_Text turnCounter;
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
 
@@ -154,13 +155,13 @@ public class PlayerManager : MonoBehaviour
                 }
                 else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
                 {
-                    if(currentPlayer.GetBalance()<currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouses()])
+                    if(currentPlayer.GetBalance()<currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
                     {
                         //player needs to sell assets in order to pay for rent
                     }
                     else
                     {
-                        currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()),currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouses()]);
+                        currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()),currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
                     }
                 }
             }
@@ -169,7 +170,9 @@ public class PlayerManager : MonoBehaviour
 
     void AnnounceTurn()
     {
-        turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn | Turn Number: {turnNumber}");
+        turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn");
+        turnAnnouncer.color = players[currentPlayersTurn].GetComponent<Player>().GetPlayerColour();
+        turnCounter.SetText($"Total turns: {turnNumber}");
     }
 
     public void OnRollButtonReleased(float timeHeld)

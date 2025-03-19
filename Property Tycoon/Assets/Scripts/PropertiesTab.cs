@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PropertiesTab : MonoBehaviour
 {
-    public void SetCardOnDisplay(GameObject card)
+    [SerializeField] Property largeCard;
+    public void SetCardOnDisplay(Property card)
     {
-
+        largeCard.SetAssociatedTile(card.GetAssociatedTile());
+        largeCard.SetOwnedBy(card.GetOwnedBy());
     }
 }

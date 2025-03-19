@@ -90,8 +90,8 @@ public class Board : MonoBehaviour
                     GameObject propertyCard = Instantiate(propertyCardPrefab, propertiesLayoutGroup.transform);
                     Property propertyData = propertyCard.GetComponent<Property>();
                     propertyData.SetOwnedBy(tile.GetComponent<Property>().GetOwnedBy());
-                    propertyData.UISetColour(card.GetColor());
-                    propertyData.UpdateNameText(card.tileData.spaceName);
+                    propertyData.SetAssociatedTile(card);
+
 
                     if (propertyCard.GetComponent<Property>().GetOwnedBy() != p)
                     {

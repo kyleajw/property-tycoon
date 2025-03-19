@@ -11,32 +11,55 @@ public class Property : MonoBehaviour
     int houses = 0;
     public TextMeshProUGUI rentText,nameText;
     [SerializeField] Image cardColour;
+    Tile tile;
 
-    public void UpdateNameText(string name)
-    {
-        nameText.text = name;
-    }
-    public void UpdateRentText(int price)
-    {
-        rentText.text = $"£{price}";
-    }
     public GameObject GetOwnedBy(){ 
         return ownedBy;
     }
-    public int GetHouses()
+    public int GetHouseCount()
     {
         return houses;
     }
-    public void SetHouses(int num)
+    public void SetHouseCount(int n)
     {
-        houses += num;
+        houses = n;
     }
     public void SetOwnedBy(GameObject player)
     {
         ownedBy = player;
     }
-    public void UISetColour(Color colour)
+
+    public void SetAssociatedTile(Tile data)
     {
-        cardColour.color = colour;
+        tile = data;
+        nameText.text = tile.tileData.spaceName;
+        cardColour.color = tile.GetColor();
+        UpdateRentPrice();
+    }
+    public Tile GetAssociatedTile()
+    {
+        return tile;
+    }
+
+    void UpdateRentPrice()
+    {
+        if (tile.tileData.rentPrices == null || tile.tileData.rentPrices.Length == 0)
+        {
+            rentText.text = $"£{tile.tileData.purchaseCost}";
+        }
+        else
+        {
+            rentText.text = $"£{tile.tileData.rentPrices[houses]}";
+
+        }
+    }
+
+    public Color GetCardColour()
+    {
+        return tile.GetColor();
+    }
+    public int GetDisplayedRent()
+    {
+        return tile.tileData.rentPrices[houses];
     }
 }
