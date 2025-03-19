@@ -45,4 +45,12 @@ public class Tile : MonoBehaviour
 
     }
 
+    public Color GetColor()
+    {
+        if (colorDictionary.Contains(tileData.group)){
+            return (Color)colorDictionary[tileData.group];
+        }
+        return Color.white;
+    }
+
 }
