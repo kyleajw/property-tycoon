@@ -11,6 +11,8 @@ public class Board : MonoBehaviour
     GameObject[] tiles;
     List<GameObject> tempList = new List<GameObject>();
     [SerializeField] GameObject propertyCardMenu;
+    [SerializeField] GameObject propertyCardPrefab;
+    [SerializeField] GameObject propertiesLayoutGroup;
 
     int i;
     bool isMenuVisible = false;
@@ -72,11 +74,46 @@ public class Board : MonoBehaviour
     {
         if (propertyCardMenu != null)
         {
+            if (!isMenuVisible)
+            {
+                DestroyAllChildrenInPropertyLayoutGroup();
+            }
             isMenuVisible = !isMenuVisible;
             propertyCardMenu.SetActive(isMenuVisible);
             //fill property menu with releveant players owned card data
+           
+            foreach(GameObject tile in tiles)
+            {
+                Tile card = tile.GetComponent<Tile>();
+                if (card.tileData.purchasable)
+                {
+                    GameObject propertyCard = Instantiate(propertyCardPrefab, propertiesLayoutGroup.transform);
+                    Property propertyData = propertyCard.GetComponent<Property>();
+                    propertyData.SetOwnedBy(tile.GetComponent<Property>().GetOwnedBy());
+                    propertyData.UISetColour(card.GetColor());
+                    propertyData.UpdateNameText(card.tileData.spaceName);
+
+                    if (propertyCard.GetComponent<Property>().GetOwnedBy() != p)
+                    {
+                        CanvasGroup canvasGroup = propertyCard.GetComponent<CanvasGroup>();
+                        canvasGroup.alpha = 0.6f;
+                        canvasGroup.interactable = false;
+                    }
+                    
+                }
+
+            }
         }
     }
+
+    public void DestroyAllChildrenInPropertyLayoutGroup()
+    {
+        foreach(Property child in propertiesLayoutGroup.GetComponentsInChildren<Property>())
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     public GameObject[] GetTileArray()
     {
         return tiles;

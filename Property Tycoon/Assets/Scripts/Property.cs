@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Property : MonoBehaviour
 {
@@ -9,14 +10,15 @@ public class Property : MonoBehaviour
     bool isMortgaged=false;
     int houses = 0;
     public TextMeshProUGUI rentText,nameText;
+    [SerializeField] Image cardColour;
 
-    public void UpdateNameText()
+    public void UpdateNameText(string name)
     {
-        nameText.text = "a";
+        nameText.text = name;
     }
-    public void UpdateRentText()
+    public void UpdateRentText(int price)
     {
-        rentText.text = "b";
+        rentText.text = $"£{price}";
     }
     public GameObject GetOwnedBy(){ 
         return ownedBy;
@@ -32,5 +34,9 @@ public class Property : MonoBehaviour
     public void SetOwnedBy(GameObject player)
     {
         ownedBy = player;
+    }
+    public void UISetColour(Color colour)
+    {
+        cardColour.color = colour;
     }
 }

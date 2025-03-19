@@ -74,7 +74,6 @@ public class PlayerManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("E Pressed");
                 board.TogglePropertyMenu(players[currentPlayersTurn]);
             }
         }
