@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] Board board;
     [SerializeField] float diceSpawnOffset = 0.1f;
     [SerializeField] public int balance = 1500;
+    [SerializeField] public int inventoryValue;
     [SerializeField] int jailTilePosition;
     [SerializeField] PlayerManager playerManager;
 

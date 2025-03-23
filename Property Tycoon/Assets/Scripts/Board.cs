@@ -81,28 +81,37 @@ public class Board : MonoBehaviour
             isMenuVisible = !isMenuVisible;
             propertyCardMenu.SetActive(isMenuVisible);
             //fill property menu with releveant players owned card data
-           
-            foreach(GameObject tile in tiles)
+            RefreshMenu(p);
+        }
+    }
+    public void RefreshMenu(GameObject p)
+    {
+        DestroyAllChildrenInPropertyLayoutGroup();
+        foreach (GameObject tile in tiles)
+        {
+            Tile card = tile.GetComponent<Tile>();
+            if (card.tileData.purchasable)
             {
-                Tile card = tile.GetComponent<Tile>();
-                if (card.tileData.purchasable)
+                GameObject propertyCard = Instantiate(propertyCardPrefab, propertiesLayoutGroup.transform);
+                Property propertyData = propertyCard.GetComponent<Property>();
+                propertyData.SetOwnedBy(tile.GetComponent<Property>().GetOwnedBy());
+                propertyData.isMortgaged = tile.GetComponent<Property>().isMortgaged;
+                propertyData.SetAssociatedTile(card);
+
+
+                if (propertyCard.GetComponent<Property>().GetOwnedBy() != p)
                 {
-                    GameObject propertyCard = Instantiate(propertyCardPrefab, propertiesLayoutGroup.transform);
-                    Property propertyData = propertyCard.GetComponent<Property>();
-                    propertyData.SetOwnedBy(tile.GetComponent<Property>().GetOwnedBy());
-                    propertyData.SetAssociatedTile(card);
-
-
-                    if (propertyCard.GetComponent<Property>().GetOwnedBy() != p)
-                    {
-                        CanvasGroup canvasGroup = propertyCard.GetComponent<CanvasGroup>();
-                        canvasGroup.alpha = 0.6f;
-                        canvasGroup.interactable = false;
-                    }
-                    
+                    CanvasGroup canvasGroup = propertyCard.GetComponent<CanvasGroup>();
+                    canvasGroup.alpha = 0.6f;
+                    canvasGroup.interactable = false;
+                }
+                if(propertyCard.GetComponent<Property>().GetOwnedBy() == p && propertyCard.GetComponent<Property>().isMortgaged)
+                {
+                    //display mortagge UI
                 }
 
             }
+
         }
     }
 

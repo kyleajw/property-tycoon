@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class Property : MonoBehaviour
 {
     GameObject ownedBy;
-    bool isMortgaged=false;
+    public bool isMortgaged=false;
     int houses = 0;
     public TextMeshProUGUI rentText,nameText;
     [SerializeField] Image cardColour;
-    Tile tile;
+    public Tile tile;
 
     public GameObject GetOwnedBy(){ 
         return ownedBy;
@@ -20,9 +20,13 @@ public class Property : MonoBehaviour
     {
         return houses;
     }
-    public void SetHouseCount(int n)
+    public void IncrementHouseCount()
     {
-        houses = n;
+        houses+=1;
+    }
+    public void DecrementHouseCount()
+    {
+        houses -= 1;
     }
     public void SetOwnedBy(GameObject player)
     {

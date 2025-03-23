@@ -13,6 +13,13 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject finishTurnButton;
     [SerializeField] GameObject buyButton;
     [SerializeField] GameObject auctionButton;
+    [SerializeField] public GameObject mortgageButton;
+    [SerializeField] public GameObject sellButton;
+    [SerializeField] public GameObject buildHouseButton;
+    [SerializeField] public GameObject removeHouseButton;
+    [SerializeField] TextMeshProUGUI buildHouseText;
+    [SerializeField] TextMeshProUGUI removeHouseText;
+    [SerializeField] TextMeshProUGUI houseCounterText;
     [SerializeField] GameObject cam;
     [SerializeField] TMP_Text turnAnnouncer;
     [SerializeField] TMP_Text turnCounter;
@@ -75,6 +82,10 @@ public class PlayerManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
+                sellButton.SetActive(false);
+                mortgageButton.SetActive(false);
+                buildHouseButton.SetActive(false);
+                removeHouseButton.SetActive(false);
                 board.TogglePropertyMenu(players[currentPlayersTurn]);
             }
         }
@@ -133,6 +144,10 @@ public class PlayerManager : MonoBehaviour
             finishTurnButton.SetActive(true);
             if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
             {
+                if (GetOwner(currentPlayer.GetCurrentTile()) != null)
+                {
+                    buyButton.SetActive(false);
+                }
                 if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
                 {
                     buyButton.SetActive(true);
@@ -149,19 +164,35 @@ public class PlayerManager : MonoBehaviour
                         auctionButton.SetActive(false);
                     }
                 }
-                else if (GetOwner(currentPlayer.GetCurrentTile())==currentPlayer) // checks if the propery is owned by the player who landed on it
-                {
-                    //display build property building buttons here
-                }
                 else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
                 {
-                    if(currentPlayer.GetBalance()<currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                    if (!currentPlayer.GetCurrentTile().GetComponent<Property>().isMortgaged) //checks if property is not mortgaged and owner can receive rent on it
                     {
-                        //player needs to sell assets in order to pay for rent
-                    }
-                    else
-                    {
-                        currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()),currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
+                        if(currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Utilities" && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Station")
+                        {
+                            //applies to normal properties
+                            if (currentPlayer.GetBalance() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                            {
+                                //player needs to sell assets in order to pay for rent
+                                //add text to show this
+                                //rentPaid=true
+                                //finishedTurnButton.SetActive(false)
+                            }
+                            else if (currentPlayer.GetBalance() > currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                            {
+                                currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
+                            }
+                        }
+                        //applies to stations
+                        else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Station")
+                        {
+
+                        }
+                        //applies to utilities
+                        else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Utilities")
+                        {
+
+                        }
                     }
                 }
             }
@@ -212,26 +243,191 @@ public class PlayerManager : MonoBehaviour
     {
 
     }
-    public void BuildHousePressed()
+    public void BuildHousePressed(Property property)
     {
         //add houses to selected tile
-        //incremetn property house counter
+        for (int i = 0; i < players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; i++)
+        {
+            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] != null)
+            {
+                if (property.tile.tileData.spaceName == players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    //checks if  house count is less than 4 and that it isnt a property that houses cannot be built on
+                    if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount()<5 && isColourGroupOwned(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group))
+                    {
+                        if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Utilities" && players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Station")
+                        {
+                            players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().IncrementHouseCount();
+                            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 5)
+                            {
+                                buildHouseButton.SetActive(false);
+                                //add hotel prefab here and remove all house prefabs
+                            }
+                            else
+                            {
+                                //add extra house prefab here
+                            }
+                            switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
+                            {
+                                case ("Brown"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
+                                    board.GetBank().SetBankBalance(50);
+                                    break;
+                                case ("Blue"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
+                                    board.GetBank().SetBankBalance(50);
+                                    break;
+                                case ("Purple"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                                    board.GetBank().SetBankBalance(100);
+                                    break;
+                                case ("Orange"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                                    board.GetBank().SetBankBalance(100);
+                                    break;
+                                case ("Red"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
+                                    board.GetBank().SetBankBalance(150);
+                                    break;
+                                case ("Yellow"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
+                                    board.GetBank().SetBankBalance(150);
+                                    break;
+                                case ("Green"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                                    board.GetBank().SetBankBalance(200);
+                                    break;
+                                case ("Deep Blue"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                                    board.GetBank().SetBankBalance(200);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-    public void MortgagePressed()
+    public void SellHousePressed(Property property)
     {
-        //mortgage selected tile back to the back for half purchase value
-        //property.isMortgaged=true
-        //add check for if property is mortgaged to disable rent payment
+        //remove houses from selected tile
+        for (int i = 0; i < players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; i++)
+        {
+            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] != null)
+            {
+                if (property.tile.tileData.spaceName == players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    //checks if  house count zero so no more can be removed and it is a property that can have houses on it
+                    if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() > 0)
+                    {
+                        if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Utilities" && players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Station")
+                        {
+                            players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().DecrementHouseCount();
+                            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 0)
+                            {
+                                removeHouseButton.SetActive(false);
+                                //remove last house prefab here
+                            }
+                            else if(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 4)
+                            {
+                                //remove hotel and place 4 house prefabs
+                            }
+                            else
+                            {
+                                //remove a house prefab here
+                            }
+                            switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
+                            {
+                                case ("Brown"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(50);
+                                    board.GetBank().SetBankBalance(-50);
+                                    break;
+                                case ("Blue"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(50);
+                                    board.GetBank().SetBankBalance(-50);
+                                    break;
+                                case ("Purple"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(100);
+                                    board.GetBank().SetBankBalance(-100);
+                                    break;
+                                case ("Orange"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(100);
+                                    board.GetBank().SetBankBalance(-100);
+                                    break;
+                                case ("Red"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(150);
+                                    board.GetBank().SetBankBalance(-150);
+                                    break;
+                                case ("Yellow"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(150);
+                                    board.GetBank().SetBankBalance(-150);
+                                    break;
+                                case ("Green"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(200);
+                                    board.GetBank().SetBankBalance(-200);
+                                    break;
+                                case ("Deep Blue"):
+                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(200);
+                                    board.GetBank().SetBankBalance(-200);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-    public void SellPressed()
+    public void MortgagePressed(Property property)
+    {
+        //mortgage selected tile for half purchase value
+        for(int i = 0; i < players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; i++)
+        {
+            if(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] != null)
+            {
+                if (property.tile.tileData.spaceName == players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    if (!players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().isMortgaged)
+                    {
+                        players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().isMortgaged = true;
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost / 2);
+                        board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost / 2);
+                        mortgageButton.SetActive(false);
+                        sellButton.SetActive(false);
+                        buildHouseButton.SetActive(false);
+                        removeHouseButton.SetActive(false);
+                        board.RefreshMenu(players[currentPlayersTurn]);
+                    }
+                }
+            }
+        }
+    }
+    public void SellPressed(Property property)
     {
         //sell back to bank for full purchase price
         //add back to bank property array and remove from player property array
-        //chnage 11 in here to the selected tiles position in players property arrray
-        //board.GetBank().properties[11] = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[11];
-        //players[currentPlayersTurn].GetComponent<Player>().ownedProperties[11] = null;
-        //players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().GetSelectedTile().GetComponent<Tile>().tileData.purchaseCost);
-        //board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().GetSelectedTile().GetComponent<Tile>().tileData.purchaseCost);
+        for (int i = 0; i < players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; i++)
+        {
+            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] != null)
+            {
+                if (property.tile.tileData.spaceName == players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    if (!players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().isMortgaged)
+                    {
+                        //give property back to bank and pay the player
+                        players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
+                        board.GetBank().properties[i] = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i];
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost);
+                        board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost);
+                        players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] = null;
+                        sellButton.SetActive(false);
+                        mortgageButton.SetActive(false);
+                        buildHouseButton.SetActive(false);
+                        removeHouseButton.SetActive(false);
+                        board.RefreshMenu(players[currentPlayersTurn]);
+                    }
+                }
+            }
+        }
     }
     public GameObject GetOwner(GameObject curTile)
     {
@@ -243,5 +439,73 @@ public class PlayerManager : MonoBehaviour
             }
         }
         return null;
+    }
+    public bool isColourGroupOwned(string group)
+    {
+        //make it so group is found and checks if all properties of that colour are owned by the same person
+        bool groupOwned = false;
+        int totalCards=0;
+        int ownedCards=0;
+        for (int i=0; i< board.GetTileArray().Length;i++)
+        {
+            if(board.GetTileArray()[i].GetComponent<Tile>().tileData.group == group)
+            {
+                totalCards++;
+            }
+        }
+        for(int i = 0; i<players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; i++)
+        {
+            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] != null)
+            {
+                if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetOwnedBy() == players[currentPlayersTurn])
+                {
+                    ownedCards++;
+                }
+            }
+        }
+        if (totalCards == ownedCards)
+        {
+            groupOwned = true;
+        }
+        return groupOwned;
+    }
+    public void UpdateHouseText(Property property)
+    {
+        houseCounterText.text = property.GetHouseCount().ToString();
+        switch (property.GetAssociatedTile().tileData.group)
+        {
+            case ("Brown"):
+                buildHouseText.text = ("-£50");
+                removeHouseText.text = ("+£50");
+                break;
+            case ("Blue"):
+                buildHouseText.text = ("-£50");
+                removeHouseText.text = ("+£50");
+                break;
+            case ("Purple"):
+                buildHouseText.text = ("-£100");
+                removeHouseText.text = ("+£100");
+                break;
+            case ("Orange"):
+                buildHouseText.text = ("-£100");
+                removeHouseText.text = ("+£100");
+                break;
+            case ("Red"):
+                buildHouseText.text = ("-£150");
+                removeHouseText.text = ("+£150");
+                break;
+            case ("Yellow"):
+                buildHouseText.text = ("-£150");
+                removeHouseText.text = ("+£150");
+                break;
+            case ("Green"):
+                buildHouseText.text = ("-£200");
+                removeHouseText.text = ("+£200");
+                break;
+            case ("Deep Blue"):
+                buildHouseText.text = ("-£200");
+                removeHouseText.text = ("+£200");
+                break;
+        }
     }
 }
