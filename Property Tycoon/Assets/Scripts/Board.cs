@@ -13,6 +13,7 @@ public class Board : MonoBehaviour
     [SerializeField] GameObject propertyCardMenu;
     [SerializeField] GameObject propertyCardPrefab;
     [SerializeField] GameObject propertiesLayoutGroup;
+    [SerializeField] PropertiesTab propertiesTab;
 
     int i;
     bool isMenuVisible = false;
@@ -72,6 +73,7 @@ public class Board : MonoBehaviour
     }
     public void TogglePropertyMenu(GameObject p)
     {
+        propertiesTab.SetBlank();
         if (propertyCardMenu != null)
         {
             if (!isMenuVisible)
