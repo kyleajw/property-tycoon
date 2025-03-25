@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     GameObject piece;
 
     public bool completedCycle = true; //change to false after development
+    public int numberRolled = 0;
     bool isMyTurn;
     bool isHuman;
     bool menuReady = false;
@@ -77,6 +78,7 @@ public class Player : MonoBehaviour
         Debug.Log($"moving by {steps} steps");
         isMoving = true;
         StartCoroutine(MovePlayerAnimation(steps));
+        numberRolled = steps;
     }
 
     IEnumerator WaitForDiceToFinishRolling(float multiplier)

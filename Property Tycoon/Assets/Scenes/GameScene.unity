@@ -5621,6 +5621,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1517835134 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5190315074862410074, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+  m_PrefabInstance: {fileID: 1125839581}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1526254034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6855,6 +6860,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1125839584}
     - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: houseCounter
+      value: 
+      objectReference: {fileID: 1517835134}
+    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: auctionButton
       value: 
       objectReference: {fileID: 1377120941}
@@ -7064,6 +7073,7 @@ MonoBehaviour:
   propertyCardMenu: {fileID: 1261359318}
   propertyCardPrefab: {fileID: 1824965746956508850, guid: 1800eef2e4bb5df4bbf70ea7a31cd581, type: 3}
   propertiesLayoutGroup: {fileID: 1125839585}
+  propertiesTab: {fileID: 662362562}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

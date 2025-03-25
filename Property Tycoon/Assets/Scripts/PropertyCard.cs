@@ -21,6 +21,7 @@ public class PropertyCard : MonoBehaviour
             playerManager.sellButton.SetActive(false);
             playerManager.buildHouseButton.SetActive(false);
             playerManager.removeHouseButton.SetActive(false);
+            playerManager.houseCounter.SetActive(false);
         }
         else
         {
@@ -28,6 +29,7 @@ public class PropertyCard : MonoBehaviour
             playerManager.sellButton.SetActive(true);
             playerManager.buildHouseButton.SetActive(true);
             playerManager.removeHouseButton.SetActive(true);
+            playerManager.houseCounter.SetActive(true);
         }
         propertiesTab.SetCardOnDisplay(property);
         playerManager.UpdateHouseText(property);
