@@ -140,64 +140,68 @@ public class PlayerManager : MonoBehaviour
             buyButton.SetActive(false);
             auctionButton.SetActive(false);
         }
-        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
+        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
             rollButtonGroup.SetActive(false);
             finishTurnButton.SetActive(true);
-            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+            if (currentPlayer.completedCycle)
             {
-                if (GetOwner(currentPlayer.GetCurrentTile()) != null)
+                if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
                 {
-                    buyButton.SetActive(false);
-                }
-                if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
-                {
-                    buyButton.SetActive(true);
-                    if (buyButtonPressed)
+                    if (GetOwner(currentPlayer.GetCurrentTile()) != null)
                     {
                         buyButton.SetActive(false);
                     }
-                    if (CheckCycles() >= 2)
+                    if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
                     {
-                        auctionButton.SetActive(true);
-                    }
-                    else
-                    {
-                        auctionButton.SetActive(false);
-                    }
-                }
-                else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
-                {
-                    if (!currentPlayer.GetCurrentTile().GetComponent<Property>().isMortgaged) //checks if property is not mortgaged and owner can receive rent on it
-                    {
-                        if(currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Utilities" && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Station")
+                        buyButton.SetActive(true);
+                        if (buyButtonPressed)
                         {
-                            //applies to normal properties
-                            if (currentPlayer.GetBalance() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
-                            {
-                                //player needs to sell assets in order to pay for rent
-                                //add text to show this
-                                //rentPaid=true
-                                //finishedTurnButton.SetActive(false)
-                            }
-                            else if (currentPlayer.GetBalance() > currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
-                            {
-                                currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
-                            }
+                            buyButton.SetActive(false);
                         }
-                        //applies to stations
-                        else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Station")
+                        if (CheckCycles() >= 2)
                         {
-
+                            auctionButton.SetActive(true);
                         }
-                        //applies to utilities
-                        else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Utilities")
+                        else
                         {
+                            auctionButton.SetActive(false);
+                        }
+                    }
+                    else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
+                    {
+                        if (!currentPlayer.GetCurrentTile().GetComponent<Property>().isMortgaged) //checks if property is not mortgaged and owner can receive rent on it
+                        {
+                            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Utilities" && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Station")
+                            {
+                                //applies to normal properties
+                                if (currentPlayer.GetBalance() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                                {
+                                    //player needs to sell assets in order to pay for rent
+                                    //add text to show this
+                                    //rentPaid=true
+                                    //finishedTurnButton.SetActive(false)
+                                }
+                                else if (currentPlayer.GetBalance() > currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                                {
+                                    currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
+                                }
+                            }
+                            //applies to stations
+                            else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Station")
+                            {
 
+                            }
+                            //applies to utilities
+                            else if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group == "Utilities")
+                            {
+
+                            }
                         }
                     }
                 }
             }
+
         }
     }
 
