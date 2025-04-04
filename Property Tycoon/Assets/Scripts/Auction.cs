@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,13 +20,21 @@ public class Auction : MonoBehaviour
     [SerializeField]Button bid100Button;
     [SerializeField] Button leaveAuctionButton;
     [SerializeField] Board board;
+    [SerializeField] GameObject bidAnnouncementHistoryGUI;
+    [SerializeField] GameObject bidAnnouncementGUIPrefab;
+
+    [SerializeField] Image displayedPropertyColour;
+    [SerializeField] TextMeshProUGUI originalPropertyPriceText;
+    [SerializeField] TextMeshProUGUI propertyNameText;
     
 
 
     public void Setup(GameObject player, GameObject[] players, GameObject propertyToAuction)
     {
+        ClearAnnouncementHistory();
         biddingQueue = new Queue<GameObject>();
         propertyBeingAuctioned = propertyToAuction;
+        DisplayCardBeingAuctioned();
         Player playersInfo = player.GetComponent<Player>();
         int currentPlayerIndex = playersInfo.GetPlayerNumber() - 1;
         for (int i = currentPlayerIndex; i < players.Length; i++)
@@ -39,7 +48,23 @@ public class Auction : MonoBehaviour
         biddingTotal = 0;
         biddingInProgress = true;
         currentPlayer = biddingQueue.Dequeue();
+        EnableAppropriateBidButtons();
         AnnounceCurrentBidder();
+    }
+
+    void ClearAnnouncementHistory()
+    {
+        foreach (Transform child in bidAnnouncementHistoryGUI.transform) {
+            Destroy(child.gameObject);
+        }
+    }
+
+    void DisplayCardBeingAuctioned()
+    {
+        Tile property = propertyBeingAuctioned.GetComponent<Tile>();
+        displayedPropertyColour.color = property.GetColor();
+        originalPropertyPriceText.text = property.priceText.text;
+        propertyNameText.text = property.nameText.text;
     }
 
     public bool IsBiddingInProgress()
@@ -49,7 +74,7 @@ public class Auction : MonoBehaviour
 
     public void OnPlayerLeavesAuction()
     {
-        Debug.Log("Player "+currentPlayer.GetComponent<Player>().GetPlayerNumber() + " has left the auction.");
+        AddBidMsgToBidAnnouncementHistory("Player " + currentPlayer.GetComponent<Player>().GetPlayerNumber() + " has left the auction.");
         NextBidder();
         AnnounceCurrentBidder();
 
@@ -57,11 +82,25 @@ public class Auction : MonoBehaviour
 
     public void OnPlayerBids(int amount)
     {
+        AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid £{amount + biddingTotal}");
         biddingQueue.Enqueue(currentPlayer);
         biddingTotal += amount;
         UpdateCurrentHighestBid();
         NextBidder();
         AnnounceCurrentBidder();
+    }
+
+    void AddBidMsgToBidAnnouncementHistory(string msg)
+    {
+        if(bidAnnouncementHistoryGUI.transform.childCount == 7)
+        {
+            Destroy(bidAnnouncementHistoryGUI.transform.GetChild(0).gameObject);
+        }
+        GameObject newBidAnnouncement = Instantiate(bidAnnouncementGUIPrefab, bidAnnouncementHistoryGUI.transform);
+        newBidAnnouncement.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+        newBidAnnouncement.GetComponent<Image>().color = currentPlayer.GetComponent<Player>().GetPlayerColour();
+
+
     }
 
     // temp fix, follows same functionality as BuyProperty() method
@@ -75,14 +114,21 @@ public class Auction : MonoBehaviour
         while (!propertyFoundInBankArray || i < board.GetBank().properties.Length)
         {
             string propertyName = propertyBeingAuctioned.GetComponent<Tile>().tileData.spaceName;
-            if (propertyName == board.GetBank().properties[i].GetComponent<Tile>().tileData.spaceName)
+            if(board.GetBank().properties[i] != null)
             {
-                propertyFoundInBankArray = true;
-                j = i;
+                if (propertyName == board.GetBank().properties[i].GetComponent<Tile>().tileData.spaceName)
+                {
+                    propertyFoundInBankArray = true;
+                    j = i;
+                }
             }
             i++;
         }
-        
+        if (j == -1)
+        {
+            Debug.Log("CANT FIND PROPERTY");
+        }
+
         player.ownedProperties[j] = board.GetBank().properties[j];
         board.GetBank().properties[j].GetComponent<Property>().SetOwnedBy(currentPlayer);
         board.GetBank().properties[j] = null;
@@ -99,31 +145,19 @@ public class Auction : MonoBehaviour
         Player player = currentPlayer.GetComponent<Player>();
         if( biddingQueue.Count == 0)
         {
-            Debug.Log("Player " + player.GetPlayerNumber() + " wins this bid");
+            AddBidMsgToBidAnnouncementHistory("Player " + player.GetPlayerNumber() + " wins this bid");
             OnAuctionFulfilled();
         }
         else
         {
             if (player.GetBalance() < biddingTotal + 1)
             {
-                Debug.Log($"Player {player.GetPlayerNumber()} has left the auction (not enough to bid)");
+                AddBidMsgToBidAnnouncementHistory($"Player {player.GetPlayerNumber()} has left the auction (not enough to bid)");
                 NextBidder();
             }
             else
             {
-                if (player.GetBalance() >= biddingTotal + 100)
-                {
-                    bid100Button.interactable = true;
-                }
-                if (player.GetBalance() >= biddingTotal + 10)
-                {
-                    bid10Button.interactable = true;
-                }
-                if (player.GetBalance() >= biddingTotal + 1)
-                {
-                    bid1Button.interactable = true;
-                }
-                leaveAuctionButton.interactable = true;
+                EnableAppropriateBidButtons();
             }
         }
 
@@ -140,6 +174,24 @@ public class Auction : MonoBehaviour
         bid10Button.interactable = false;
         bid100Button.interactable = false;
         leaveAuctionButton.interactable = false;
+    }
+
+    void EnableAppropriateBidButtons()
+    {
+        Player player = currentPlayer.GetComponent<Player>();
+        if (player.GetBalance() >= biddingTotal + 100)
+        {
+            bid100Button.interactable = true;
+        }
+        if (player.GetBalance() >= biddingTotal + 10)
+        {
+            bid10Button.interactable = true;
+        }
+        if (player.GetBalance() >= biddingTotal + 1)
+        {
+            bid1Button.interactable = true;
+        }
+        leaveAuctionButton.interactable = true;
     }
 
     void AnnounceCurrentBidder()
