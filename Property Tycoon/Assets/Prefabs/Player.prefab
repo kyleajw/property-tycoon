@@ -82,7 +82,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  completedCycle: 1
+  completedCycle: 0
+  numberRolled: 0
 --- !u!114 &963661108382799076
 MonoBehaviour:
   m_ObjectHideFlags: 0

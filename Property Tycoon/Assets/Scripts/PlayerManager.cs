@@ -183,13 +183,14 @@ public class PlayerManager : MonoBehaviour
         }
         else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
-            if (GetOwner(currentPlayer.GetCurrentTile()) != null)
+            if (GetOwner(currentPlayer.GetCurrentTile()) != null && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
             {
                 buyButton.SetActive(false);
                 auctionButton.SetActive(false);
                 HandleRent(currentPlayer);
 
             }
+            finishTurnButton.SetActive(true);
         }
     }
     void AnnounceTurn()
