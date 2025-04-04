@@ -29,6 +29,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
 
+    [SerializeField] GameObject auctionGUI;
+
     bool gameStarted = false;
     bool buyButtonPressed = false;
     int turnNumber = 1;
@@ -237,9 +239,16 @@ public class PlayerManager : MonoBehaviour
     }
     public void AuctionPressed()
     {
+        DisplayAuctionGUI();
+        BeginAuctionProcess();
+    }
+
+    void DisplayAuctionGUI()
+    {
 
     }
-    public void TradePressed()
+
+    void BeginAuctionProcess()
     {
 
     }
