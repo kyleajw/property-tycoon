@@ -145,13 +145,13 @@ public class PlayerManager : MonoBehaviour
             buyButton.SetActive(false);
             auctionButton.SetActive(false);
         }
-        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
+        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
         {
             rollButtonGroup.SetActive(false);
             finishTurnButton.SetActive(true);
-            if (currentPlayer.completedCycle)
+            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
             {
-                if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+                if (GetOwner(currentPlayer.GetCurrentTile()) != null)
                 {
                     buyButton.SetActive(false);
                     auctionButton.SetActive(false);
@@ -165,31 +165,33 @@ public class PlayerManager : MonoBehaviour
                         buyButton.SetActive(false);
                         auctionButton.SetActive(false);
                     }
+                    if (CheckCycles() >= 2)
+                    {
+                        auctionButton.SetActive(true);
+                    }
                     else
                     {
-                        if (CheckCycles() >= 2 && !auctionButtonPressed)
-                        {
-                            auctionButton.SetActive(true);
-                        }
-                        else
-                        {
-                            auctionButton.SetActive(false);
-                            buyButton.SetActive(false);
-                        }
+                        auctionButton.SetActive(false);
                     }
-                }               
-            }else{
-                if (GetOwner(currentPlayer.GetCurrentTile()) != null)
-                {
-                    buyButton.SetActive(false);
-                    HandleRent(currentPlayer);
-
+                    if (auctionButtonPressed)
+                    {
+                        buyButton.SetActive(false);
+                        auctionButton.SetActive(false);
+                    }
                 }
+            }
+        }
+        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
+        {
+            if (GetOwner(currentPlayer.GetCurrentTile()) != null)
+            {
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
+                HandleRent(currentPlayer);
 
             }
         }
     }
-
     void AnnounceTurn()
     {
         turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn");
