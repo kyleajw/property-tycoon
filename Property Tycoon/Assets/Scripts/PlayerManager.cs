@@ -30,8 +30,11 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
 
+    [SerializeField] GameObject auctionGUI;
+
     bool gameStarted = false;
     bool buyButtonPressed = false;
+    bool auctionButtonPressed = false;
     bool rentPayable = false; 
     int turnNumber = 1;
     int houseInp;
@@ -41,7 +44,7 @@ public class PlayerManager : MonoBehaviour
     GameObject[] players;
     int currentPlayersTurn;
 
-
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -151,6 +154,7 @@ public class PlayerManager : MonoBehaviour
                 if (GetOwner(currentPlayer.GetCurrentTile()) != null)
                 {
                     buyButton.SetActive(false);
+                    auctionButton.SetActive(false);
                     HandleRent(currentPlayer);
                 }
                 if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
@@ -169,20 +173,25 @@ public class PlayerManager : MonoBehaviour
                     {
                         auctionButton.SetActive(false);
                     }
-                }               
+                    if (auctionButtonPressed)
+                    {
+                        buyButton.SetActive(false);
+                        auctionButton.SetActive(false);
+                    }
+                }
             }
         }
-        else if(currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
+        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
             if (GetOwner(currentPlayer.GetCurrentTile()) != null)
             {
                 buyButton.SetActive(false);
+                auctionButton.SetActive(false);
                 HandleRent(currentPlayer);
 
             }
         }
     }
-
     void AnnounceTurn()
     {
         turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn");
@@ -212,6 +221,7 @@ public class PlayerManager : MonoBehaviour
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
         players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
         buyButtonPressed=false;
+        auctionButtonPressed=false;
     }
     public void BuyPressed()
     {
@@ -221,8 +231,19 @@ public class PlayerManager : MonoBehaviour
     }
     public void AuctionPressed()
     {
-
+        DisplayAuctionGUI();
+        Auction auction = gameObject.GetComponent<Auction>();
+        auction.Setup(players[currentPlayersTurn], players, players[currentPlayersTurn].GetComponent<Player>().GetCurrentTile());
+        auctionButton.SetActive(false);
+        buyButton.SetActive(false);
+        auctionButtonPressed = true;
     }
+
+    void DisplayAuctionGUI()
+    {
+        auctionGUI.SetActive(true);
+    }
+
     public void BuildHousePressed(Property property)
     {
         //add houses to selected tile
@@ -472,36 +493,36 @@ public class PlayerManager : MonoBehaviour
         switch (property.GetAssociatedTile().tileData.group)
         {
             case ("Brown"):
-                buildHouseText.text = ("-£50");
-                removeHouseText.text = ("+£50");
+                buildHouseText.text = ("-ï¿½50");
+                removeHouseText.text = ("+ï¿½50");
                 break;
             case ("Blue"):
-                buildHouseText.text = ("-£50");
-                removeHouseText.text = ("+£50");
+                buildHouseText.text = ("-ï¿½50");
+                removeHouseText.text = ("+ï¿½50");
                 break;
             case ("Purple"):
-                buildHouseText.text = ("-£100");
-                removeHouseText.text = ("+£100");
+                buildHouseText.text = ("-ï¿½100");
+                removeHouseText.text = ("+ï¿½100");
                 break;
             case ("Orange"):
-                buildHouseText.text = ("-£100");
-                removeHouseText.text = ("+£100");
+                buildHouseText.text = ("-ï¿½100");
+                removeHouseText.text = ("+ï¿½100");
                 break;
             case ("Red"):
-                buildHouseText.text = ("-£150");
-                removeHouseText.text = ("+£150");
+                buildHouseText.text = ("-ï¿½150");
+                removeHouseText.text = ("+ï¿½150");
                 break;
             case ("Yellow"):
-                buildHouseText.text = ("-£150");
-                removeHouseText.text = ("+£150");
+                buildHouseText.text = ("-ï¿½150");
+                removeHouseText.text = ("+ï¿½150");
                 break;
             case ("Green"):
-                buildHouseText.text = ("-£200");
-                removeHouseText.text = ("+£200");
+                buildHouseText.text = ("-ï¿½200");
+                removeHouseText.text = ("+ï¿½200");
                 break;
             case ("Deep Blue"):
-                buildHouseText.text = ("-£200");
-                removeHouseText.text = ("+£200");
+                buildHouseText.text = ("-ï¿½200");
+                removeHouseText.text = ("+ï¿½200");
                 break;
         }
     }

@@ -50,6 +50,7 @@ MonoBehaviour:
   board: {fileID: 0}
   diceSpawnOffset: 0.25
   balance: 1500
+  inventoryValue: 0
   jailTilePosition: 10
   playerManager: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
   ownedProperties:
