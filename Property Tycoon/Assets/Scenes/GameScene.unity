@@ -4877,7 +4877,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
   m_PrefabInstance: {fileID: 4598868801219546727}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4598868801219546728}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d126f1ca84d33cf49b5c4f3f4dc1e16f, type: 3}
@@ -7077,6 +7077,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: board
+      value: 
+      objectReference: {fileID: 7705461717948854330}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: auctionGUI
+      value: 
+      objectReference: {fileID: 1770377268}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: bid1Button
+      value: 
+      objectReference: {fileID: 1347942391}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: bid10Button
+      value: 
+      objectReference: {fileID: 2054367155}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: bid100Button
+      value: 
+      objectReference: {fileID: 1451001659}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: currentBidderText
+      value: 
+      objectReference: {fileID: 523706326}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: leaveAuctionButton
+      value: 
+      objectReference: {fileID: 1721644280}
+    - target: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: currentBidAmountText
+      value: 
+      objectReference: {fileID: 1652473114}
     - target: {fileID: 7216485526498223797, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: m_Name
       value: PlayerManager
@@ -7088,36 +7120,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7216485526498223797, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4598868801219546729}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
---- !u!1 &4598868801219546728 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7216485526498223797, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+--- !u!114 &4598868801219546729 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6480959217377661512, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
   m_PrefabInstance: {fileID: 4598868801219546727}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4598868801219546729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4598868801219546728}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f785fcb772b37844e84a58c0c4a46a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentBidderText: {fileID: 523706326}
-  auctionGUI: {fileID: 1770377268}
-  currentBidAmountText: {fileID: 1652473114}
-  bid1Button: {fileID: 1347942391}
-  bid10Button: {fileID: 2054367155}
-  bid100Button: {fileID: 1451001659}
-  leaveAuctionButton: {fileID: 1721644280}
-  board: {fileID: 7705461717948854330}
 --- !u!1001 &6965907766677119318
 PrefabInstance:
   m_ObjectHideFlags: 0

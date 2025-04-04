@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2442303129880731116}
   - component: {fileID: -4427131564662454175}
+  - component: {fileID: 6480959217377661512}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: PlayerManager
@@ -54,9 +55,33 @@ MonoBehaviour:
   sellButton: {fileID: 0}
   buildHouseButton: {fileID: 0}
   removeHouseButton: {fileID: 0}
+  buildHouseText: {fileID: 0}
+  removeHouseText: {fileID: 0}
+  houseCounterText: {fileID: 0}
   cam: {fileID: 0}
   turnAnnouncer: {fileID: 0}
   turnCounter: {fileID: 0}
   board: {fileID: 0}
   diceRollForceMultiplier: 15
   playerPrefab: {fileID: 74705868052834215, guid: a7d91e791cc65e344b9bc3ef4789c0e1, type: 3}
+  auctionGUI: {fileID: 0}
+--- !u!114 &6480959217377661512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216485526498223797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f785fcb772b37844e84a58c0c4a46a79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentBidderText: {fileID: 0}
+  auctionGUI: {fileID: 0}
+  currentBidAmountText: {fileID: 0}
+  bid1Button: {fileID: 0}
+  bid10Button: {fileID: 0}
+  bid100Button: {fileID: 0}
+  leaveAuctionButton: {fileID: 0}
+  board: {fileID: 0}
