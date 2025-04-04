@@ -268,6 +268,8 @@ public class Player : MonoBehaviour
         string tileName = GetCurrentTile().GetComponent<Tile>().tileData.spaceName;
         return tileName;
     }
+
+    //change to list / hash ??; functionality with these arrays are difficult outside of this one method..
     public void BuyProperty()
     {
         int index=0;
@@ -282,7 +284,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        Debug.Log($"OPLenght {ownedProperties.Length} board prop length: {board.GetBank().properties.Length}");
         ownedProperties[index] = board.GetBank().properties[index];
         board.GetBank().properties[index].GetComponent<Property>().SetOwnedBy(gameObject);
         board.GetBank().properties[index] = null;

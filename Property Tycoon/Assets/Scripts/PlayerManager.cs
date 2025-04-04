@@ -33,6 +33,7 @@ public class PlayerManager : MonoBehaviour
 
     bool gameStarted = false;
     bool buyButtonPressed = false;
+    bool auctionButtonPressed = false;
     int turnNumber = 1;
     int houseInp;
     int cyclesCompleted = 0;
@@ -41,7 +42,7 @@ public class PlayerManager : MonoBehaviour
     GameObject[] players;
     int currentPlayersTurn;
 
-
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -151,6 +152,7 @@ public class PlayerManager : MonoBehaviour
                     if (GetOwner(currentPlayer.GetCurrentTile()) != null)
                     {
                         buyButton.SetActive(false);
+                        auctionButton.SetActive(false);
                     }
                     if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
                     {
@@ -158,14 +160,19 @@ public class PlayerManager : MonoBehaviour
                         if (buyButtonPressed)
                         {
                             buyButton.SetActive(false);
-                        }
-                        if (CheckCycles() >= 2)
-                        {
-                            auctionButton.SetActive(true);
+                            auctionButton.SetActive(false);
                         }
                         else
                         {
-                            auctionButton.SetActive(false);
+                            if (CheckCycles() >= 2 && !auctionButtonPressed)
+                            {
+                                auctionButton.SetActive(true);
+                            }
+                            else
+                            {
+                                auctionButton.SetActive(false);
+                                buyButton.SetActive(false);
+                            }
                         }
                     }
                     else if (GetOwner(currentPlayer.GetCurrentTile()) != currentPlayer) // checks if other player owns the property the player landed on
@@ -234,6 +241,7 @@ public class PlayerManager : MonoBehaviour
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
         players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
         buyButtonPressed=false;
+        auctionButtonPressed=false;
     }
     public void BuyPressed()
     {
@@ -244,18 +252,18 @@ public class PlayerManager : MonoBehaviour
     public void AuctionPressed()
     {
         DisplayAuctionGUI();
-        BeginAuctionProcess();
+        Auction auction = gameObject.GetComponent<Auction>();
+        auction.Setup(players[currentPlayersTurn], players, players[currentPlayersTurn].GetComponent<Player>().GetCurrentTile());
+        auctionButton.SetActive(false);
+        buyButton.SetActive(false);
+        auctionButtonPressed = true;
     }
 
     void DisplayAuctionGUI()
     {
-
+        auctionGUI.SetActive(true);
     }
 
-    void BeginAuctionProcess()
-    {
-
-    }
     public void BuildHousePressed(Property property)
     {
         //add houses to selected tile
