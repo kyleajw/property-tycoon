@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -26,6 +27,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] TMP_Text turnCounter;
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
+    [SerializeField] GameObject cardDialogPrefab;
 
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
@@ -133,7 +135,7 @@ public class PlayerManager : MonoBehaviour
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
     }
 
-    //halfway thru refactor
+    //todo continue during refactor
     public void OnPlayerFinishedMoving(GameObject landedTile)
     {
         TileData tile = landedTile.GetComponent<Tile>().tileData;
@@ -142,12 +144,12 @@ public class PlayerManager : MonoBehaviour
             case "Pot Luck":
                 cardManager = gameObject.GetComponent<CardManager>();
                 Debug.Log("Player Draws Pot Luck Card");
-                OnCardDrawn(cardManager.DrawPotLuckCard());
+                ShowCardDialog("Pot Luck",cardManager.DrawPotLuckCard());
                 break;
             case "Opportunity Knocks":
                 cardManager = gameObject.GetComponent<CardManager>();
                 Debug.Log("Player Draws Opportunity Knocks Card");
-                OnCardDrawn(cardManager.DrawOpportunityKnocksCard());
+                ShowCardDialog("Opportunity Knocks",cardManager.DrawOpportunityKnocksCard());
                 break;
             case "Tax":
                 Debug.Log("tax player");
@@ -161,13 +163,68 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void OnCardDrawn(CardData card)
+    void ShowCardDialog(String cardType, CardData card)
     {
-        string action = card.action;
-        //switch (action)
-        //{
+        GameObject newCardDialog = Instantiate(cardDialogPrefab, gameCanvas.transform);
+        CardDialog cardDialog = newCardDialog.GetComponent<CardDialog>();
+        cardDialog.UpdateCardInfo(cardType, card);
+    }
 
-        //}
+    public void OnPlayerClosesCardDialog(CardData card, int choice)
+    {
+        string[] args = card.arg.Split(' ');
+        string action = args[0];
+        int amount;
+        switch (action)
+        {
+            case "RECEIVE":
+                Debug.Log("Player Receives");
+                string payer = args[args.Length - 1];
+                amount = Convert.ToInt32(args[1]);
+                if (payer == "BANK")
+                {
+                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(amount);
+                }
+                else if (payer == "ALL")
+                {
+                    // charge all players x amount
+                    // collect all amount and give to player
+                }
+                break;
+            case "PAY":
+                Debug.Log("Player Pays");
+                string payee = args[1];
+                amount = Convert.ToInt32(args[2]);
+                switch (payee)
+                {
+                    case "BANK":
+                        Debug.Log("pay bank");
+                        break;
+                    case "PARKING":
+                        Debug.Log("pay parking");
+                        break;
+                }
+
+                break;
+            case "MOVE":
+                Debug.Log("Player Moves");
+                break;
+            case "JAIL":
+                Debug.Log("Player goes to jail");
+                break;
+            case "JAILFREE":
+                Debug.Log("Player recives GOOJF Card");
+                break;
+            case "CHOICE:":
+                Debug.Log("choice dialog");
+                break;
+            case "VARIABLE:":
+                Debug.Log("pay per this and this");
+                break;
+            default:
+                Debug.Log("Unrecognized action:" + action);
+                break;
+        }
     }
 
     void HandleCanvasVisibility(Player currentPlayer)
@@ -224,7 +281,7 @@ public class PlayerManager : MonoBehaviour
         }
         else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
-            if (GetOwner(currentPlayer.GetCurrentTile()) != null && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && GetOwner(currentPlayer.GetCurrentTile()) != null)
             {
                 buyButton.SetActive(false);
                 auctionButton.SetActive(false);

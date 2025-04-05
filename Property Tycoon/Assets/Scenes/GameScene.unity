@@ -7308,6 +7308,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 492421179}
     - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: cardDialogPrefab
+      value: 
+      objectReference: {fileID: 1039292106159468219, guid: c15195de442e9774f8eca6e01c0ee651, type: 3}
+    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: finishTurnButton
       value: 
       objectReference: {fileID: 53367294}

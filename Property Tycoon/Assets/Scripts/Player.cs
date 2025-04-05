@@ -173,6 +173,7 @@ public class Player : MonoBehaviour
         isMyTurn=isTurn;
         finishedTurn = !isTurn;
     }
+    // increments based on param given
     public void SetBalance(int money)
     {
         balance = balance + money;

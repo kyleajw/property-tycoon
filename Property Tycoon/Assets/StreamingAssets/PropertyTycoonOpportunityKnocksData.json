@@ -23,7 +23,7 @@
       {
         "description": "Fined £15 for speeding",
         "action": "Player puts £15 in free parking",
-        "arg": "PAY 15"
+        "arg": "PAY PARKING 15"
       },
       {
         "description": "Pay university fees of £150",
@@ -43,7 +43,7 @@
       {
         "description": "You are assessed for repairs, £40/house, £115/hotel",
         "action": "Player pays money to the bank",
-        "arg": "PAY BANK 40 PER HOUSE AND 115 PER HOTEL"
+        "arg": "VARIABLE: PAY BANK 40 PER HOUSE AND 115 PER HOTEL"
       },
       {
         "description": "Advance to GO",
@@ -53,7 +53,7 @@
       {
         "description": "You are assessed for repairs, £25/house, £100/hotel",
         "action": "Player pays money to the bank",
-        "arg": "PAY BANK 25 PER HOUSE AND 100 PER HOTEL"
+        "arg": "VARIABLE: PAY BANK 25 PER HOUSE AND 100 PER HOTEL"
       },
       {
         "description": "Go back 3 spaces",
@@ -73,12 +73,12 @@
       {
         "description": "Drunk in charge of a hoverboard. Fine £30",
         "action": "Player puts £30 in free parking",
-        "arg": "PAY 30"
+        "arg": "PAY PARKING 30"
       },
       {
         "description": "Get out of jail free",
         "action": "Retained by the player until needed. No resale or trade value",
-        "arg": "GET OUT OF JAIL"
+        "arg": "JAILFREE"
       }
     ]
 }
