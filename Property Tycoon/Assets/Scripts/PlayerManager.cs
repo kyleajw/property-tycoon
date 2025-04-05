@@ -44,6 +44,8 @@ public class PlayerManager : MonoBehaviour
     GameObject[] players;
     int currentPlayersTurn;
 
+    CardManager cardManager;
+
    
     // Start is called before the first frame update
     void Start()
@@ -51,6 +53,8 @@ public class PlayerManager : MonoBehaviour
         mainCamera = Camera.main;
         InitialisePlayers();
         AnnounceTurn();
+        
+
     }
 
     // Update is called once per frame
@@ -127,6 +131,43 @@ public class PlayerManager : MonoBehaviour
     GameObject InstantiateHumanPlayer()
     {
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
+    }
+
+    //halfway thru refactor
+    public void OnPlayerFinishedMoving(GameObject landedTile)
+    {
+        TileData tile = landedTile.GetComponent<Tile>().tileData;
+        switch (tile.group)
+        {
+            case "Pot Luck":
+                cardManager = gameObject.GetComponent<CardManager>();
+                Debug.Log("Player Draws Pot Luck Card");
+                OnCardDrawn(cardManager.DrawPotLuckCard());
+                break;
+            case "Opportunity Knocks":
+                cardManager = gameObject.GetComponent<CardManager>();
+                Debug.Log("Player Draws Opportunity Knocks Card");
+                OnCardDrawn(cardManager.DrawOpportunityKnocksCard());
+                break;
+            case "Tax":
+                Debug.Log("tax player");
+                break;
+            case "Unique":
+                Debug.Log("square tile");
+                break;
+            default:
+                Debug.Log("Implement");
+                break;
+        }
+    }
+
+    void OnCardDrawn(CardData card)
+    {
+        string action = card.action;
+        //switch (action)
+        //{
+
+        //}
     }
 
     void HandleCanvasVisibility(Player currentPlayer)

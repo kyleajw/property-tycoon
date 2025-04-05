@@ -35,6 +35,10 @@ public class Player : MonoBehaviour
     int position = 0;
 
     string playerName;
+    private void Start()
+    {
+        playerManager = GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>();
+    }
 
     public void AssignPiece(GameObject _piece)
     {
@@ -134,6 +138,10 @@ public class Player : MonoBehaviour
         menuReady = true;
         dice1Value = 0;
         dice2Value = 0;
+
+        // position on final tile
+        // tell player manager (passing card through)
+        playerManager.OnPlayerFinishedMoving(board.GetTileArray()[position]);
     }
     void SetEmissionKeywordToAll(bool set, Material[] materials)
     {
