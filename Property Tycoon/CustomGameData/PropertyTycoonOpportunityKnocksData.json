@@ -63,7 +63,7 @@
       {
         "description": "Advance to Skywalker Drive. If you pass GO, collect £200",
         "action": "Player moves token",
-        "arg": "MOVE FORWARDS 'Skywalker Drive"
+        "arg": "MOVE FORWARDS 'Skywalker Drive'"
       },
       {
         "description": "Go to jail. Do not pass GO, do not collect £200",

@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     bool rolled = false;
     bool isInJail = false;
     bool finishedTurn = false;
+    bool hasGetOutOfJailFreeCard = false;
+
 
     int doublesThisTurn = 0;
     int playerNumber;
@@ -77,12 +79,12 @@ public class Player : MonoBehaviour
         StartCoroutine(WaitForDiceToFinishRolling(multiplier));
     }
 
-    void MovePiece(int steps)
+    public void MovePiece(int steps)
     {
         Debug.Log($"moving by {steps} steps");
         isMoving = true;
         StartCoroutine(MovePlayerAnimation(steps));
-        numberRolled = steps;
+        //numberRolled = steps;
     }
 
     IEnumerator WaitForDiceToFinishRolling(float multiplier)
@@ -102,7 +104,7 @@ public class Player : MonoBehaviour
         rolled = true;
 
         yield return new WaitForSeconds(1.5f);
-
+        numberRolled = dice1Value + dice2Value;
         Destroy(dice1);
         Destroy(dice2);
     }
@@ -110,26 +112,53 @@ public class Player : MonoBehaviour
     IEnumerator MovePlayerAnimation(int steps)
     {
         MeshRenderer meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
-        for (int i = 0; i < steps; i++)
+        if(steps < 0)
         {
-
-            //meshRenderer.materials[1].DisableKeyword("_EMISSION");
-            SetEmissionKeywordToAll(false, meshRenderer.materials);
-            position++;
-            if (position >= board.GetTileArray().Length)
+            for (int i = 0; i > steps; i--)
             {
-                position = 0;
-                completedCycle = true;
-                balance += 200; //money for passing go
-            }
-            transform.position = board.GetTileArray()[position].transform.position;
-            meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
-            //meshRenderer.materials[1].EnableKeyword("_EMISSION");
-            SetEmissionKeywordToAll(true, meshRenderer.materials);
-            yield return new WaitForSeconds(0.5f);
 
-            //todo:
-            // if tile not normal generic tile, assign emission position differently
+                //meshRenderer.materials[1].DisableKeyword("_EMISSION");
+                SetEmissionKeywordToAll(false, meshRenderer.materials);
+                position--;
+                if (position <= -1)
+                {
+                    position = board.GetTileArray().Length -1;
+                }
+                transform.position = board.GetTileArray()[position].transform.position;
+                meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
+                //meshRenderer.materials[1].EnableKeyword("_EMISSION");
+                SetEmissionKeywordToAll(true, meshRenderer.materials);
+                yield return new WaitForSeconds(0.5f);
+
+                //todo:
+                // if tile not normal generic tile, assign emission position differently
+
+            }
+        }
+        else
+        {
+            for (int i = 0; i < steps; i++)
+            {
+
+                //meshRenderer.materials[1].DisableKeyword("_EMISSION");
+                SetEmissionKeywordToAll(false, meshRenderer.materials);
+                position++;
+                if (position >= board.GetTileArray().Length)
+                {
+                    position = 0;
+                    completedCycle = true;
+                    balance += 200; //money for passing go
+                }
+                transform.position = board.GetTileArray()[position].transform.position;
+                meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
+                //meshRenderer.materials[1].EnableKeyword("_EMISSION");
+                SetEmissionKeywordToAll(true, meshRenderer.materials);
+                yield return new WaitForSeconds(0.5f);
+
+                //todo:
+                // if tile not normal generic tile, assign emission position differently
+
+            }
 
         }
         yield return new WaitForSeconds(1);
@@ -280,6 +309,11 @@ public class Player : MonoBehaviour
         return tileName;
     }
 
+    public int GetPositionOnBoard()
+    {
+        return position;
+    }
+
     //change to list / hash ??; functionality with these arrays are difficult outside of this one method..
     public void BuyProperty()
     {
@@ -311,4 +345,15 @@ public class Player : MonoBehaviour
         payee.GetComponent<Player>().SetBalance(-rent);
         receiver.GetComponent<Player>().SetBalance(rent);
     }
+
+    void UseGetOutOfJailFreeCard()
+    {
+        hasGetOutOfJailFreeCard = false;
+    }
+
+    public void ReceiveGetOutOfJailFreeCard()
+    {
+        hasGetOutOfJailFreeCard = true;
+    }
+
 }
