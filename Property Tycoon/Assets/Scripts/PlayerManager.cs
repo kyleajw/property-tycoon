@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static Codice.CM.Common.CmCallContext;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -168,6 +169,10 @@ public class PlayerManager : MonoBehaviour
                         players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
                         break;
                 }
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             case "Unique":
                 Debug.Log("square tile");
@@ -189,11 +194,20 @@ public class PlayerManager : MonoBehaviour
                         players[currentPlayersTurn].GetComponent<Player>().GoToJail();
                         break;
                 }
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             default:
                 Debug.Log("Implemented elsewhere");
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman()) //TEMP
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
         }
+        
     }
 
     void ShowCardDialog(string cardType, CardData card)
@@ -201,6 +215,11 @@ public class PlayerManager : MonoBehaviour
         GameObject newCardDialog = Instantiate(cardDialogPrefab, gameCanvas.transform);
         CardDialog cardDialog = newCardDialog.GetComponent<CardDialog>();
         cardDialog.UpdateCardInfo(cardType, card);
+        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+        {
+            players[currentPlayersTurn].GetComponent<EasyAgent>().OnCardDrawn(card.arg.Split(' ')[0] == "CHOICE:");
+            newCardDialog.GetComponentInChildren<Button>().interactable = false;
+        }
     }
 
     public void OnPlayerClosesCardDialog(CardData card, int choice)
@@ -304,6 +323,11 @@ public class PlayerManager : MonoBehaviour
             default:
                 Debug.Log("Unrecognized action:" + action);
                 break;
+
+        }
+        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+        {
+            players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
         }
     }
 

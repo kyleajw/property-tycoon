@@ -201,6 +201,10 @@ public class Player : MonoBehaviour
     {
         isMyTurn=isTurn;
         finishedTurn = !isTurn;
+        if(isMyTurn && !isHuman)
+        {
+            gameObject.GetComponent<EasyAgent>().OnMyTurn();
+        }
     }
     // increments based on param given
     public void SetBalance(int money)
