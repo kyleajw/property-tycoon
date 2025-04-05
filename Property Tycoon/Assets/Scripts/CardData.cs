@@ -8,4 +8,5 @@ public class CardData
 {
     public string description;
     public string action;
+    public string arg;
 }

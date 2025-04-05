@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2442303129880731116}
   - component: {fileID: -4427131564662454175}
   - component: {fileID: 6480959217377661512}
+  - component: {fileID: 6198193268531187962}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: PlayerManager
@@ -55,6 +56,7 @@ MonoBehaviour:
   sellButton: {fileID: 0}
   buildHouseButton: {fileID: 0}
   removeHouseButton: {fileID: 0}
+  houseCounter: {fileID: 0}
   buildHouseText: {fileID: 0}
   removeHouseText: {fileID: 0}
   houseCounterText: {fileID: 0}
@@ -85,3 +87,20 @@ MonoBehaviour:
   bid100Button: {fileID: 0}
   leaveAuctionButton: {fileID: 0}
   board: {fileID: 0}
+  bidAnnouncementHistoryGUI: {fileID: 0}
+  bidAnnouncementGUIPrefab: {fileID: 0}
+  displayedPropertyColour: {fileID: 0}
+  originalPropertyPriceText: {fileID: 0}
+  propertyNameText: {fileID: 0}
+--- !u!114 &6198193268531187962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216485526498223797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1d2897f4abd9e4cad506d6585535ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -26,12 +27,13 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] TMP_Text turnCounter;
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
+    [SerializeField] GameObject cardDialogPrefab;
 
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
 
     [SerializeField] GameObject auctionGUI;
-
+    int parkingTotal = 0;
     bool gameStarted = false;
     bool buyButtonPressed = false;
     bool auctionButtonPressed = false;
@@ -44,6 +46,8 @@ public class PlayerManager : MonoBehaviour
     GameObject[] players;
     int currentPlayersTurn;
 
+    CardManager cardManager;
+
    
     // Start is called before the first frame update
     void Start()
@@ -51,6 +55,8 @@ public class PlayerManager : MonoBehaviour
         mainCamera = Camera.main;
         InitialisePlayers();
         AnnounceTurn();
+        
+
     }
 
     // Update is called once per frame
@@ -129,6 +135,339 @@ public class PlayerManager : MonoBehaviour
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
     }
 
+    //todo continue during refactor
+    public void OnPlayerFinishedMoving(GameObject landedTile)
+    {
+        //!!!! NO CHECKS FOR IF PLAYER CAN AFFORD CHARGES
+        TileData tile = landedTile.GetComponent<Tile>().tileData;
+        switch (tile.group)
+        {
+            case "Pot Luck":
+                cardManager = gameObject.GetComponent<CardManager>();
+                Debug.Log("Player Draws Pot Luck Card");
+                ShowCardDialog("Pot Luck",cardManager.DrawPotLuckCard());
+                break;
+            case "Opportunity Knocks":
+                cardManager = gameObject.GetComponent<CardManager>();
+                Debug.Log("Player Draws Opportunity Knocks Card");
+                ShowCardDialog("Opportunity Knocks",cardManager.DrawOpportunityKnocksCard());
+                break;
+            case "Tax": // NOT CUSTOMISABLE - HARDCODED
+                Debug.Log("tax player");
+                switch (tile.spaceName)
+                {
+                    case "Income Tax":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                        break;
+                    case "Super Tax":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                        break;
+                }
+                break;
+            case "Unique":
+                Debug.Log("square tile");
+                switch (tile.spaceName)
+                {
+                    case "Go":
+                        Debug.Log("GO Tile, implemented elsewhere");
+                        break;
+                    case "Jail/Just visiting":
+                        Debug.Log("JAIL TILE");
+                        break;
+                    case "Free Parking":
+                        Debug.Log("player landed on free parking");
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(parkingTotal);
+                        parkingTotal = 0;
+                        break;
+                    case "Go to Jail":
+                        Debug.Log("player goes to jail");
+                        players[currentPlayersTurn].GetComponent<Player>().GoToJail();
+                        break;
+                }
+                break;
+            default:
+                Debug.Log("Implemented elsewhere");
+                break;
+        }
+    }
+
+    void ShowCardDialog(string cardType, CardData card)
+    {
+        GameObject newCardDialog = Instantiate(cardDialogPrefab, gameCanvas.transform);
+        CardDialog cardDialog = newCardDialog.GetComponent<CardDialog>();
+        cardDialog.UpdateCardInfo(cardType, card);
+    }
+
+    public void OnPlayerClosesCardDialog(CardData card, int choice)
+    {
+        string[] args = card.arg.Split(' ');
+        string action = args[0];
+        int amount;
+        switch (action)
+        {
+            case "RECEIVE":
+                Debug.Log("Player Receives");
+                string payer = args[args.Length - 1];
+                amount = Convert.ToInt32(args[1]);
+                if (payer == "BANK")
+                {
+                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(amount);
+                }
+                else if (payer == "ALL")
+                {
+                    int total = 0;
+                    foreach(GameObject player in players)
+                    {
+                        if(!(player.GetComponent<Player>().GetPlayerNumber() == players[currentPlayersTurn].GetComponent<Player>().GetPlayerNumber()))
+                        {
+                            total += amount;
+                            player.GetComponent<Player>().SetBalance(-amount);
+                        }
+                    }
+                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(total);
+                }
+                break;
+            case "PAY":
+                Debug.Log("Player Pays");
+                string payee = args[1];
+                amount = Convert.ToInt32(args[2]);
+                switch (payee)
+                {
+                    case "BANK":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                        break;
+                    case "PARKING":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                        parkingTotal += amount; // todo
+                        break;
+                }
+
+                break;
+            case "MOVE":
+                Debug.Log("Player Moves");
+                string direction = args[1];
+                string location = args[2];
+
+                if(!int.TryParse(location, out _))
+                {
+                    location = ExtractLocation(card.arg);
+                }
+                int steps =0;
+                
+                if (direction == "FORWARDS")
+                {
+                    if (!int.TryParse(location, out _))
+                    {
+                        steps = FindForwardDistanceFromPlayer(location);
+                    }
+                    else
+                    {
+                        steps = Convert.ToInt32(location);
+                    }
+                    players[currentPlayersTurn].GetComponent<Player>().MovePiece(steps);
+
+                }else if (direction == "BACKWARDS")
+                {
+                    if(!int.TryParse(location, out _))
+                    {
+                        steps = FindBackwardsDistanceFromPlayer(location);
+                    }
+                    else
+                    {
+                        steps = Convert.ToInt32(location)*-1;
+                    }
+                    players[currentPlayersTurn].GetComponent<Player>().MovePiece(steps);
+                }
+                Debug.Log($"Steps: {steps} | Direction: {direction} | Location{location}");
+                break;
+            case "JAIL":
+                Debug.Log("Player goes to jail");
+                players[currentPlayersTurn].GetComponent<Player>().GoToJail();
+                break;
+            case "JAILFREE":
+                Debug.Log("Player receives GOOJF Card");
+                players[currentPlayersTurn].GetComponent<Player>().ReceiveGetOutOfJailFreeCard();
+                break;
+            case "CHOICE:":
+                Debug.Log("choice dialog");
+                HandleMultiChoiceCard(card.arg.Substring(action.Length+1),choice); // should work????
+                break;
+            case "VARIABLE:":
+                Debug.Log("pay per this and this");
+                HandleVariableCard(card.arg.Substring(action.Length)); // unknown if works
+                break;
+            default:
+                Debug.Log("Unrecognized action:" + action);
+                break;
+        }
+    }
+
+    string ExtractLocation(string locationString)
+    {
+        return locationString.Substring(locationString.IndexOf("'")+1, locationString.LastIndexOf("'") - locationString.IndexOf("'") - 1);
+    }
+
+    int FindForwardDistanceFromPlayer(string location)
+    {
+        int playerPosition = players[currentPlayersTurn].GetComponent<Player>().GetPositionOnBoard();
+        int tilePosition = FindTileIndex(location);
+        int distance = tilePosition - playerPosition;
+        Debug.Log(playerPosition);
+        Debug.Log(tilePosition);
+        Debug.Log(distance);
+        if (distance < 0)
+        {
+            distance = board.GetTileArray().Length - Math.Abs(distance);
+        }
+
+        return distance;
+    }
+
+    int FindBackwardsDistanceFromPlayer(string location)
+    {
+        int playerPosition = players[currentPlayersTurn].GetComponent<Player>().GetPositionOnBoard();
+        int tilePosition = FindTileIndex(location);
+        int distance = tilePosition - playerPosition;
+
+
+        if(distance > 0)
+        {
+            distance = board.GetTileArray().Length + Math.Abs(distance);
+        }
+        Debug.Log($"Player position: {playerPosition} | Tile position: {tilePosition} | Distance: {distance}");
+        return distance;
+    }
+
+    int FindTileIndex(string location)
+    {
+        int tileIndex = -1;
+        Debug.Log(location);
+        int i = 0;
+        GameObject[] tiles = board.GetTileArray();
+        while(tileIndex == -1 && i < tiles.Length)
+        {
+            if (tiles[i].GetComponent<Tile>().tileData.spaceName == location)
+            {
+                tileIndex = tiles[i].GetComponent<Tile>().position;
+            }
+            i++;
+        }
+
+        return tileIndex;
+    }
+
+    void HandleMultiChoiceCard(string decisions, int choice)
+    {
+        string decision = decisions.Split(" OR ")[choice - 1];
+        string action = decision.Split(" ")[0];
+        Debug.Log(decision);
+        Debug.Log(action);
+        switch (action)
+        {
+            case "PAY":
+                Debug.Log("pay");
+                string payee = decision.Split(" ")[1];
+                int amount = Convert.ToInt32(decision.Split(" ")[2]);
+                switch (payee)
+                {
+                    case "BANK":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                        break;
+                    case "PARKING":
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                        parkingTotal += amount; // todo
+                        break;
+                }
+                break;
+            case "OPPORTUNITY":
+                Debug.Log("take opportunity card");
+                ShowCardDialog("Opportunity Knocks", cardManager.DrawOpportunityKnocksCard());
+                break;
+            default:
+                Debug.Log("decision not implemented");
+                break;
+        }
+
+    }
+
+    void HandleVariableCard(string actions)
+    {
+        string action = actions.Split(" ")[0];
+        string person = actions.Split(" ")[1];
+        string[] factors = actions.Substring(action.Length + person.Length+ 1).Split(" AND ");
+        string[] factorA = factors[0].Split(" ");
+        string[] factorB = factors[1].Split(" ");
+
+        HandleFactor(action, person, factorA);
+        HandleFactor(action, person, factorB);
+
+    }
+
+    void HandleFactor(string action, string person, string[] arg)
+        //action person x per y AND w per z
+    {
+        switch (action)
+        {
+            case "PAY":
+                switch (person)
+                {
+                    case "BANK":
+                        int amount = Convert.ToInt32(arg[0]);
+                        string factor = arg[2];
+                        int cost = 0;
+                        if(factor == "HOUSE")
+                        {
+                            cost = amount * GetTotalHousesOwnedByPlayer();
+                        }
+                        else if(factor == "HOTEL")
+                        {
+                            cost = amount * GetTotalHotelsOwnedByPlayer();
+                        }
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-cost);
+                        break;
+                }
+                break;
+        }
+    }
+
+    int GetTotalHotelsOwnedByPlayer()
+    {
+        int total = 0;
+        GameObject[] ownedProperties = players[currentPlayersTurn].GetComponent<Player>().ownedProperties;
+        for (int i = 0; i < ownedProperties.Length; i++)
+        {
+            if (ownedProperties[i] != null)
+            {
+                Property property = ownedProperties[i].GetComponent<Property>();
+                int houseCount = property.GetHouseCount();
+                if (houseCount == 5)
+                {
+                    total++;
+                }
+            }
+        }
+        return total;
+    }
+
+    int GetTotalHousesOwnedByPlayer()
+    {
+        int total = 0;
+        GameObject[] ownedProperties = players[currentPlayersTurn].GetComponent<Player>().ownedProperties;
+        for(int i = 0; i < ownedProperties.Length; i++)
+        {
+            if (ownedProperties[i] != null)
+            {
+                Property property = ownedProperties[i].GetComponent<Property>();
+                int houseCount = property.GetHouseCount();
+                if(houseCount < 5)
+                {
+                    total += houseCount;
+                }
+            }
+        }
+        return total;
+    }
+
     void HandleCanvasVisibility(Player currentPlayer)
     {
         if (currentPlayer.IsPlayersTurn() && !rollButtonGroup.activeInHierarchy && !currentPlayer.IsPlayerMoving() && !currentPlayer.HasPlayerThrown() && !currentPlayer.IsInJail())
@@ -183,7 +522,7 @@ public class PlayerManager : MonoBehaviour
         }
         else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
-            if (GetOwner(currentPlayer.GetCurrentTile()) != null && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && GetOwner(currentPlayer.GetCurrentTile()) != null)
             {
                 buyButton.SetActive(false);
                 auctionButton.SetActive(false);
