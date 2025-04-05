@@ -15,6 +15,7 @@ public class PlayerCard : MonoBehaviour
     [SerializeField] Image playerCharacterBorder;
     [SerializeField] Image playerPieceImage;
     [SerializeField] TextMeshProUGUI pieceName;
+    [SerializeField] Toggle humanToggle;
 
     // Start is called before the first frame update
     void Start()
@@ -86,6 +87,11 @@ public class PlayerCard : MonoBehaviour
     public string GetPlayerName()
     {
         return $"Player {playerNumber}";
+    }
+
+    public bool GetIsHuman()
+    {
+        return !humanToggle.isOn;
     }
 }
 

@@ -111,11 +111,16 @@ public class PlayerManager : MonoBehaviour
         players = new GameObject[playerData.Length];
         for (int i = 0; i < players.Length; i++)
         {
+            players[i] = InstantiatePlayer();
             if (playerData[i].IsHuman())
             {
-                players[i] = InstantiateHumanPlayer();
                 //players[i] = InstantiateHumanPlayer(players[i]);
                 players[i].GetComponent<Player>().SetIsHuman(true);
+            }
+            else
+            {
+                players[i].GetComponent<Player>().SetIsHuman(false);
+                players[i].AddComponent<EasyAgent>(); // default AI behaviour
             }
             players[i].GetComponent<Player>().AssignPiece(playerData[i].GetPlayerPiece());
             players[i].GetComponent<Player>().SetPlayerNumber(playerData[i].GetPlayerNumber());
@@ -130,7 +135,7 @@ public class PlayerManager : MonoBehaviour
         gameCanvas.SetActive(true);
     }
 
-    GameObject InstantiateHumanPlayer()
+    GameObject InstantiatePlayer()
     {
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
     }

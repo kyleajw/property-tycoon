@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
             newPlayer.SetPlayerNumber(playerCard.GetPlayerNumber());
             newPlayer.SetPlayerName(playerCard.GetPlayerName());
             newPlayer.SetPlayerColour(playerCard.GetPlayerColour());
-            newPlayer.SetIsHuman(true); // temp
+            newPlayer.SetIsHuman(playerCard.GetIsHuman());
 
             players[playerCard.GetPlayerNumber() - 1] = newPlayer;
         }
