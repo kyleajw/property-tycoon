@@ -133,7 +133,8 @@ public class Auction : MonoBehaviour
         board.GetBank().properties[j].GetComponent<Property>().SetOwnedBy(currentPlayer);
         board.GetBank().properties[j] = null;
         player.SetBalance(-biddingTotal);
-
+        player.SetInvValue(-biddingTotal+propertyBeingAuctioned.GetComponent<Tile>().tileData.purchaseCost);
+        gameObject.GetComponent<PlayerManager>().UpdateInvValueText();
         CloseAuction();
         
     }
