@@ -110,7 +110,6 @@ public class Board : MonoBehaviour
                 if(propertyCard.GetComponent<Property>().GetOwnedBy() == p && propertyCard.GetComponent<Property>().isMortgaged)
                 {
                     //display mortagge UI
-                    //add buy back button - maybe
                 }
 
             }
