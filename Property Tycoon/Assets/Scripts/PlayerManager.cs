@@ -81,6 +81,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (gameStarted)
         {
+            mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
+
             if (gameVersion == 1)
             {
                 if (timer.GetComponent<Timer>().GetRemainingTime() <= 0)
@@ -167,7 +169,6 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
             }
-            mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
 
             if (players[currentPlayersTurn].GetComponent<Player>().HasFinishedTurn())
             {
@@ -195,6 +196,11 @@ public class PlayerManager : MonoBehaviour
                 if (currentPlayer.IsHuman())
                 {
                     HandleCanvasVisibility(currentPlayer);
+                }
+                else
+                {
+                    finishTurnButton.SetActive(false);
+                    retireButton.SetActive(false);
                 }
             }
             if (Input.GetKeyDown(KeyCode.E))
@@ -771,6 +777,7 @@ public class PlayerManager : MonoBehaviour
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
         players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
         finishTurnButton.SetActive(false);
+        retireButton.SetActive(false);
         buyButtonPressed=false;
         auctionButtonPressed=false;
     }
