@@ -13,7 +13,7 @@
 		{
 			"description": "You are up the creek with no paddle - go back to the Old Creek",
 			"action": "Player token moves backwards to the Old Creek",
-			"arg": "MOVE BACKWARDS 'Old Creek'"
+			"arg": "MOVE BACKWARDS 'The Old Creek'"
 		},
 		{
 			"description": "Student loan refund. Collect £20",

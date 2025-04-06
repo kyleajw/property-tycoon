@@ -58,7 +58,7 @@ public class EasyAgent : MonoBehaviour
     IEnumerator WaitForSecondsThenEndTurn()
     {
         yield return new WaitForSeconds(Random.Range(minWait, maxWait));
-        player.SetTurn(false);
+        playerManager.OnFinishedTurn();
     }
 
     IEnumerator WaitForSecondsThenCloseCardDialog(bool multiChoice)
