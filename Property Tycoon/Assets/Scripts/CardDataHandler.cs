@@ -107,7 +107,7 @@ public class CardDataHandler : MonoBehaviour
         }
         foreach (CardData card in cards)
         {
-            if (card.action == null || card.description == null) return true;
+            if (card.action == null || card.description == null || card.arg == null) return true;
         }
         return false;
     }
