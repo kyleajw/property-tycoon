@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Codice.CM.Common.CmCallContext;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -10,9 +11,12 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject startTile;
     [SerializeField] GameObject gameCanvas;
     [SerializeField] GameObject rollButtonGroup;
+    [SerializeField] GameObject gameOverScreen;
     [SerializeField] GameObject finishTurnButton;
     [SerializeField] GameObject buyButton;
     [SerializeField] GameObject auctionButton;
+    [SerializeField] GameObject retireButton;
+    [SerializeField] GameObject timer;
     [SerializeField] public GameObject mortgageButton;
     [SerializeField] public GameObject sellButton;
     [SerializeField] public GameObject buildHouseButton;
@@ -21,9 +25,11 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI buildHouseText;
     [SerializeField] TextMeshProUGUI removeHouseText;
     [SerializeField] TextMeshProUGUI houseCounterText;
+    [SerializeField] TextMeshProUGUI winnerText;
     [SerializeField] GameObject cam;
     [SerializeField] TMP_Text turnAnnouncer;
     [SerializeField] TMP_Text turnCounter;
+    [SerializeField] TMP_Text invValueText;
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
 
@@ -31,11 +37,13 @@ public class PlayerManager : MonoBehaviour
     Camera mainCamera;
 
     bool gameStarted = false;
+    bool isGameOver = false;
     bool buyButtonPressed = false;
-    bool rentPayable = false; 
+    bool rentPayable = false;
+    int playersRetired = 0;
     int turnNumber = 1;
-    int houseInp;
     int cyclesCompleted = 0;
+    int gameVersion = 0;
 
     Player[] playerData;
     GameObject[] players;
@@ -45,17 +53,122 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameOverScreen.SetActive(false);
         mainCamera = Camera.main;
         InitialisePlayers();
         AnnounceTurn();
+        SetGameVersion(GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GetGameVersion());
+        if(gameVersion == 0)
+        {
+            timer.SetActive(false);
+        }
+        else if(gameVersion == 1)
+        {
+            timer.SetActive(true);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
         if (gameStarted)
         {
+            if (gameVersion == 1)
+            {
+                if (timer.GetComponent<Timer>().GetRemainingTime() <= 0)
+                {
+                    timer.SetActive(false);
+                    if (players.Length > 1)
+                    {
+                        if (turnNumber % players.Length == 1) //ensures everyone ends on equal number of turns
+                        {
+                            isGameOver = true;
+                            //end game and show winner
+                            int maxInvValueIndex = 0;
+                            int maxInvValue = 0;
+                            for(int i=0; i < players.Length-1; i++)
+                            {
+                                if (players[i].GetComponent<Player>().GetInvValue() < players[i+1].GetComponent<Player>().GetInvValue())
+                                {
+                                    maxInvValueIndex = i + 1;
+                                    maxInvValue = i + 1;
+                                }
+                            }
+                            //update winner text here and disable UI
+                            winnerText.gameObject.SetActive(true);
+                            winnerText.SetText($"Player {maxInvValueIndex + 1} has won with an Inventory value of £{maxInvValue}!");
+                            rollButtonGroup.SetActive(false);
+                            finishTurnButton.SetActive(false);
+                            buyButton.SetActive(false);
+                            auctionButton.SetActive(false);
+                            retireButton.SetActive(false);
+                            turnAnnouncer.gameObject.SetActive(false);
+                            turnCounter.gameObject.SetActive(false);
+                            invValueText.gameObject.SetActive(false);
+                            //chnage to game over screen
+                            gameOverScreen.SetActive(true);
+                        }
+                    }
+                    else
+                    {
+                        isGameOver = true;
+                        //end game and show winner
+                        int maxInvValueIndex = 0;
+                        int maxInvValue = players[0].GetComponent<Player>().GetInvValue();
+                        for (int i = 0; i < players.Length - 1; i++)
+                        {
+                            if (players[i].GetComponent<Player>().GetInvValue() < players[i + 1].GetComponent<Player>().GetInvValue())
+                            {
+                                maxInvValueIndex = i + 1;
+                                maxInvValue = i + 1;
+                            }
+                        }
+                        //update winner text here and disable UI
+                        winnerText.gameObject.SetActive(true);
+                        winnerText.SetText($"Player {maxInvValueIndex + 1} has won with an Inventory value of £{maxInvValue}!");
+                        rollButtonGroup.SetActive(false);
+                        finishTurnButton.SetActive(false);
+                        buyButton.SetActive(false);
+                        auctionButton.SetActive(false);
+                        retireButton.SetActive(false);
+                        turnAnnouncer.gameObject.SetActive(false);
+                        turnCounter.gameObject.SetActive(false);
+                        invValueText.gameObject.SetActive(false);
+                        //chnage to game over screen
+                        gameOverScreen.SetActive(true);
+                    }
+                }
+            }
+            else if (gameVersion == 0)
+            {
+                if (players.Length > 1)
+                {
+                    if (playersRetired == players.Length - 1)
+                    {
+                        int winnerIndex=0;
+                        for(int i = 0; i < players.Length; i++)
+                        {
+                            if (!players[i].GetComponent<Player>().isRetired)
+                            {
+                                winnerIndex = i;
+                            }
+                        }
+                        //display last player alive has won
+                        winnerText.gameObject.SetActive(true);
+                        winnerText.SetText($"Player {winnerIndex + 1} has won!");
+                        rollButtonGroup.SetActive(false);
+                        finishTurnButton.SetActive(false);
+                        buyButton.SetActive(false);
+                        auctionButton.SetActive(false);
+                        retireButton.SetActive(false);
+                        turnAnnouncer.gameObject.SetActive(false);
+                        turnCounter.gameObject.SetActive(false);
+                        invValueText.gameObject.SetActive(false);
+                        //chnage to game over screen
+                        gameOverScreen.SetActive(true);
+                    }
+                }
+            }
             mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
 
             if (players[currentPlayersTurn].GetComponent<Player>().HasFinishedTurn())
@@ -70,13 +183,16 @@ public class PlayerManager : MonoBehaviour
                 {
                     currentPlayersTurn++;
                 }
+                while(CheckIfRetired(players[currentPlayersTurn].GetComponent<Player>()))
+                {
+                    currentPlayersTurn++;
+                }
                 players[currentPlayersTurn].GetComponent<Player>().SetTurn(true);
                 turnNumber++;
                 AnnounceTurn();
             }
             else
-            {
-                
+            {                
                 Player currentPlayer = players[currentPlayersTurn].GetComponent<Player>();
                 if (currentPlayer.IsHuman())
                 {
@@ -105,7 +221,6 @@ public class PlayerManager : MonoBehaviour
             if (playerData[i].IsHuman())
             {
                 players[i] = InstantiateHumanPlayer();
-                //players[i] = InstantiateHumanPlayer(players[i]);
                 players[i].GetComponent<Player>().SetIsHuman(true);
             }
             players[i].GetComponent<Player>().AssignPiece(playerData[i].GetPlayerPiece());
@@ -128,59 +243,81 @@ public class PlayerManager : MonoBehaviour
 
     void HandleCanvasVisibility(Player currentPlayer)
     {
-        if (currentPlayer.IsPlayersTurn() && !rollButtonGroup.activeInHierarchy && !currentPlayer.IsPlayerMoving() && !currentPlayer.HasPlayerThrown() && !currentPlayer.IsInJail())
+        if (!isGameOver)
         {
-            rollButtonGroup.SetActive(true);
-            finishTurnButton.SetActive(false);
-            buyButton.SetActive(false);
-            auctionButton.SetActive(false);
-        }
-        else if (!currentPlayer.IsPlayersTurn() && rollButtonGroup.activeInHierarchy)
-        {
-            rollButtonGroup.SetActive(false);
-            finishTurnButton.SetActive(false);
-            buyButton.SetActive(false);
-            auctionButton.SetActive(false);
-        }
-        else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
-        {
-            rollButtonGroup.SetActive(false);
-            finishTurnButton.SetActive(true);
-            if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+            if (currentPlayer.IsPlayersTurn() && !rollButtonGroup.activeInHierarchy && !currentPlayer.IsPlayerMoving() && !currentPlayer.HasPlayerThrown() && !currentPlayer.IsInJail())
+            {
+                rollButtonGroup.SetActive(true);
+                finishTurnButton.SetActive(false);
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
+                retireButton.SetActive(false);
+            }
+            else if (!currentPlayer.IsPlayersTurn() && rollButtonGroup.activeInHierarchy)
+            {
+                rollButtonGroup.SetActive(false);
+                finishTurnButton.SetActive(false);
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
+                retireButton.SetActive(false);
+            }
+            else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
+            {
+                //Debug.Log(currentPlayer.GetDoubleRolled());
+                if (!currentPlayer.GetDoubleRolled())
+                {
+                    rollButtonGroup.SetActive(false);
+                    retireButton.SetActive(true);
+                    finishTurnButton.SetActive(true);
+                }
+                else
+                {
+                    //bug where buying property in this state allows double buy of current tile and first property on board
+                    //buy button also doesnt dissapear after first purchase
+                    Debug.Log("Entered Double roll state");
+                    currentPlayer.SetTurn(true);
+                    currentPlayer.SetHasThrown(false);
+                    currentPlayer.SetDoubleRolled(false);
+                    finishTurnButton.SetActive(false);;
+                    turnNumber++;                  
+                    rollButtonGroup.SetActive(true);
+                    AnnounceTurn();
+                }
+                if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
+                {
+                    if (GetOwner(currentPlayer.GetCurrentTile()) != null)
+                    {
+                        buyButton.SetActive(false);
+                        HandleRent(currentPlayer);
+                    }
+                    if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
+                    {
+                        buyButton.SetActive(true);
+                        if (buyButtonPressed)
+                        {
+                            buyButton.SetActive(false);
+                            auctionButton.SetActive(false);
+                        }
+                        if (CheckCycles() >= 2)
+                        {
+                            auctionButton.SetActive(true);
+                        }
+                        else
+                        {
+                            auctionButton.SetActive(false);
+                        }
+                    }
+                }
+            }
+            else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
             {
                 if (GetOwner(currentPlayer.GetCurrentTile()) != null)
                 {
                     buyButton.SetActive(false);
                     HandleRent(currentPlayer);
                 }
-                if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
-                {
-                    buyButton.SetActive(true);
-                    if (buyButtonPressed)
-                    {
-                        buyButton.SetActive(false);
-                        auctionButton.SetActive(false);
-                    }
-                    if (CheckCycles() >= 2)
-                    {
-                        auctionButton.SetActive(true);
-                    }
-                    else
-                    {
-                        auctionButton.SetActive(false);
-                    }
-                }               
             }
-        }
-        else if(currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
-        {
-            if (GetOwner(currentPlayer.GetCurrentTile()) != null)
-            {
-                buyButton.SetActive(false);
-                HandleRent(currentPlayer);
-
-            }
-        }
+        }    
     }
 
     void AnnounceTurn()
@@ -188,6 +325,7 @@ public class PlayerManager : MonoBehaviour
         turnAnnouncer.SetText($"Player {currentPlayersTurn + 1}'s turn");
         turnAnnouncer.color = players[currentPlayersTurn].GetComponent<Player>().GetPlayerColour();
         turnCounter.SetText($"Total turns: {turnNumber}");
+        UpdateInvValueText();
     }
 
     public void OnRollButtonReleased(float timeHeld)
@@ -216,12 +354,25 @@ public class PlayerManager : MonoBehaviour
     public void BuyPressed()
     {
         players[currentPlayersTurn].GetComponent<Player>().BuyProperty();
+        UpdateInvValueText();
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
         buyButtonPressed = true;
     }
     public void AuctionPressed()
     {
 
+    }
+    public void RetirePressed()
+    {
+        RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
+    }
+    public void PlayAgainPressed()
+    {
+        SceneManager.LoadScene("Lobby");
+    }
+    public void ReturnToMenuPressed()
+    {
+        SceneManager.LoadScene("StartupScene");
     }
     public void BuildHousePressed(Property property)
     {
@@ -237,56 +388,114 @@ public class PlayerManager : MonoBehaviour
                     {
                         if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Utilities" && players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group != "Station")
                         {
-                            players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().IncrementHouseCount();
-                            if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 5)
+                            //check if houses are within 1 between each property in the colour group
+                            //first find the number of houses currently at each property
+                            int groupLength = 0;
+                            int selectedTileIndex = 0;
+                            string group = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group;
+                            for (int j = 0; j < board.GetTileArray().Length; j++)
                             {
-                                buildHouseButton.SetActive(false);
-                                //add hotel prefab here and remove all house prefabs
+                                if (board.GetTileArray()[j].GetComponent<Tile>().tileData.group == group)
+                                {
+                                    groupLength++;
+                                }
                             }
-                            else
+                            int[] propHouseCount = new int[groupLength];
+                            int index = 0;
+                            for (int j = 0; j < players[currentPlayersTurn].GetComponent<Player>().ownedProperties.Length; j++)
                             {
-                                //add extra house prefab here
+                                if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[j] != null)
+                                {
+                                    if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[j].GetComponent<Tile>().tileData.group == group)
+                                    {
+                                        propHouseCount[index] = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount();
+                                        //if its the tile we are building on, store for later checks
+                                        if(property.tile.tileData.spaceName== players[currentPlayersTurn].GetComponent<Player>().ownedProperties[j].GetComponent<Tile>().tileData.spaceName)
+                                        {
+                                            selectedTileIndex = index;
+                                        }
+                                        index++;
+                                    }
+                                }
                             }
-                            switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
+                            //now check if house counts are all within one
+                            bool isEligibleToBuild = true;
+                            int maxHouse = propHouseCount[0];
+                            int minHouse = propHouseCount[0];
+                            for(int j = 0; j < propHouseCount.Length-2; j++)
                             {
-                                case ("Brown"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
-                                    board.GetBank().SetBankBalance(50);
-                                    break;
-                                case ("Blue"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
-                                    board.GetBank().SetBankBalance(50);
-                                    break;
-                                case ("Purple"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
-                                    board.GetBank().SetBankBalance(100);
-                                    break;
-                                case ("Orange"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
-                                    board.GetBank().SetBankBalance(100);
-                                    break;
-                                case ("Red"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
-                                    board.GetBank().SetBankBalance(150);
-                                    break;
-                                case ("Yellow"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
-                                    board.GetBank().SetBankBalance(150);
-                                    break;
-                                case ("Green"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
-                                    board.GetBank().SetBankBalance(200);
-                                    break;
-                                case ("Deep Blue"):
-                                    players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
-                                    board.GetBank().SetBankBalance(200);
-                                    break;
+                                if(propHouseCount[j+1] > maxHouse)
+                                {
+                                    maxHouse = propHouseCount[j+1];
+                                }
+                                if(propHouseCount[j+1] < minHouse)
+                                {
+                                    minHouse = propHouseCount[j+1];
+                                }
                             }
+                            if((maxHouse+1) - minHouse > 1)
+                            {
+                                if(propHouseCount[selectedTileIndex] == maxHouse)
+                                {
+                                    isEligibleToBuild = false;
+                                }
+                            }
+                            //is eligible if below is true
+                            if (isEligibleToBuild)
+                            {
+                                players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().IncrementHouseCount();
+                                if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 5)
+                                {
+                                    buildHouseButton.SetActive(false);
+                                    //add hotel prefab here and remove all house prefabs
+                                }
+                                else
+                                {
+                                    //add extra house prefab here
+                                }
+                                switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
+                                {
+                                    case ("Brown"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
+                                        board.GetBank().SetBankBalance(50);
+                                        break;
+                                    case ("Blue"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
+                                        board.GetBank().SetBankBalance(50);
+                                        break;
+                                    case ("Purple"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                                        board.GetBank().SetBankBalance(100);
+                                        break;
+                                    case ("Orange"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                                        board.GetBank().SetBankBalance(100);
+                                        break;
+                                    case ("Red"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
+                                        board.GetBank().SetBankBalance(150);
+                                        break;
+                                    case ("Yellow"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-150);
+                                        board.GetBank().SetBankBalance(150);
+                                        break;
+                                    case ("Green"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                                        board.GetBank().SetBankBalance(200);
+                                        break;
+                                    case ("Deep Blue"):
+                                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                                        board.GetBank().SetBankBalance(200);
+                                        break;
+                                }
+                            }
+                                                       
                         }
                     }
                 }
             }
         }
+        UpdateInvValueText();
     }
     public void SellHousePressed(Property property)
     {
@@ -356,6 +565,7 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+        UpdateInvValueText();
     }
     public void MortgagePressed(Property property)
     {
@@ -370,6 +580,8 @@ public class PlayerManager : MonoBehaviour
                     {
                         players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().isMortgaged = true;
                         players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost / 2);
+                        players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost / 2);
+                        UpdateInvValueText();
                         board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost / 2);
                         mortgageButton.SetActive(false);
                         sellButton.SetActive(false);
@@ -397,7 +609,8 @@ public class PlayerManager : MonoBehaviour
                         //give property back to bank and pay the player
                         players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
                         board.GetBank().properties[i] = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i];
-                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost);
+                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost);                        
+                        UpdateInvValueText();
                         board.GetBank().SetBankBalance(-players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.purchaseCost);
                         players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i] = null;
                         sellButton.SetActive(false);
@@ -410,6 +623,7 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+        UpdateInvValueText();
     }
     public GameObject GetOwner(GameObject curTile)
     {
@@ -514,8 +728,13 @@ public class PlayerManager : MonoBehaviour
             {
                 if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Utilities" && currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group != "Station")
                 {
+                    if (currentPlayer.GetComponent<Player>().GetInvValue() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                    {
+                        //game over - rent cant be paid
+                        RetirePlayer(currentPlayer);
+                    }
                     //applies to normal properties
-                    if (currentPlayer.GetBalance() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
+                    else if (currentPlayer.GetBalance() < currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()])
                     {
                         finishTurnButton.SetActive(false);
                         //player needs to sell assets in order to pay for rent
@@ -530,6 +749,8 @@ public class PlayerManager : MonoBehaviour
                         if (!rentPayable)
                         {
                             currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
+                            currentPlayer.SetInvValue(-currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.rentPrices[currentPlayer.GetCurrentTile().GetComponent<Property>().GetHouseCount()]);
+                            UpdateInvValueText();
                             rentPayable = true;
                         }
                     }
@@ -541,7 +762,12 @@ public class PlayerManager : MonoBehaviour
                     {
                         //checks if the owner of the station the player has landed on, has other stations
                         case 1:
-                            if (currentPlayer.GetBalance() < 25)
+                            if (currentPlayer.GetComponent<Player>().GetInvValue() < 25)
+                            {
+                                //game over - rent cant be paid
+                                RetirePlayer(currentPlayer);
+                            }
+                            else if (currentPlayer.GetBalance() < 25)
                             {
                                 finishTurnButton.SetActive(false);
                                 //player needs to sell assets in order to pay for rent
@@ -556,12 +782,19 @@ public class PlayerManager : MonoBehaviour
                                 if (!rentPayable)
                                 {
                                     currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), 25);
+                                    currentPlayer.SetInvValue(-25);
+                                    UpdateInvValueText();
                                     rentPayable = true;
                                 }
                             }
                             break;
                         case 2:
-                            if (currentPlayer.GetBalance() < 50)
+                            if (currentPlayer.GetComponent<Player>().GetInvValue() < 50)
+                            {
+                                //game over - rent cant be paid
+                                RetirePlayer(currentPlayer);
+                            }
+                            else if (currentPlayer.GetBalance() < 50)
                             {
                                 finishTurnButton.SetActive(false);
                                 //player needs to sell assets in order to pay for rent
@@ -576,12 +809,19 @@ public class PlayerManager : MonoBehaviour
                                 if (!rentPayable)
                                 {
                                     currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), 50);
+                                    currentPlayer.SetInvValue(-50);
+                                    UpdateInvValueText();
                                     rentPayable = true;
                                 }
                             }
                             break;
                         case 3:
-                            if (currentPlayer.GetBalance() < 100)
+                            if (currentPlayer.GetComponent<Player>().GetInvValue() < 100)
+                            {
+                                //game over - rent cant be paid
+                                RetirePlayer(currentPlayer);
+                            }
+                            else if (currentPlayer.GetBalance() < 100)
                             {
                                 finishTurnButton.SetActive(false);
                                 //player needs to sell assets in order to pay for rent
@@ -594,12 +834,19 @@ public class PlayerManager : MonoBehaviour
                                 if (!rentPayable)
                                 {
                                     currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), 100);
+                                    currentPlayer.SetInvValue(-100);
+                                    UpdateInvValueText();
                                     rentPayable = true;
                                 }
                             }
                             break;
                         case 4:
-                            if (currentPlayer.GetBalance() < 200)
+                            if (currentPlayer.GetComponent<Player>().GetInvValue() < 200)
+                            {
+                                //game over - rent cant be paid
+                                RetirePlayer(currentPlayer);
+                            }
+                            else if (currentPlayer.GetBalance() < 200)
                             {
                                 finishTurnButton.SetActive(false);
                                 //player needs to sell assets in order to pay for rent
@@ -612,6 +859,8 @@ public class PlayerManager : MonoBehaviour
                                 if (!rentPayable)
                                 {
                                     currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), 200);
+                                    currentPlayer.SetInvValue(-200);
+                                    UpdateInvValueText();
                                     rentPayable = true;
                                 }
                             }
@@ -624,8 +873,13 @@ public class PlayerManager : MonoBehaviour
                 {
                     if (isColourGroupOwned(currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.group, GetOwner(currentPlayer.GetCurrentTile())))
                     {
+                        if(currentPlayer.GetComponent<Player>().GetInvValue()<currentPlayer.numberRolled * 10)
+                        {
+                            //game over - rent cant be paid
+                            RetirePlayer(currentPlayer);
+                        }
                         //rent is 10x the numbers rolled on the dice
-                        if (currentPlayer.GetBalance() < currentPlayer.numberRolled * 10)
+                        else if (currentPlayer.GetBalance() < currentPlayer.numberRolled * 10)
                         {
                             finishTurnButton.SetActive(false);
                             //player needs to sell assets in order to pay for rent
@@ -638,14 +892,21 @@ public class PlayerManager : MonoBehaviour
                             if (!rentPayable)
                             {
                                 currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.numberRolled * 10);
+                                currentPlayer.SetInvValue(currentPlayer.numberRolled * 10);
+                                UpdateInvValueText();
                                 rentPayable = true;
                             }
                         }
                     }
                     else
                     {
-                        //rent is 4x the umbers rolled on the dice
-                        if (currentPlayer.GetBalance() < currentPlayer.numberRolled * 4)
+                        if (currentPlayer.GetComponent<Player>().GetInvValue() < currentPlayer.numberRolled * 4)
+                        {
+                            //game over - rent cant be paid
+                            RetirePlayer(currentPlayer);
+                        }
+                        //rent is 4x the numbers rolled on the dice
+                        else if (currentPlayer.GetBalance() < currentPlayer.numberRolled * 4)
                         {
                             finishTurnButton.SetActive(false);
                             //player needs to sell assets in order to pay for rent
@@ -658,6 +919,8 @@ public class PlayerManager : MonoBehaviour
                             if (!rentPayable)
                             {
                                 currentPlayer.PayRent(currentPlayer.gameObject, GetOwner(currentPlayer.GetCurrentTile()), currentPlayer.numberRolled * 4);
+                                currentPlayer.SetInvValue(currentPlayer.numberRolled * 4);
+                                UpdateInvValueText();
                                 rentPayable = true;
                             }
                         }
@@ -665,5 +928,44 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+    }
+    public void SetGameVersion(int version)
+    {
+        gameVersion = version;
+    }
+    public void UpdateInvValueText()
+    {
+        Debug.Log(players[currentPlayersTurn].GetComponent<Player>().GetInvValue());
+        invValueText.SetText($"Inventory Value: {players[currentPlayersTurn].GetComponent<Player>().GetInvValue()}");
+    }
+    public void RetirePlayer(Player currentPlayer)
+    {
+        //return all player properties owned or mortgaged, if any, to the bank
+        //return money to bank
+        //set player to retired
+        //hide current player object
+        for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
+        {
+            if (currentPlayer.ownedProperties[i] != null)
+            {
+                currentPlayer.ownedProperties[i].GetComponent<Property>().isMortgaged = false;
+                currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
+                board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
+                currentPlayer.ownedProperties[i] = null;
+
+            }
+        }
+        board.GetBank().SetBankBalance(currentPlayer.GetBalance());
+        currentPlayer.SetBalance(-currentPlayer.GetBalance());
+        currentPlayer.SetInvValue(-currentPlayer.GetInvValue());
+        currentPlayer.isRetired = true;
+        currentPlayer.gameObject.SetActive(false);
+        currentPlayer.SetTurn(false);
+        currentPlayer.SetHasThrown(false);
+        playersRetired++;
+    }
+    public bool CheckIfRetired(Player currentPlayer)
+    {
+        return currentPlayer.isRetired;
     }
 }

@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
     [SerializeField] Board board;
     [SerializeField] float diceSpawnOffset = 0.1f;
     [SerializeField] public int balance = 1500;
-    [SerializeField] public int inventoryValue;
     [SerializeField] int jailTilePosition;
     [SerializeField] PlayerManager playerManager;
 
@@ -18,6 +17,7 @@ public class Player : MonoBehaviour
     GameObject piece;
 
     public bool completedCycle = true; //change to false after development
+    public bool isRetired = false;
     public int numberRolled = 0;
     bool isMyTurn;
     bool isHuman;
@@ -27,7 +27,9 @@ public class Player : MonoBehaviour
     bool rolled = false;
     bool isInJail = false;
     bool finishedTurn = false;
+    bool doubleRolled = false;
 
+    int inventoryValue = 1500;
     int doublesThisTurn = 0;
     int playerNumber;
     int dice1Value;
@@ -45,8 +47,9 @@ public class Player : MonoBehaviour
     {
         if (rolled)
         {
-            if (dice1Value == dice2Value)
+            if (dice1Value==dice2Value)
             {
+                SetDoubleRolled(true);
                 doublesThisTurn++;
 
                 if (doublesThisTurn == 3)
@@ -169,6 +172,10 @@ public class Player : MonoBehaviour
     {
         balance = balance + money;
     }
+    public void SetInvValue(int money)
+    {
+        inventoryValue += money;
+    }
     public void SetHasThrown(bool thrown)
     {
         hasThrown = thrown;
@@ -217,6 +224,10 @@ public class Player : MonoBehaviour
     public int GetBalance()
     {
         return balance;
+    }
+    public int GetInvValue()
+    {
+        return inventoryValue;
     }
     public int GetPlayerNumber()
     {
@@ -288,7 +299,6 @@ public class Player : MonoBehaviour
         ownedProperties[index] = board.GetBank().properties[index];
         board.GetBank().properties[index].GetComponent<Property>().SetOwnedBy(gameObject);
         board.GetBank().properties[index] = null;
-
         SetBalance(-GetCurrentTile().GetComponent<Tile>().tileData.purchaseCost);
     }
     public void AddProperty(GameObject[] from,int i)
@@ -300,5 +310,13 @@ public class Player : MonoBehaviour
     {
         payee.GetComponent<Player>().SetBalance(-rent);
         receiver.GetComponent<Player>().SetBalance(rent);
+    }
+    public void SetDoubleRolled(bool option)
+    {
+        doubleRolled = option;    
+    }
+    public bool GetDoubleRolled()
+    {
+        return doubleRolled;
     }
 }
