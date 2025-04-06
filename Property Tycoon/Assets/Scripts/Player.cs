@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
             {
                 doublesThisTurn = 0;
             }
-            MovePiece(dice1Value + dice2Value);
+            //MovePiece(dice1Value + dice2Value);
             rolled = false;
         }
     }
@@ -107,15 +107,21 @@ public class Player : MonoBehaviour
         numberRolled = dice1Value + dice2Value;
         Destroy(dice1);
         Destroy(dice2);
+        if (!isInJail)
+        {
+            MovePiece(numberRolled);
+        }
     }
 
     IEnumerator MovePlayerAnimation(int steps)
     {
         MeshRenderer meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
-        if(steps < 0)
+        float duration = 0.3f;
+        if (steps < 0)
         {
             for (int i = 0; i > steps; i--)
             {
+                float time = 0;
 
                 //meshRenderer.materials[1].DisableKeyword("_EMISSION");
                 SetEmissionKeywordToAll(false, meshRenderer.materials);
@@ -124,11 +130,19 @@ public class Player : MonoBehaviour
                 {
                     position = board.GetTileArray().Length -1;
                 }
+                Vector3 startPosition = transform.position;
+                while (time < duration)
+                { 
+                    float smoothedValue = time / duration;
+                    smoothedValue = smoothedValue * smoothedValue * (3f - 2f * smoothedValue);
+                    transform.position = Vector3.Lerp(startPosition, board.GetTileArray()[position].transform.position, smoothedValue);
+                    time += Time.deltaTime;
+                    yield return new WaitForEndOfFrame();
+                }
                 transform.position = board.GetTileArray()[position].transform.position;
                 meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
-                //meshRenderer.materials[1].EnableKeyword("_EMISSION");
                 SetEmissionKeywordToAll(true, meshRenderer.materials);
-                yield return new WaitForSeconds(0.5f);
+                //meshRenderer.materials[1].EnableKeyword("_EMISSION");
 
                 //todo:
                 // if tile not normal generic tile, assign emission position differently
@@ -139,7 +153,8 @@ public class Player : MonoBehaviour
         {
             for (int i = 0; i < steps; i++)
             {
-
+                
+                float time = 0;
                 //meshRenderer.materials[1].DisableKeyword("_EMISSION");
                 SetEmissionKeywordToAll(false, meshRenderer.materials);
                 position++;
@@ -149,11 +164,20 @@ public class Player : MonoBehaviour
                     completedCycle = true;
                     balance += 200; //money for passing go
                 }
+                Vector3 startPosition = transform.position;
+                while (time < duration)
+                {
+                    float smoothedValue = time / duration;
+                    smoothedValue = smoothedValue * smoothedValue * (3f - 2f * smoothedValue);
+                    transform.position = Vector3.Lerp(startPosition, board.GetTileArray()[position].transform.position, smoothedValue);
+                    time += Time.deltaTime;
+                    yield return new WaitForEndOfFrame();
+                }
+                transform.position = board.GetTileArray()[position].transform.position;
                 transform.position = board.GetTileArray()[position].transform.position;
                 meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
                 //meshRenderer.materials[1].EnableKeyword("_EMISSION");
                 SetEmissionKeywordToAll(true, meshRenderer.materials);
-                yield return new WaitForSeconds(0.5f);
 
                 //todo:
                 // if tile not normal generic tile, assign emission position differently
@@ -194,7 +218,12 @@ public class Player : MonoBehaviour
         position = jailTilePosition;
         transform.position = board.GetTileArray()[position].transform.position;
         doublesThisTurn = 0;
+
         finishedTurn = true;
+        if (!isHuman)
+        {
+            gameObject.GetComponent<EasyAgent>().EndTurn();
+        }
     }
 
     public void SetTurn(bool isTurn)
