@@ -200,10 +200,15 @@ public class PlayerManager : MonoBehaviour
                 }
                 break;
             default:
-                Debug.Log("Implemented elsewhere");
+                Debug.Log("Property");
+
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman()) //TEMP
                 {
-                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                    Player currentPlayer = players[currentPlayersTurn].GetComponent<Player>();
+                    if (tile.purchasable && GetOwner(landedTile) == null ) {
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().OnLandsOnPurchasableProperty();
+                    }
+                    //players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
                 }
                 break;
         }
@@ -597,6 +602,7 @@ public class PlayerManager : MonoBehaviour
         players[currentPlayersTurn].GetComponent<Player>().BuyProperty();
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
         buyButtonPressed = true;
+
     }
     public void AuctionPressed()
     {

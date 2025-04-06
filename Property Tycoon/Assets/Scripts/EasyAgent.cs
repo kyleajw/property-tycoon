@@ -7,6 +7,10 @@ public class EasyAgent : MonoBehaviour
     Player player;
     PlayerManager playerManager;
 
+    float minWait = 0.5f;
+    float maxWait = 1.5f;
+    float buyFactor = 0.7f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,8 +32,8 @@ public class EasyAgent : MonoBehaviour
 
     public void OnLandsOnPurchasableProperty()
     {
-        // if price < 40% of balance, buy it
-        // else auction
+        StartCoroutine(WaitForSecondsThenBuyOrAuctionProperty());
+        
     }
 
     public void OnMyTurnInAuction()
@@ -45,7 +49,7 @@ public class EasyAgent : MonoBehaviour
     IEnumerator RollDice()
     {
         
-        yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
+        yield return new WaitForSeconds(Random.Range(minWait, maxWait));
         float timeRolling = Random.Range(0.1f, 1.5f);
         yield return new WaitForSeconds(timeRolling);
         playerManager.OnRollButtonReleased(timeRolling);
@@ -53,13 +57,13 @@ public class EasyAgent : MonoBehaviour
 
     IEnumerator WaitForSecondsThenEndTurn()
     {
-        yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+        yield return new WaitForSeconds(Random.Range(minWait, maxWait));
         player.SetTurn(false);
     }
 
     IEnumerator WaitForSecondsThenCloseCardDialog(bool multiChoice)
     {
-        yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+        yield return new WaitForSeconds(Random.Range(minWait, maxWait));
         int choice = 1;
         if (multiChoice)
         {
@@ -67,6 +71,24 @@ public class EasyAgent : MonoBehaviour
         }
 
         GameObject.FindGameObjectWithTag("Card").GetComponent<CardDialog>().Close(choice);
+    }
+
+    IEnumerator WaitForSecondsThenBuyOrAuctionProperty()
+    {
+        yield return new WaitForSeconds(Random.Range(minWait,maxWait));
+        int balance = player.GetBalance();
+        int price = player.GetCurrentTile().GetComponent<Tile>().tileData.purchaseCost;
+        if (price < balance * buyFactor)
+        {
+            playerManager.BuyPressed();
+            Debug.Log("Property bought");
+            EndTurn();
+        }
+        else
+        {
+            Debug.Log("Property Auctioned");
+            playerManager.AuctionPressed();
+        }
     }
 
 }
