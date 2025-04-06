@@ -39,17 +39,32 @@ public class Auction : MonoBehaviour
         int currentPlayerIndex = playersInfo.GetPlayerNumber() - 1;
         for (int i = currentPlayerIndex; i < players.Length; i++)
         {
-            biddingQueue.Enqueue(players[i]);
+            if (!players[i].GetComponent<Player>().IsInJail())
+            {
+                biddingQueue.Enqueue(players[i]);
+            }
         }
         for (int i = 0; i < currentPlayerIndex; i++)
         {
-            biddingQueue.Enqueue(players[i]);
+            if (!players[i].GetComponent<Player>().IsInJail())
+            {
+                biddingQueue.Enqueue(players[i]);
+            }
         }
         biddingTotal = 0;
         biddingInProgress = true;
         currentPlayer = biddingQueue.Dequeue();
-        EnableAppropriateBidButtons();
         AnnounceCurrentBidder();
+        if (currentPlayer.GetComponent<Player>().IsHuman())
+        {
+
+            EnableAppropriateBidButtons();
+        }
+        else
+        {
+            DisableBidButtons();
+            currentPlayer.GetComponent<EasyAgent>().OnMyTurnInAuction();
+        }
     }
 
     void ClearAnnouncementHistory()
@@ -82,7 +97,7 @@ public class Auction : MonoBehaviour
 
     public void OnPlayerBids(int amount)
     {
-        AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid £{amount + biddingTotal}");
+        AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid ï¿½{amount + biddingTotal}");
         biddingQueue.Enqueue(currentPlayer);
         biddingTotal += amount;
         UpdateCurrentHighestBid();
@@ -133,10 +148,12 @@ public class Auction : MonoBehaviour
         board.GetBank().properties[j].GetComponent<Property>().SetOwnedBy(currentPlayer);
         board.GetBank().properties[j] = null;
         player.SetBalance(-biddingTotal);
+
+        //CloseAuction();
         player.SetInvValue(-biddingTotal+propertyBeingAuctioned.GetComponent<Tile>().tileData.purchaseCost);
         gameObject.GetComponent<PlayerManager>().UpdateInvValueText();
-        CloseAuction();
-        
+        StartCoroutine(WaitForSecondsThenCloseAuction());
+        //CloseAuction();        
     }
 
     void NextBidder()
@@ -158,7 +175,14 @@ public class Auction : MonoBehaviour
             }
             else
             {
-                EnableAppropriateBidButtons();
+                if (player.IsHuman())
+                {
+                    EnableAppropriateBidButtons();
+                }
+                else
+                {
+                    currentPlayer.GetComponent<EasyAgent>().OnMyTurnInAuction();
+                }
             }
         }
 
@@ -167,6 +191,24 @@ public class Auction : MonoBehaviour
     void CloseAuction()
     {
         auctionGUI.SetActive(false);
+        PlayerManager playerManager = gameObject.GetComponent<PlayerManager>();
+        GameObject player = playerManager.GetCurrentPlayer();
+        if (!player.GetComponent<Player>().IsHuman())
+        {
+            player.GetComponent<EasyAgent>().EndTurn();
+        }
+    }
+
+    IEnumerator WaitForSecondsThenCloseAuction()
+    {
+        yield return new WaitForSeconds(2.5f);
+        auctionGUI.SetActive(false);
+        PlayerManager playerManager = gameObject.GetComponent<PlayerManager>();
+        GameObject player = playerManager.GetCurrentPlayer();
+        if (!player.GetComponent<Player>().IsHuman())
+        {
+            player.GetComponent<EasyAgent>().EndTurn();
+        }
     }
 
     void DisableBidButtons()
@@ -201,8 +243,18 @@ public class Auction : MonoBehaviour
     }
     void UpdateCurrentHighestBid()
     {
-        currentBidAmountText.text = $"Current bid: £{biddingTotal}";
+        currentBidAmountText.text = $"Current bid: ï¿½{biddingTotal}";
 
+    }
+
+    public GameObject GetPropertyBeingAuctioned()
+    {
+        return propertyBeingAuctioned;
+    }
+
+    public int GetHighestBid()
+    {
+        return biddingTotal;
     }
 
 }

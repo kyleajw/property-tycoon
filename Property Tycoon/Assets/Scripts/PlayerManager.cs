@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using static Codice.CM.Common.CmCallContext;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -80,6 +81,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (gameStarted)
         {
+            mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
+
             if (gameVersion == 1)
             {
                 if (timer.GetComponent<Timer>().GetRemainingTime() <= 0)
@@ -166,7 +169,6 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
             }
-            mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
 
             if (players[currentPlayersTurn].GetComponent<Player>().HasFinishedTurn())
             {
@@ -195,6 +197,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     HandleCanvasVisibility(currentPlayer);
                 }
+                else
+                {
+                    finishTurnButton.SetActive(false);
+                    retireButton.SetActive(false);
+                }
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -215,10 +222,16 @@ public class PlayerManager : MonoBehaviour
         players = new GameObject[playerData.Length];
         for (int i = 0; i < players.Length; i++)
         {
+            players[i] = InstantiatePlayer();
             if (playerData[i].IsHuman())
             {
-                players[i] = InstantiateHumanPlayer();
+                //players[i] = InstantiateHumanPlayer(players[i]);
                 players[i].GetComponent<Player>().SetIsHuman(true);
+            }
+            else
+            {
+                players[i].GetComponent<Player>().SetIsHuman(false);
+                players[i].AddComponent<EasyAgent>(); // default AI behaviour
             }
             players[i].GetComponent<Player>().AssignPiece(playerData[i].GetPlayerPiece());
             players[i].GetComponent<Player>().SetPlayerNumber(playerData[i].GetPlayerNumber());
@@ -233,7 +246,7 @@ public class PlayerManager : MonoBehaviour
         gameCanvas.SetActive(true);
     }
 
-    GameObject InstantiateHumanPlayer()
+    GameObject InstantiatePlayer()
     {
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
     }
@@ -266,6 +279,10 @@ public class PlayerManager : MonoBehaviour
                         players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
                         break;
                 }
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             case "Unique":
                 Debug.Log("square tile");
@@ -273,14 +290,26 @@ public class PlayerManager : MonoBehaviour
                 {
                     case "Go":
                         Debug.Log("GO Tile, implemented elsewhere");
+                        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                        {
+                            players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                        }
                         break;
                     case "Jail/Just visiting":
                         Debug.Log("JAIL TILE");
+                        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                        {
+                            players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                        }
                         break;
                     case "Free Parking":
                         Debug.Log("player landed on free parking");
                         players[currentPlayersTurn].GetComponent<Player>().SetBalance(parkingTotal);
                         parkingTotal = 0;
+                        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                        {
+                            players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                        }
                         break;
                     case "Go to Jail":
                         Debug.Log("player goes to jail");
@@ -289,9 +318,26 @@ public class PlayerManager : MonoBehaviour
                 }
                 break;
             default:
-                Debug.Log("Implemented elsewhere");
+                Debug.Log("Property");
+
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman()) //TEMP
+                {
+                    Player currentPlayer = players[currentPlayersTurn].GetComponent<Player>();
+                    if (tile.purchasable && GetOwner(landedTile) == null && currentPlayer.completedCycle) {
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().OnLandsOnPurchasableProperty();
+                    }
+                    else if (tile.purchasable && GetOwner(landedTile) != null) {
+                        HandleRent(currentPlayer);
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn(); // temp?
+                    }
+                    else
+                    {
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn(); // temp?
+                    }
+                }
                 break;
         }
+        
     }
 
     void ShowCardDialog(string cardType, CardData card)
@@ -299,6 +345,11 @@ public class PlayerManager : MonoBehaviour
         GameObject newCardDialog = Instantiate(cardDialogPrefab, gameCanvas.transform);
         CardDialog cardDialog = newCardDialog.GetComponent<CardDialog>();
         cardDialog.UpdateCardInfo(cardType, card);
+        if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+        {
+            players[currentPlayersTurn].GetComponent<EasyAgent>().OnCardDrawn(card.arg.Split(' ')[0] == "CHOICE:");
+            newCardDialog.GetComponentInChildren<Button>().interactable = false;
+        }
     }
 
     public void OnPlayerClosesCardDialog(CardData card, int choice)
@@ -329,6 +380,10 @@ public class PlayerManager : MonoBehaviour
                     }
                     players[currentPlayersTurn].GetComponent<Player>().SetBalance(total);
                 }
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             case "PAY":
                 Debug.Log("Player Pays");
@@ -343,6 +398,10 @@ public class PlayerManager : MonoBehaviour
                         players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
                         parkingTotal += amount; // todo
                         break;
+                }
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
                 }
 
                 break;
@@ -386,23 +445,42 @@ public class PlayerManager : MonoBehaviour
             case "JAIL":
                 Debug.Log("Player goes to jail");
                 players[currentPlayersTurn].GetComponent<Player>().GoToJail();
+  
                 break;
             case "JAILFREE":
                 Debug.Log("Player receives GOOJF Card");
                 players[currentPlayersTurn].GetComponent<Player>().ReceiveGetOutOfJailFreeCard();
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             case "CHOICE:":
                 Debug.Log("choice dialog");
                 HandleMultiChoiceCard(card.arg.Substring(action.Length+1),choice); // should work????
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             case "VARIABLE:":
                 Debug.Log("pay per this and this");
                 HandleVariableCard(card.arg.Substring(action.Length)); // unknown if works
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
             default:
                 Debug.Log("Unrecognized action:" + action);
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
+                {
+                    players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
+                }
                 break;
+
         }
+        
     }
 
     string ExtractLocation(string locationString)
@@ -698,6 +776,8 @@ public class PlayerManager : MonoBehaviour
     {
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
         players[currentPlayersTurn].GetComponent<Player>().SetHasThrown(false);
+        finishTurnButton.SetActive(false);
+        retireButton.SetActive(false);
         buyButtonPressed=false;
         auctionButtonPressed=false;
     }
@@ -707,6 +787,7 @@ public class PlayerManager : MonoBehaviour
         UpdateInvValueText();
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
         buyButtonPressed = true;
+
     }
     public void AuctionPressed()
     {
@@ -1101,6 +1182,12 @@ public class PlayerManager : MonoBehaviour
         }
         return ownedCards;
     }
+
+    public GameObject GetCurrentPlayer()
+    {
+        return players[currentPlayersTurn];
+    }
+
     public void UpdateHouseText(Property property)
     {
         houseCounterText.text = property.GetHouseCount().ToString();

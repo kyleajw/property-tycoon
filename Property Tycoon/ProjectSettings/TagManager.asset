@@ -8,6 +8,7 @@ TagManager:
   - GameManager
   - PropertyCard
   - PlayerManager
+  - Card
   layers:
   - Default
   - TransparentFX
