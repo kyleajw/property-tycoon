@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     Player[] players;
-
+    int gameDuration = 300;
+    int gameVersion = 0; //0 is standard, 1 is abridged
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -47,6 +49,22 @@ public class GameManager : MonoBehaviour
     public Player[] GetPlayerData()
     {
         return players;
+    }
+    public void SetGameDuration(int duration)
+    {
+        gameDuration = duration;
+    }
+    public int GetGameDuration()
+    {
+        return gameDuration;
+    }
+    public void SetGameVersion(int version)
+    {
+        gameVersion = version;
+    }
+    public int GetGameVersion()
+    {
+        return gameVersion;
     }
 }
 
