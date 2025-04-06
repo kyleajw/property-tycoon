@@ -97,7 +97,7 @@ public class Auction : MonoBehaviour
 
     public void OnPlayerBids(int amount)
     {
-        AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid £{amount + biddingTotal}");
+        AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid ï¿½{amount + biddingTotal}");
         biddingQueue.Enqueue(currentPlayer);
         biddingTotal += amount;
         UpdateCurrentHighestBid();
@@ -150,8 +150,10 @@ public class Auction : MonoBehaviour
         player.SetBalance(-biddingTotal);
 
         //CloseAuction();
+        player.SetInvValue(-biddingTotal+propertyBeingAuctioned.GetComponent<Tile>().tileData.purchaseCost);
+        gameObject.GetComponent<PlayerManager>().UpdateInvValueText();
         StartCoroutine(WaitForSecondsThenCloseAuction());
-        
+        //CloseAuction();        
     }
 
     void NextBidder()
@@ -241,7 +243,7 @@ public class Auction : MonoBehaviour
     }
     void UpdateCurrentHighestBid()
     {
-        currentBidAmountText.text = $"Current bid: £{biddingTotal}";
+        currentBidAmountText.text = $"Current bid: ï¿½{biddingTotal}";
 
     }
 
