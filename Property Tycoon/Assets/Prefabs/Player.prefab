@@ -42,16 +42,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 74705868052834215}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6def50cee20d0204abd17c39a8ac510b, type: 3}
+  m_Script: {fileID: 11500000, guid: e99954b8c203f9c468636564b8c03318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dicePrefab: {fileID: 3650616317343774193, guid: b912a3cfe85a00147afc2b806a457947, type: 3}
   diceSpawnLocation: {fileID: 0}
   board: {fileID: 0}
-  diceSpawnOffset: 0.25
+  diceSpawnOffset: 0.1
   balance: 1500
-  inventoryValue: 0
-  jailTilePosition: 10
+  jailTilePosition: 0
   playerManager: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
   ownedProperties:
   - {fileID: 0}
@@ -82,7 +81,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  completedCycle: 0
+  completedCycle: 1
+  isRetired: 0
   numberRolled: 0
 --- !u!114 &963661108382799076
 MonoBehaviour:
