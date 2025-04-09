@@ -20,15 +20,23 @@ public class EasyAgent : MonoBehaviour
         //player = gameObject.GetComponent<Player>();
         playerManager = GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>();
     }
-
+    /// <summary>
+    /// Agent retires if bankrupt, else computes turn
+    /// </summary>
     public void OnMyTurn()
     {
         player = gameObject.GetComponent<Player>();
         Debug.Log("my turn");
-        Debug.Log(player.IsInJail());
         if (!player.IsInJail())
         {
-            StartCoroutine(WaitForSecondsThenComputeTurn());
+            if(player.GetBalance() <=0)
+            {
+                playerManager.RetirePressed();
+            }
+            else
+            {
+                StartCoroutine(WaitForSecondsThenComputeTurn());
+            }
         }
         else
         {
@@ -56,7 +64,9 @@ public class EasyAgent : MonoBehaviour
     {
         StartCoroutine(WaitForSecondsThenEndTurn());
     }
-
+    /// <summary>
+    /// Checks for any upgradable properties then rolls the dice
+    /// </summary>
     IEnumerator WaitForSecondsThenComputeTurn()
     {
         Debug.Log("checking owned properties");
@@ -111,22 +121,29 @@ public class EasyAgent : MonoBehaviour
         // roll
         StartCoroutine(RollDice());
     }
-
+    /// <summary>
+    /// Wait a random amount of time then roll the dice
+    /// </summary>
     IEnumerator RollDice()
     {
         
         yield return new WaitForSeconds(Random.Range(minWait, maxWait));
-        float timeRolling = Random.Range(0.1f, 1.5f);
+        float timeRolling = Random.Range(0.5f, 1.5f);
         yield return new WaitForSeconds(timeRolling);
         playerManager.OnRollButtonReleased(timeRolling);
     }
-
+    /// <summary>
+    /// Wait a random amount of time then end turn
+    /// </summary>
     IEnumerator WaitForSecondsThenEndTurn()
     {
         yield return new WaitForSeconds(Random.Range(minWait, maxWait));
         playerManager.OnFinishedTurn();
     }
-
+    /// <summary>
+    /// Wait a random amount of time before "Pressing" one of the choice buttons on the card. If there are two choices on the card, choose randomly between the two.
+    /// </summary>
+    /// <param name="multiChoice">If the card has multiple choices, parameter is true, else false.</param>
     IEnumerator WaitForSecondsThenCloseCardDialog(bool multiChoice)
     {
         yield return new WaitForSeconds(Random.Range(minWait, maxWait));
@@ -138,7 +155,11 @@ public class EasyAgent : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("Card").GetComponent<CardDialog>().Close(choice);
     }
-
+    /// <summary>
+    /// Wait a random amount of time then either buy or auction the property landed on. If the price of the property is less than a certain percentage of the balance, buy the property, 
+    /// else auction it if there are more than two players who have completed a cycle
+    /// </summary>
+    /// <returns></returns>
     IEnumerator WaitForSecondsThenBuyOrAuctionProperty()
     {
         yield return new WaitForSeconds(Random.Range(minWait,maxWait));
@@ -160,7 +181,10 @@ public class EasyAgent : MonoBehaviour
             EndTurn();
         }
     }
-
+    /// <summary>
+    /// Wait a random amount of time then decide on how much to bid. 
+    /// If the original price of the property is greater than the current highest bid then the agent will bid the maximum amount they can, else they leave the auction.
+    /// </summary>
     IEnumerator WaitForSecondsThenMakeAuctionDecision()
     {
         yield return new WaitForSeconds(Random.Range(minWait, maxWait));

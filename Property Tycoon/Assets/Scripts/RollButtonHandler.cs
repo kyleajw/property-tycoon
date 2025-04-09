@@ -23,7 +23,9 @@ public class RollButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpH
     {
         isHeld = false;
     }
-
+    /// <summary>
+    /// While the roll button is held, increment the amount of time the player has held it down. When the button is released, call OnRollButtonReleased() in the <see cref="PlayerManager"/>
+    /// </summary>
     IEnumerator TimeButtonHeldDown()
     {
         while (isHeld)
@@ -32,7 +34,7 @@ public class RollButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpH
             slider.value = timer;
             yield return new WaitForEndOfFrame();
         }
-        playerManager.OnRollButtonReleased(Mathf.Clamp(timer, 0, slider.maxValue));
+        playerManager.OnRollButtonReleased(Mathf.Clamp(timer, 0.5f, slider.maxValue));
         timer = 0;
         slider.value = 0;
         yield return null;

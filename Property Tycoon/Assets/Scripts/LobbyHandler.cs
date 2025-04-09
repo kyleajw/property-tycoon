@@ -7,11 +7,9 @@ public class LobbyHandler : MonoBehaviour
 {
     int gameVersion = 0; // 0 == standard, 1 == abridged, ...
     int gameDurationIndex = 0;
-    private void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// Loads the game scene, with the correct version and player information from the lobby's player cards.
+    /// </summary>
     public void LoadGame()
     {
         gameObject.GetComponent<GameManager>().SetPlayers(FindFirstObjectByType<PlayersList>().GetPlayerCards());
@@ -44,7 +42,9 @@ public class LobbyHandler : MonoBehaviour
                 break;
         }
     }
-
+    /// <summary>
+    /// Go back to the main menu
+    /// </summary>
     public void ExitToMenu()
     {
         SceneManager.LoadScene("StartupScene");

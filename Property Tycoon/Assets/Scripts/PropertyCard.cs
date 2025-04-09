@@ -11,7 +11,10 @@ public class PropertyCard : MonoBehaviour
     {
         propertiesTab = GetComponentInParent<PropertiesTab>();
     }
-
+    /// <summary>
+    /// When this card is selected in the property menu, set the correct buttons to manage the property, and display the property as a larger card.
+    /// </summary>
+    /// <param name="property">Property being selected</param>
     public void OnSelected(Property property)
     {
         playerManager = GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>();

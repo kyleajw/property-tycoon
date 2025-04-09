@@ -52,7 +52,10 @@ public class PlayersList : MonoBehaviour
             beginGameButton.interactable = true;
         }
     }
-
+    /// <summary>
+    /// When a new player is added to the lobby, use the next available colour and game piece in the queue as their icon / colour. 
+    /// Dequeue the colour and game piece from the appropriate queues.
+    /// </summary>
     public void AddPlayerCard()
     {
         Color playerColour = defaultPlayerColours.Dequeue();
@@ -65,7 +68,12 @@ public class PlayersList : MonoBehaviour
         playerCard.SetColours(playerColour);
         addPlayerButton.SetAsLastSibling();
     }
-
+    /// <summary>
+    /// Removes the player from the lobby, adding their piece and colour back in the corresponding queues
+    /// </summary>
+    /// <param name="index">Index of the player to remove</param>
+    /// <param name="availableColour">Player colour</param>
+    /// <param name="gamePiece">Player piece</param>
     public void RemovePlayerCard(int index, Color availableColour, GameObject gamePiece)
     {
         playerCards.RemoveAt(index-1);
@@ -73,7 +81,9 @@ public class PlayersList : MonoBehaviour
         availablePieces.Enqueue(gamePiece);
         UpdatePlayerNumbers();
     }
-
+    /// <summary>
+    /// Updates the players in the lobby to their correct numbers
+    /// </summary>
     void UpdatePlayerNumbers()
     {
         for (int i = 0; i < playerCards.Count; i++)
@@ -81,19 +91,30 @@ public class PlayersList : MonoBehaviour
             playerCards[i].GetComponent<PlayerCard>().SetPlayerNumber(i+1);
         }
     }
-
+    /// <summary>
+    /// Changes the player's chosen piece to the next piece in the queue, queueing their current piece at the back of the queue for available pieces
+    /// </summary>
+    /// <param name="currentPiece">Current player piece</param>
+    /// <returns>Next available piece in the queue</returns>
     public GameObject ChangePlayerCharacter(GameObject currentPiece)
     {
         availablePieces.Enqueue(currentPiece);
         return availablePieces.Dequeue();
     }
-
+    /// <summary>
+    /// Changes the player's chosen colour to the next colour in the queue, queueing their current colour at the back of the queue for available colours
+    /// </summary>
+    /// <param name="currentColor">Current player colour</param>
+    /// <returns>Next available colour in the queue</returns>
     public Color ChangePlayerColour(Color currentColor)
     {
         defaultPlayerColours.Enqueue(currentColor);
         return defaultPlayerColours.Dequeue();
     }
-
+    /// <summary>
+    /// Gets all the player cards in the lobby
+    /// </summary>
+    /// <returns>List of all player cards</returns>
     public List<GameObject> GetPlayerCards()
     {
         return playerCards;

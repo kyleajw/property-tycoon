@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// Rolls both dice on the board, moves piece by however amount
+    /// Rolls both dice on the board.
     /// </summary>
     public void RollDice(float multiplier)
     {
@@ -80,7 +80,10 @@ public class Player : MonoBehaviour
         menuReady = false;
         StartCoroutine(WaitForDiceToFinishRolling(multiplier));
     }
-
+    /// <summary>
+    /// Moves player clockwise across the board by x amount of steps
+    /// </summary>
+    /// <param name="steps">Amount to move by</param>
     public void MovePiece(int steps)
     {
         Debug.Log($"moving by {steps} steps");
@@ -88,7 +91,10 @@ public class Player : MonoBehaviour
         StartCoroutine(MovePlayerAnimation(steps));
         //numberRolled = steps;
     }
-
+    /// <summary>
+    /// Rolls the die, then moves the player with the total of the dice as the number of steps, if the player is not in jail.
+    /// </summary>
+    /// <param name="multiplier">Force multiplier</param>
     IEnumerator WaitForDiceToFinishRolling(float multiplier)
     {
         GameObject dice1 = Instantiate(dicePrefab, diceSpawnLocation.transform.position, diceSpawnLocation.transform.rotation);
@@ -114,7 +120,10 @@ public class Player : MonoBehaviour
             MovePiece(numberRolled);
         }
     }
-
+    /// <summary>
+    /// Gradually moves the player across the board for x amount of steps, uses lerp to transform the player's position between each tile, lighting the tiles up as they cross them.
+    /// </summary>
+    /// <param name="steps">Number of steps to move</param>
     IEnumerator MovePlayerAnimation(int steps)
     {
         MeshRenderer meshRenderer = board.GetTileArray()[position].gameObject.GetComponentInChildren<MeshRenderer>();
@@ -213,7 +222,9 @@ public class Player : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Sends the player to jail, and sets the isInJail var to true. If the player is an AI agent, instantly ends the turn.
+    /// </summary>
     public void GoToJail()
     {
         isInJail = true;
@@ -357,7 +368,9 @@ public class Player : MonoBehaviour
         return position;
     }
 
-    //change to list / hash ??; functionality with these arrays are difficult outside of this one method..
+    /// <summary>
+    /// Buys the property that the player is currently on, if possible.
+    /// </summary>
     public void BuyProperty()
     {
         int index=0;
@@ -382,6 +395,12 @@ public class Player : MonoBehaviour
         ownedProperties[i] = from[i];
         from[i]=null;
     }
+    /// <summary>
+    /// Pays the provided rent to the correct player. Takes money out of current players balance and puts the same amount into the player receiving the rent money.
+    /// </summary>
+    /// <param name="payee">Player paying</param>
+    /// <param name="receiver">Player receiving payment</param>
+    /// <param name="rent">Amount to pay</param>
     public void PayRent(GameObject payee, GameObject receiver, int rent)
     {
         payee.GetComponent<Player>().SetBalance(-rent);
