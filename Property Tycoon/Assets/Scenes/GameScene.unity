@@ -4727,6 +4727,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5020896320014746124, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_TagString
+      value: Property Card Large
+      objectReference: {fileID: 0}
     - target: {fileID: 5348582653973293294, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -5020,6 +5024,8 @@ PrefabInstance:
     - {fileID: 1832320593094525554, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
     - {fileID: 6169856544644027425, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
     - {fileID: 6519178719071424752, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+    - {fileID: 4439826921547240920, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+    - {fileID: 4999436309836589237, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8277025724607738932, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
