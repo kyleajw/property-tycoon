@@ -1112,6 +1112,14 @@ public class PlayerManager : MonoBehaviour
                                 {
                                     removeHouseButton.SetActive(false);
                                     //remove last house prefab here
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("House"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
                                 }
                                 else if(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 4)
                                 {

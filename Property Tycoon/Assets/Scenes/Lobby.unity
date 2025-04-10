@@ -1140,6 +1140,7 @@ GameObject:
   - component: {fileID: 674762940}
   - component: {fileID: 674762939}
   - component: {fileID: 674762938}
+  - component: {fileID: 674762941}
   m_Layer: 5
   m_Name: exit-button
   m_TagString: Untagged
@@ -1210,9 +1211,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2144210622}
-        m_TargetAssemblyTypeName: LobbyHandler, ScriptsAssembly
-        m_MethodName: ExitToMenu
+      - m_Target: {fileID: 674762941}
+        m_TargetAssemblyTypeName: ExitMenuButton, ScriptsAssembly
+        m_MethodName: ExitMenuPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1260,6 +1261,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 674762936}
   m_CullTransparentMesh: 1
+--- !u!114 &674762941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674762936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5757e2316fdda1f45bf018786c561ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &679440056
 GameObject:
   m_ObjectHideFlags: 0
@@ -3495,6 +3508,7 @@ GameObject:
   - component: {fileID: 2038982263}
   - component: {fileID: 2038982262}
   - component: {fileID: 2038982261}
+  - component: {fileID: 2038982264}
   m_Layer: 5
   m_Name: start-game
   m_TagString: Untagged
@@ -3565,9 +3579,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2144210622}
-        m_TargetAssemblyTypeName: LobbyHandler, ScriptsAssembly
-        m_MethodName: LoadGame
+      - m_Target: {fileID: 2038982264}
+        m_TargetAssemblyTypeName: StartGameButton, Assembly-CSharp
+        m_MethodName: StartGamePressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3615,6 +3629,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2038982259}
   m_CullTransparentMesh: 1
+--- !u!114 &2038982264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038982259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ba9c27146e24ab4dabe89b467642b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2144210622 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 552246316841606484, guid: 4cefc9e702abd8a42b05e007e4117e65, type: 3}
