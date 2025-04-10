@@ -11,6 +11,8 @@ TagManager:
   - Card
   - TileBase
   - Property Card Large
+  - Hotel
+  - House
   layers:
   - Default
   - TransparentFX

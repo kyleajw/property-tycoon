@@ -33,6 +33,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
     [SerializeField] GameObject cardDialogPrefab;
+    [SerializeField] GameObject hotelPrefab;
+    [SerializeField] GameObject housePrefab;
+
 
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
@@ -971,10 +974,19 @@ public class PlayerManager : MonoBehaviour
                                 {
                                     buildHouseButton.SetActive(false);
                                     //add hotel prefab here and remove all house prefabs
+                                    foreach(Transform house in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if(house.CompareTag("House"))
+                                        {
+                                            Destroy(house.gameObject);
+                                        }
+                                    }
+                                    Instantiate(hotelPrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                 }
                                 else
                                 {
                                     //add extra house prefab here
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                 }
                                 switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
                                 {
@@ -1104,10 +1116,29 @@ public class PlayerManager : MonoBehaviour
                                 else if(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 4)
                                 {
                                     //remove hotel and place 4 house prefabs
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("Hotel"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                 }
                                 else
                                 {
-                                    //remove a house prefab here
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("House"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
                                 }
                                 switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
                                 {
