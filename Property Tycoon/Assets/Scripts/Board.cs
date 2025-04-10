@@ -32,6 +32,7 @@ public class Board : MonoBehaviour
         //Retrieves Board data from BoardDataHandler
         boardData=boardDataHandler.GetBoardData();
         tiles = GameObject.FindGameObjectsWithTag("Tile");
+        Debug.Log("BoardData tiles length: " + boardData.tiles.Length);
         System.Array.Sort(tiles, (a, b) => { return a.GetComponent<Tile>().position.CompareTo(b.GetComponent<Tile>().position); });
         
         for (i = 0; i < boardData.tiles.Length; i++)
@@ -39,6 +40,7 @@ public class Board : MonoBehaviour
             //Finds the tile in position i and assigns the appropriate data to it
             //Update Text Mesh Pros and colours here
             tiles[i].GetComponent<Tile>().tileData = boardData.tiles[i];
+            Debug.Log(tiles[i].GetComponent<Tile>().tileData.spaceName);
             string group = tiles[i].GetComponent<Tile>().tileData.group;
             if (group != "Unique")
             {

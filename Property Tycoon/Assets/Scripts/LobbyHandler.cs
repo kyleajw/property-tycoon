@@ -18,7 +18,7 @@ public class LobbyHandler : MonoBehaviour
             case 0:
                 SceneManager.LoadScene("GameScene");
                 gameObject.GetComponent<GameManager>().SetGameVersion(0);
-                Destroy(this);
+                //Destroy(this);
                 break;
             case 1:
                 SceneManager.LoadScene("GameScene");
@@ -38,7 +38,7 @@ public class LobbyHandler : MonoBehaviour
                         gameObject.GetComponent<GameManager>().SetGameDuration(3600);
                         break;
                 }
-                Destroy(this);
+                //Destroy(this);
                 break;
         }
     }

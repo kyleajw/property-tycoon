@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6851453581987259324}
   - component: {fileID: 8714949006624380790}
   m_Layer: 0
-  m_Name: SquareTileBase
+  m_Name: TileBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,6 +140,7 @@ MonoBehaviour:
   position: 0
   nameText: {fileID: 0}
   priceText: {fileID: 0}
+  ren: {fileID: 8714949006624380790}
 --- !u!65 &8188347713072296677
 BoxCollider:
   m_ObjectHideFlags: 0

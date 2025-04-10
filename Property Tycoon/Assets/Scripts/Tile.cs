@@ -10,25 +10,27 @@ public class Tile : MonoBehaviour
     [SerializeField]
     public int position = 0;
     public TMP_Text nameText, priceText;
-    MeshRenderer ren;
+    [SerializeField]MeshRenderer ren;
     IDictionary colorDictionary;
 
     /// <summary>
     /// Adds all colour groups to the colour dictionary
     /// </summary>
-    void Start()
+    void Awake()
     {
-        ren = GetComponentInChildren<MeshRenderer>();
-        colorDictionary = new Dictionary<string, Color>();
+        //ren = gameObject.transform.Find("TileBase").gameObject.GetComponent<MeshRenderer>();
 
-        colorDictionary.Add("Brown", new Color(0.4f, 0.21f, 0.09f, 1f));
-        colorDictionary.Add("Blue", new Color(0.69f, 1f, 1f, 1f));
-        colorDictionary.Add("Purple", new Color(1f, 0.15f, 0.57f, 1f));
-        colorDictionary.Add("Orange", new Color(1f, 0.64f, 0f, 1f));
-        colorDictionary.Add("Red", Color.red);
-        colorDictionary.Add("Yellow", Color.yellow);
-        colorDictionary.Add("Green", Color.green);
-        colorDictionary.Add("Deep Blue", Color.blue);
+        colorDictionary = new Dictionary<string, Color>
+        {
+            { "Brown", new Color(0.4f, 0.21f, 0.09f, 1f) },
+            { "Blue", new Color(0.69f, 1f, 1f, 1f) },
+            { "Purple", new Color(1f, 0.15f, 0.57f, 1f) },
+            { "Orange", new Color(1f, 0.64f, 0f, 1f) },
+            { "Red", Color.red },
+            { "Yellow", Color.yellow },
+            { "Green", Color.green },
+            { "Deep Blue", Color.blue }
+        };
     }
     /// <summary>
     /// Sets the visible text on the tile to the name of the associated tile in the JSON file
@@ -49,6 +51,10 @@ public class Tile : MonoBehaviour
     /// </summary>
     public void UpdateColor()
     {
+        //ren = gameObject.transform.Find("TileBase").gameObject.GetComponent<MeshRenderer>();
+        Debug.Log(ren);
+
+        //ren = GetComponentInChildren<MeshRenderer>();
         ren.materials[1].SetColor("_Color", (Color)colorDictionary[tileData.group]);
         ren.materials[1].SetColor("_EmissionColor", (Color)colorDictionary[tileData.group]);
 

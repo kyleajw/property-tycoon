@@ -57,7 +57,7 @@ public class PlayerManager : MonoBehaviour
 
    
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gameOverScreen.SetActive(false);
         mainCamera = Camera.main;
@@ -1580,29 +1580,42 @@ public class PlayerManager : MonoBehaviour
         //return money to bank
         //set player to retired
         //hide current player object
-        for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
+        if(players.Length < 2)
         {
-            if (currentPlayer.ownedProperties[i] != null)
-            {
-                currentPlayer.ownedProperties[i].GetComponent<Property>().isMortgaged = false;
-                currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
-                board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
-                currentPlayer.ownedProperties[i] = null;
-
-            }
+            gameOverScreen.SetActive(true);
         }
-        board.GetBank().SetBankBalance(currentPlayer.GetBalance());
-        currentPlayer.SetBalance(-currentPlayer.GetBalance());
-        currentPlayer.SetInvValue(-currentPlayer.GetInvValue());
-        currentPlayer.isRetired = true;
-        currentPlayer.gameObject.SetActive(false);
-        currentPlayer.SetTurn(false);
-        currentPlayer.SetHasThrown(false);
-        playersRetired++;
+        else
+        {
+
+            for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
+            {
+                if (currentPlayer.ownedProperties[i] != null)
+                {
+                    currentPlayer.ownedProperties[i].GetComponent<Property>().isMortgaged = false;
+                    currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
+                    board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
+                    currentPlayer.ownedProperties[i] = null;
+
+                }
+            }
+            board.GetBank().SetBankBalance(currentPlayer.GetBalance());
+            currentPlayer.SetBalance(-currentPlayer.GetBalance());
+            currentPlayer.SetInvValue(-currentPlayer.GetInvValue());
+            currentPlayer.isRetired = true;
+            currentPlayer.gameObject.SetActive(false);
+            currentPlayer.SetTurn(false);
+            currentPlayer.SetHasThrown(false);
+            playersRetired++;
+        }
     }
 
     public bool CheckIfRetired(Player currentPlayer)
     {
         return currentPlayer.isRetired;
+    }
+
+    public GameObject[] GetPlayers()
+    {
+        return players;
     }
 }

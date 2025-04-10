@@ -9,6 +9,7 @@ TagManager:
   - PropertyCard
   - PlayerManager
   - Card
+  - TileBase
   layers:
   - Default
   - TransparentFX

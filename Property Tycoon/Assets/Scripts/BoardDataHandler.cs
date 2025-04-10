@@ -20,7 +20,7 @@ public class BoardDataHandler : MonoBehaviour
     /// <summary>
     /// Initialises the boardData object and sets path for custom board data by the user, then verifies the existence of the path before the application starts.
     /// </summary>
-    private void Awake()
+    private void Start()
     {
         boardData = gameObject.AddComponent<BoardData>();
         startupManager = gameObject.GetComponent<StartupManager>();

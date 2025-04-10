@@ -283,4 +283,9 @@ public class Auction : MonoBehaviour
         return biddingTotal;
     }
 
+    public GameObject GetCurrentBidder()
+    {
+        return currentPlayer;
+    }
+
 }
