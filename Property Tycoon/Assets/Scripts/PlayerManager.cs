@@ -5,8 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static Codice.CM.Common.CmCallContext;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -59,7 +57,7 @@ public class PlayerManager : MonoBehaviour
 
    
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gameOverScreen.SetActive(false);
         mainCamera = Camera.main;
@@ -214,7 +212,9 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Sets the corresponding player data from the lobby to instantiated player game objects.
+    /// </summary>
     void InitialisePlayers()
     {
         //players = new GameObject[playerCount];
@@ -245,13 +245,20 @@ public class PlayerManager : MonoBehaviour
         gameStarted = true;
         gameCanvas.SetActive(true);
     }
-
+    /// <summary>
+    /// Spawns a new player on the starting tile
+    /// </summary>
+    /// <returns>New instantiated player game object</returns>
     GameObject InstantiatePlayer()
     {
         return Instantiate(playerPrefab, startTile.transform.position, Quaternion.identity);
     }
 
     //todo continue during refactor
+    /// <summary>
+    /// Handles most functionalities on landing on specific tiles. Mostly for AI agent.
+    /// </summary>
+    /// <param name="landedTile">The tile the player landed on</param>
     public void OnPlayerFinishedMoving(GameObject landedTile)
     {
         //!!!! NO CHECKS FOR IF PLAYER CAN AFFORD CHARGES
@@ -339,7 +346,11 @@ public class PlayerManager : MonoBehaviour
         }
         
     }
-
+    /// <summary>
+    /// Shows the card drawn in the middle of the screen
+    /// </summary>
+    /// <param name="cardType">Pot Luck / Opportunity Knocks</param>
+    /// <param name="card">Data to be displayed on the card</param>
     void ShowCardDialog(string cardType, CardData card)
     {
         GameObject newCardDialog = Instantiate(cardDialogPrefab, gameCanvas.transform);
@@ -351,7 +362,11 @@ public class PlayerManager : MonoBehaviour
             newCardDialog.GetComponentInChildren<Button>().interactable = false;
         }
     }
-
+    /// <summary>
+    /// When the player closes the card dialog, compute the action associated with that card and the button they pressed.
+    /// </summary>
+    /// <param name="card">Card drawn</param>
+    /// <param name="choice">Choice made (always 1 if not a card with multi choices)</param>
     public void OnPlayerClosesCardDialog(CardData card, int choice)
     {
         string[] args = card.arg.Split(' ');
@@ -482,12 +497,20 @@ public class PlayerManager : MonoBehaviour
         }
         
     }
-
+    /// <summary>
+    /// Gets the name of a tile from parsed string
+    /// </summary>
+    /// <param name="locationString">Tile location</param>
+    /// <returns>Stripped string containing purely the location name of the tile</returns>
     string ExtractLocation(string locationString)
     {
         return locationString.Substring(locationString.IndexOf("'")+1, locationString.LastIndexOf("'") - locationString.IndexOf("'") - 1);
     }
-
+    /// <summary>
+    /// Calculates the distance in steps from the players current position and the position of the given location
+    /// </summary>
+    /// <param name="location">Name of a tile on the board</param>
+    /// <returns>Clockwise distance from player to given tile in steps</returns>
     int FindForwardDistanceFromPlayer(string location)
     {
         int playerPosition = players[currentPlayersTurn].GetComponent<Player>().GetPositionOnBoard();
@@ -503,7 +526,11 @@ public class PlayerManager : MonoBehaviour
 
         return distance;
     }
-
+    /// <summary>
+    /// Calculates the anti-clockwise distance in steps from the players current position and the position of the given location
+    /// </summary>
+    /// <param name="location">Name of a tile on the board</param>
+    /// <returns>Anti-Clockwise distance from player to given tile in steps</returns>
     int FindBackwardsDistanceFromPlayer(string location)
     {
         int playerPosition = players[currentPlayersTurn].GetComponent<Player>().GetPositionOnBoard();
@@ -518,7 +545,11 @@ public class PlayerManager : MonoBehaviour
         Debug.Log($"Player position: {playerPosition} | Tile position: {tilePosition} | Distance: {distance}");
         return distance;
     }
-
+    /// <summary>
+    /// Finds the index / position of a given tile
+    /// </summary>
+    /// <param name="location">Name of tile</param>
+    /// <returns>Index / Position of given tile</returns>
     int FindTileIndex(string location)
     {
         int tileIndex = -1;
@@ -536,7 +567,11 @@ public class PlayerManager : MonoBehaviour
 
         return tileIndex;
     }
-
+    /// <summary>
+    /// Splits card choices into a switch/case statement. Applies the given action based on the choice made
+    /// </summary>
+    /// <param name="decisions">Choices that can be made</param>
+    /// <param name="choice">Choice made</param>
     void HandleMultiChoiceCard(string decisions, int choice)
     {
         string decision = decisions.Split(" OR ")[choice - 1];
@@ -570,7 +605,10 @@ public class PlayerManager : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Splits the actions of a card where multiple factors are in play e.g. Pay the bank 100 per house and pay 300 per hotel
+    /// </summary>
+    /// <param name="actions"></param>
     void HandleVariableCard(string actions)
     {
         string action = actions.Split(" ")[0];
@@ -583,7 +621,12 @@ public class PlayerManager : MonoBehaviour
         HandleFactor(action, person, factorB);
 
     }
-
+    /// <summary>
+    /// Splits an action from a card into a switch/case statement and applies the appropriate calculation
+    /// </summary>
+    /// <param name="action">Action being made</param>
+    /// <param name="person">Payee</param>
+    /// <param name="arg">String array of actions split by spaces</param>
     void HandleFactor(string action, string person, string[] arg)
         //action person x per y AND w per z
     {
@@ -610,7 +653,10 @@ public class PlayerManager : MonoBehaviour
                 break;
         }
     }
-
+    /// <summary>
+    /// Gets every hotel owned by the current player
+    /// </summary>
+    /// <returns>Amount of hotels owned by current player</returns>
     int GetTotalHotelsOwnedByPlayer()
     {
         int total = 0;
@@ -629,7 +675,10 @@ public class PlayerManager : MonoBehaviour
         }
         return total;
     }
-
+    /// <summary>
+    /// Gets every house owned by the current player
+    /// </summary>
+    /// <returns>Amount of houses owned by the player</returns>
     int GetTotalHousesOwnedByPlayer()
     {
         int total = 0;
@@ -649,6 +698,10 @@ public class PlayerManager : MonoBehaviour
         return total;
     }
 
+    /// <summary>
+    /// Displays the correct UI on the game canvas in relation to the current actions the player can do.
+    /// </summary>
+    /// <param name="currentPlayer">Player whos turn it is</param>
     void HandleCanvasVisibility(Player currentPlayer)
     {
         if (!isGameOver)
@@ -669,7 +722,7 @@ public class PlayerManager : MonoBehaviour
                 auctionButton.SetActive(false);
                 retireButton.SetActive(false);
             }
-            else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown() && currentPlayer.completedCycle)
+            else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
             {
                 //Debug.Log(currentPlayer.GetDoubleRolled());
                 if (!currentPlayer.GetDoubleRolled())
@@ -685,7 +738,7 @@ public class PlayerManager : MonoBehaviour
                             auctionButton.SetActive(false);
                             HandleRent(currentPlayer);
                         }
-                        else if (GetOwner(currentPlayer.GetCurrentTile()) == null) //checks if property has not been purchased yet
+                        else if (GetOwner(currentPlayer.GetCurrentTile()) == null && currentPlayer.completedCycle) //checks if property has not been purchased yet
                         {
                             buyButton.SetActive(true);
                             if (buyButtonPressed)
@@ -727,13 +780,13 @@ public class PlayerManager : MonoBehaviour
                 }
             }
             
-                 if (auctionButtonPressed)
-                 {
-                      buyButton.SetActive(false);
-                      auctionButton.SetActive(false);
-                 }
-                
+            if (auctionButtonPressed)
+            {
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
             }
+                
+        }
 
         else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
         {
@@ -754,12 +807,19 @@ public class PlayerManager : MonoBehaviour
         turnCounter.SetText($"Total turns: {turnNumber}");
         UpdateInvValueText();
     }
-
+    /// <summary>
+    /// Rolls the dice with the amount of time the button was held down and a force multiplier being the factors
+    /// </summary>
+    /// <param name="timeHeld">Time the roll button was held down for</param>
     public void OnRollButtonReleased(float timeHeld)
     {
         rollButtonGroup.SetActive(false);
         players[currentPlayersTurn].GetComponent<Player>().RollDice(timeHeld * diceRollForceMultiplier);
     }
+    /// <summary>
+    /// Gets amount of players that have completed atleast one cycle of the board
+    /// </summary>
+    /// <returns>Amount of players who have completed a cycle</returns>
     public int CheckCycles()
     {
         cyclesCompleted = 0;
@@ -772,6 +832,9 @@ public class PlayerManager : MonoBehaviour
         }
         return cyclesCompleted;
     }
+    /// <summary>
+    /// Disable the finish turn and retire buttons an turn ended, set associated turn variables to false
+    /// </summary>
     public void OnFinishedTurn()
     {
         players[currentPlayersTurn].GetComponent<Player>().SetTurn(false);
@@ -781,6 +844,9 @@ public class PlayerManager : MonoBehaviour
         buyButtonPressed=false;
         auctionButtonPressed=false;
     }
+    /// <summary>
+    /// Calls the BuyProperty() method in the <see cref="Player"/> class.
+    /// </summary>
     public void BuyPressed()
     {
         players[currentPlayersTurn].GetComponent<Player>().BuyProperty();
@@ -789,6 +855,9 @@ public class PlayerManager : MonoBehaviour
         buyButtonPressed = true;
 
     }
+    /// <summary>
+    /// Get the <see cref="Auction"/> class and create and setup a new auction for the property the current player is landed on.
+    /// </summary>
     public void AuctionPressed()
     {
         DisplayAuctionGUI();
@@ -803,18 +872,31 @@ public class PlayerManager : MonoBehaviour
     {
         auctionGUI.SetActive(true);
     }
+    /// <summary>
+    /// Retires the current player
+    /// </summary>
     public void RetirePressed()
     {
         RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
     }
+    /// <summary>
+    /// Returns to the lobby
+    /// </summary>
     public void PlayAgainPressed()
     {
         SceneManager.LoadScene("Lobby");
     }
+    /// <summary>
+    /// Returns to the main menu
+    /// </summary>
     public void ReturnToMenuPressed()
     {
         SceneManager.LoadScene("StartupScene");
     }
+    /// <summary>
+    /// Charge the correct amount and add a house onto the given property
+    /// </summary>
+    /// <param name="property">Property being upgraded</param>
     public void BuildHousePressed(Property property)
     {
         //add houses to selected tile
@@ -941,6 +1023,10 @@ public class PlayerManager : MonoBehaviour
         }
         UpdateInvValueText();
     }
+    /// <summary>
+    /// Refund the correct amount and remove a house onto the given property
+    /// </summary>
+    /// <param name="property">Property being downgraded</param>
     public void SellHousePressed(Property property)
     {
         //remove houses from selected tile
@@ -1096,6 +1182,10 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Sells the parsed property back to the bank for the full purchase price, removing the property from the player's owned properties
+    /// </summary>
+    /// <param name="property">Property being sold</param>
     public void SellPressed(Property property)
     {
         //sell back to bank for full purchase price
@@ -1127,6 +1217,11 @@ public class PlayerManager : MonoBehaviour
         }
         UpdateInvValueText();
     }
+    /// <summary>
+    /// Gets the owner of a tile provided
+    /// </summary>
+    /// <param name="curTile">Current tile</param>
+    /// <returns>Player game object</returns>
     public GameObject GetOwner(GameObject curTile)
     {
         for (int i = 0; i < players.Length; i++)
@@ -1138,6 +1233,12 @@ public class PlayerManager : MonoBehaviour
         }
         return null;
     }
+    /// <summary>
+    /// Searches through all owned properties, checking if they own every property in the given colour group
+    /// </summary>
+    /// <param name="group">Colour group to check</param>
+    /// <param name="owner">Player game object</param>
+    /// <returns></returns>
     public bool isColourGroupOwned(string group, GameObject owner)
     {
         //make it so group is found and checks if all properties of that colour are owned by the same person
@@ -1167,6 +1268,11 @@ public class PlayerManager : MonoBehaviour
         }
         return groupOwned;
     }
+    /// <summary>
+    /// Gets the count of all stations the player provided owns.
+    /// </summary>
+    /// <param name="owner">Player game object</param>
+    /// <returns>Number of stations owned by player provided</returns>
     public int GetStationsOwned(GameObject owner)
     {
         int ownedCards = 0;
@@ -1182,12 +1288,18 @@ public class PlayerManager : MonoBehaviour
         }
         return ownedCards;
     }
-
+    /// <summary>
+    /// Gets the player whos current turn it is
+    /// </summary>
+    /// <returns>Current player whos turn it is</returns>
     public GameObject GetCurrentPlayer()
     {
         return players[currentPlayersTurn];
     }
-
+    /// <summary>
+    /// Update the text corresponding to building / removing a house on a property on the property menu
+    /// </summary>
+    /// <param name="property">property selected</param>
     public void UpdateHouseText(Property property)
     {
         houseCounterText.text = property.GetHouseCount().ToString();
@@ -1227,6 +1339,10 @@ public class PlayerManager : MonoBehaviour
                 break;
         }
     }
+    /// <summary>
+    /// Charges the player a rent fee if they land on a tile owned by another user. If the value of their inventory is lower than the rent they are automatically retired
+    /// </summary>
+    /// <param name="currentPlayer"></param>
     public void HandleRent(Player currentPlayer)
     {
         //renting
@@ -1453,34 +1569,53 @@ public class PlayerManager : MonoBehaviour
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().GetInvValue());
         invValueText.SetText($"Inventory Value: {players[currentPlayersTurn].GetComponent<Player>().GetInvValue()}");
     }
+    /// <summary>
+    /// Returns all properties owned by the player to the bank, along with any money that they have.
+    /// Sets the player to retired.
+    /// </summary>
+    /// <param name="currentPlayer">Player retiring</param>
     public void RetirePlayer(Player currentPlayer)
     {
         //return all player properties owned or mortgaged, if any, to the bank
         //return money to bank
         //set player to retired
         //hide current player object
-        for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
+        if(players.Length < 2)
         {
-            if (currentPlayer.ownedProperties[i] != null)
-            {
-                currentPlayer.ownedProperties[i].GetComponent<Property>().isMortgaged = false;
-                currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
-                board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
-                currentPlayer.ownedProperties[i] = null;
-
-            }
+            gameOverScreen.SetActive(true);
         }
-        board.GetBank().SetBankBalance(currentPlayer.GetBalance());
-        currentPlayer.SetBalance(-currentPlayer.GetBalance());
-        currentPlayer.SetInvValue(-currentPlayer.GetInvValue());
-        currentPlayer.isRetired = true;
-        currentPlayer.gameObject.SetActive(false);
-        currentPlayer.SetTurn(false);
-        currentPlayer.SetHasThrown(false);
-        playersRetired++;
+        else
+        {
+
+            for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
+            {
+                if (currentPlayer.ownedProperties[i] != null)
+                {
+                    currentPlayer.ownedProperties[i].GetComponent<Property>().isMortgaged = false;
+                    currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
+                    board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
+                    currentPlayer.ownedProperties[i] = null;
+
+                }
+            }
+            board.GetBank().SetBankBalance(currentPlayer.GetBalance());
+            currentPlayer.SetBalance(-currentPlayer.GetBalance());
+            currentPlayer.SetInvValue(-currentPlayer.GetInvValue());
+            currentPlayer.isRetired = true;
+            currentPlayer.gameObject.SetActive(false);
+            currentPlayer.SetTurn(false);
+            currentPlayer.SetHasThrown(false);
+            playersRetired++;
+        }
     }
+
     public bool CheckIfRetired(Player currentPlayer)
     {
         return currentPlayer.isRetired;
+    }
+
+    public GameObject[] GetPlayers()
+    {
+        return players;
     }
 }

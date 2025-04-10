@@ -69,7 +69,7 @@ MonoBehaviour:
   turnCounter: {fileID: 0}
   invValueText: {fileID: 0}
   board: {fileID: 0}
-  diceRollForceMultiplier: 5
+  diceRollForceMultiplier: 15
   cardDialogPrefab: {fileID: 0}
   playerPrefab: {fileID: 74705868052834215, guid: a7d91e791cc65e344b9bc3ef4789c0e1, type: 3}
   auctionGUI: {fileID: 0}

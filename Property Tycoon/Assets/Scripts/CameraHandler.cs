@@ -8,10 +8,6 @@ public class CameraHandler : MonoBehaviour
     int forwardOffset = 4;
     float heightOffset = 3.5f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     // Update is called once per frame
     void Update()
@@ -22,7 +18,9 @@ public class CameraHandler : MonoBehaviour
 
         }
     }
-
+    /// <summary>
+    /// Follow targeted player with set offsets, always looking inwards towards the board
+    /// </summary>
     void FollowActivePlayer()
     {
         Vector3 position = target.transform.position;
@@ -46,6 +44,11 @@ public class CameraHandler : MonoBehaviour
         transform.LookAt(target.transform.position);
     }
 
+
+    /// <summary>
+    /// Sets the active player for the camera to look at
+    /// </summary>
+    /// <param name="player">Active player game object</param>
     public void SetTarget(GameObject player)
     {
         target = player;

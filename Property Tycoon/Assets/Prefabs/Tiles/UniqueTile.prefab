@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4461720037028263434}
   - component: {fileID: 1877932831613584064}
   m_Layer: 0
-  m_Name: UniqueTileBase
-  m_TagString: Untagged
+  m_Name: TileBase
+  m_TagString: TileBase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -314,6 +314,7 @@ MonoBehaviour:
   position: 0
   nameText: {fileID: 2419931040330266515}
   priceText: {fileID: 497534687606918135}
+  ren: {fileID: 1877932831613584064}
 --- !u!65 &9071271970392859251
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -347,8 +348,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9350fef5e5fe7fe4dbf6045e0e6deaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMortgaged: 0
   rentText: {fileID: 0}
   nameText: {fileID: 0}
+  cardColour: {fileID: 0}
+  tile: {fileID: 0}
 --- !u!1 &8869963249116601052
 GameObject:
   m_ObjectHideFlags: 0

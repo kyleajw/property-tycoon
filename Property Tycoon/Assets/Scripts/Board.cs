@@ -23,11 +23,16 @@ public class Board : MonoBehaviour
         boardDataHandler = GameObject.Find("GameDataManager").GetComponent<BoardDataHandler>();
         GenerateBoard();
     }
+    /// <summary>
+    /// Retrieves the board data processed by the <see cref="BoardDataHandler"/> and sets the correct
+    /// information for each tile on the board
+    /// </summary>
     public void GenerateBoard()
     {
         //Retrieves Board data from BoardDataHandler
         boardData=boardDataHandler.GetBoardData();
         tiles = GameObject.FindGameObjectsWithTag("Tile");
+        Debug.Log("BoardData tiles length: " + boardData.tiles.Length);
         System.Array.Sort(tiles, (a, b) => { return a.GetComponent<Tile>().position.CompareTo(b.GetComponent<Tile>().position); });
         
         for (i = 0; i < boardData.tiles.Length; i++)
@@ -35,6 +40,7 @@ public class Board : MonoBehaviour
             //Finds the tile in position i and assigns the appropriate data to it
             //Update Text Mesh Pros and colours here
             tiles[i].GetComponent<Tile>().tileData = boardData.tiles[i];
+            Debug.Log(tiles[i].GetComponent<Tile>().tileData.spaceName);
             string group = tiles[i].GetComponent<Tile>().tileData.group;
             if (group != "Unique")
             {
@@ -62,15 +68,24 @@ public class Board : MonoBehaviour
         bank.properties=new GameObject[tempList.Count];
         bank.properties=tempList.ToArray();
     }
+    /// <summary>
+    /// Assigns given player the banker role
+    /// </summary>
+    /// <param name="p">Player game object</param>
     public void AssignBanker(GameObject p)
     {
         p.AddComponent<Bank>();
         bank = p.GetComponent<Bank>();
     }
+
     public Bank GetBank()
     {
         return bank;
     }
+    /// <summary>
+    /// Toggles the visibility of the property menu showing owned / mortgaged properties
+    /// </summary>
+    /// <param name="p">Player game object</param>
     public void TogglePropertyMenu(GameObject p)
     {
         propertiesTab.SetBlank();
@@ -86,6 +101,10 @@ public class Board : MonoBehaviour
             RefreshMenu(p);
         }
     }
+    /// <summary>
+    /// Regenerates the property menu, updating the menu to show which properties are owned in relation to the current player
+    /// </summary>
+    /// <param name="p">Player game object</param>
     public void RefreshMenu(GameObject p)
     {
         DestroyAllChildrenInPropertyLayoutGroup();
@@ -117,7 +136,9 @@ public class Board : MonoBehaviour
 
         }
     }
-
+    /// <summary>
+    /// Destroy all property game objects in the property menu
+    /// </summary>
     public void DestroyAllChildrenInPropertyLayoutGroup()
     {
         foreach(Property child in propertiesLayoutGroup.GetComponentsInChildren<Property>())

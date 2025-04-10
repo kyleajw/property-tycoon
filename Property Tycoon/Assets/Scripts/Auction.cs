@@ -28,7 +28,12 @@ public class Auction : MonoBehaviour
     [SerializeField] TextMeshProUGUI propertyNameText;
     
 
-
+    /// <summary>
+    /// Creates a new auction, adds all eligible players in a queue with the player whos current turn it is bidding first. 
+    /// </summary>
+    /// <param name="player">Player who initiated the auction</param>
+    /// <param name="players">Array of all players</param>
+    /// <param name="propertyToAuction">Property being auctioned off</param>
     public void Setup(GameObject player, GameObject[] players, GameObject propertyToAuction)
     {
         ClearAnnouncementHistory();
@@ -39,14 +44,14 @@ public class Auction : MonoBehaviour
         int currentPlayerIndex = playersInfo.GetPlayerNumber() - 1;
         for (int i = currentPlayerIndex; i < players.Length; i++)
         {
-            if (!players[i].GetComponent<Player>().IsInJail())
+            if (!players[i].GetComponent<Player>().IsInJail() && !players[i].GetComponent<Player>().isRetired)
             {
                 biddingQueue.Enqueue(players[i]);
             }
         }
         for (int i = 0; i < currentPlayerIndex; i++)
         {
-            if (!players[i].GetComponent<Player>().IsInJail())
+            if (!players[i].GetComponent<Player>().IsInJail() && !players[i].GetComponent<Player>().isRetired)
             {
                 biddingQueue.Enqueue(players[i]);
             }
@@ -86,7 +91,9 @@ public class Auction : MonoBehaviour
     {
         return biddingInProgress;
     }
-
+    /// <summary>
+    /// Goes to the next bidder in the auction, without adding the player back into the queue
+    /// </summary>
     public void OnPlayerLeavesAuction()
     {
         AddBidMsgToBidAnnouncementHistory("Player " + currentPlayer.GetComponent<Player>().GetPlayerNumber() + " has left the auction.");
@@ -94,7 +101,10 @@ public class Auction : MonoBehaviour
         AnnounceCurrentBidder();
 
     }
-
+    /// <summary>
+    /// Increments the total amount of money bid for that property, then goes to the next bidder in the queue, adding the current bidder to the back of the queue.
+    /// </summary>
+    /// <param name="amount">Amount player bids on top of the current total bid: £1/£10/£100</param>
     public void OnPlayerBids(int amount)
     {
         AddBidMsgToBidAnnouncementHistory($"Player {currentPlayer.GetComponent<Player>().GetPlayerNumber()} has bid �{amount + biddingTotal}");
@@ -104,7 +114,10 @@ public class Auction : MonoBehaviour
         NextBidder();
         AnnounceCurrentBidder();
     }
-
+    /// <summary>
+    /// Adds given message to the auction display, clearing the oldest message if there are currently 7 messages being shown
+    /// </summary>
+    /// <param name="msg">Message to announce</param>
     void AddBidMsgToBidAnnouncementHistory(string msg)
     {
         if(bidAnnouncementHistoryGUI.transform.childCount == 7)
@@ -119,6 +132,9 @@ public class Auction : MonoBehaviour
     }
 
     // temp fix, follows same functionality as BuyProperty() method
+    /// <summary>
+    /// When auction is completed, give the property to the winner of the bid, removing it from the banks inventory and charging the winner the total amount bid
+    /// </summary>
     void OnAuctionFulfilled()
     {
         Player player = currentPlayer.GetComponent<Player>();
@@ -155,7 +171,9 @@ public class Auction : MonoBehaviour
         StartCoroutine(WaitForSecondsThenCloseAuction());
         //CloseAuction();        
     }
-
+    /// <summary>
+    /// Call the next bidder in the queue, if the next bidder cannot afford to bid, remove bidder from queue then repeatedly go to the next bidder until one can afford to bid.
+    /// </summary>
     void NextBidder()
     {
         DisableBidButtons();
@@ -187,7 +205,9 @@ public class Auction : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Deprecated, use WaitForSecondsThenCloseAuction()
+    /// </summary>
     void CloseAuction()
     {
         auctionGUI.SetActive(false);
@@ -198,7 +218,9 @@ public class Auction : MonoBehaviour
             player.GetComponent<EasyAgent>().EndTurn();
         }
     }
-
+    /// <summary>
+    /// Wait 2.5 seconds after the auction ends then disable the auction UI, ending the turn if the player is an AI.
+    /// </summary>
     IEnumerator WaitForSecondsThenCloseAuction()
     {
         yield return new WaitForSeconds(2.5f);
@@ -210,7 +232,9 @@ public class Auction : MonoBehaviour
             player.GetComponent<EasyAgent>().EndTurn();
         }
     }
-
+    /// <summary>
+    /// Disable all displayed buttons related to bidding
+    /// </summary>
     void DisableBidButtons()
     {
         bid1Button.interactable =false;
@@ -218,7 +242,9 @@ public class Auction : MonoBehaviour
         bid100Button.interactable = false;
         leaveAuctionButton.interactable = false;
     }
-
+    /// <summary>
+    /// Gets the current player, enabling bidding buttons where the player has enough in their balance to afford to bid
+    /// </summary>
     void EnableAppropriateBidButtons()
     {
         Player player = currentPlayer.GetComponent<Player>();
@@ -243,7 +269,7 @@ public class Auction : MonoBehaviour
     }
     void UpdateCurrentHighestBid()
     {
-        currentBidAmountText.text = $"Current bid: �{biddingTotal}";
+        currentBidAmountText.text = $"Current bid: £{biddingTotal}";
 
     }
 
@@ -255,6 +281,11 @@ public class Auction : MonoBehaviour
     public int GetHighestBid()
     {
         return biddingTotal;
+    }
+
+    public GameObject GetCurrentBidder()
+    {
+        return currentPlayer;
     }
 
 }

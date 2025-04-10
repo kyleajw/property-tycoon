@@ -9,7 +9,6 @@ public class Timer : MonoBehaviour
     [SerializeField] float remainingTime;
     public GameObject gameManager;
 
-    // Update is called once per frame
     private void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager");

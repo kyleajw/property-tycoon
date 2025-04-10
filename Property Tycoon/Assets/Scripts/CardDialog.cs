@@ -21,7 +21,9 @@ public class CardDialog : MonoBehaviour
         SetButtons();
         SetText();
     }
-
+    /// <summary>
+    /// Split the choices (if there are two) into 2 buttons, else instantiate an OK button
+    /// </summary>
     void SetButtons()
     {
         string[] args = card.arg.Split(" ");
@@ -38,7 +40,11 @@ public class CardDialog : MonoBehaviour
             InstantiateButton("OK", 1);
         }
     }
-
+    /// <summary>
+    /// Creates a new button and adds it to the card dialog.
+    /// </summary>
+    /// <param name="buttonText">Message in the button</param>
+    /// <param name="choice">Associated choice(1 if only one button)</param>
     void InstantiateButton(string buttonText, int choice)
     {
             GameObject newButton = Instantiate(cardDialogButtonPrefab, buttonLayoutGroup.transform);
@@ -46,13 +52,18 @@ public class CardDialog : MonoBehaviour
             cardDialogButton.SetCorrespondingChoice(choice);
             cardDialogButton.SetButtonText(buttonText);
     }
-
+    /// <summary>
+    /// Sets the title and description of the card pop-up
+    /// </summary>
     void SetText()
     {
         titleText.text = type;
         descriptionText.text = description;
     }
-
+    /// <summary>
+    /// Closes the card pop-up and processes the action in the <see cref="PlayerManager"/>, then destroys itself
+    /// </summary>
+    /// <param name="choice"></param>
     public void Close(int choice)
     {
         GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>().OnPlayerClosesCardDialog(card, choice);

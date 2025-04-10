@@ -9,6 +9,8 @@ TagManager:
   - PropertyCard
   - PlayerManager
   - Card
+  - TileBase
+  - Property Card Large
   layers:
   - Default
   - TransparentFX

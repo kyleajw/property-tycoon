@@ -31,7 +31,9 @@ public class CardDataHandler : MonoBehaviour
         SetOpportunityKnocksData();
         
     }
-
+    /// <summary>
+    /// Reads in the pot luck data from the corresponding JSON file
+    /// </summary>
     void SetPotLuckData()
     {
         try
@@ -50,7 +52,9 @@ public class CardDataHandler : MonoBehaviour
         }
         Debug.Log($"potLuck values (JSON format):\n{JsonUtility.ToJson(potLuck, true)}");
     }
-
+    /// <summary>
+    /// Reads in the opportunity knocks data from the corresponding JSON file
+    /// </summary>
     void SetOpportunityKnocksData()
     {
         try
@@ -69,7 +73,9 @@ public class CardDataHandler : MonoBehaviour
         }
         Debug.Log($"Opportunity Knocks values (JSON format):\n{JsonUtility.ToJson(opportunityKnocks, true)}");
     }
-
+    /// <summary>
+    /// In case of error when using custom user data, use the default values in the streamingAssets path
+    /// </summary>
     void RevertToPotLuckDefaults()
     {
         Debug.LogError("Invalid Custom Data, reverting to default values..");
@@ -84,7 +90,9 @@ public class CardDataHandler : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// In case of error when using custom user data, use the default values in the streamingAssets path
+    /// </summary>
     void RevertToOpportunityKnocksDefaults()
     {
         Debug.LogError("Invalid Custom Data, reverting to default values..");
@@ -98,7 +106,11 @@ public class CardDataHandler : MonoBehaviour
             Debug.LogError($"Failed reverting to factory settings: {e}");
         }
     }
-
+    /// <summary>
+    /// checks for any null values in the card array
+    /// </summary>
+    /// <param name="cards">Array of card data read in from the json file</param>
+    /// <returns></returns>
     bool ScanForNullCardData(CardData[] cards)
     {
         if(cards == null || cards.Length == 0)

@@ -32,7 +32,10 @@ public class Property : MonoBehaviour
     {
         ownedBy = player;
     }
-
+    /// <summary>
+    /// Update the property with the correct data parsed through
+    /// </summary>
+    /// <param name="data">Data from the corresponding tile on the board</param>
     public void SetAssociatedTile(Tile data)
     {
         tile = data;

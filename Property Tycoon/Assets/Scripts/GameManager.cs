@@ -28,7 +28,10 @@ public class GameManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
     }
-
+    /// <summary>
+    /// Creates each player with the data parsed in from the lobby
+    /// </summary>
+    /// <param name="playerCards"></param>
     public void SetPlayers(List<GameObject> playerCards)
     {
         players = new Player[playerCards.Count];
