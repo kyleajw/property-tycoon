@@ -6,6 +6,7 @@ public class ExitMenuButton : MonoBehaviour
 {
     public void ExitMenuPressed()
     {
+        GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ResetValues();
         GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ExitToMenu();
     }
 }

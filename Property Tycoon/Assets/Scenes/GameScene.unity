@@ -4195,6 +4195,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1275327881}
+    - target: {fileID: 1323423730524853977, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1275327881}
+    - target: {fileID: 1323423730524853977, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyOutOfJailPressed
+      objectReference: {fileID: 0}
     - target: {fileID: 1580894432695186905, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -4293,7 +4301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4431124905190666519, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4505363514811379914, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4315,6 +4323,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5975940833609453430, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6707967041153934154, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -4323,6 +4335,14 @@ PrefabInstance:
       propertyPath: playerManager
       value: 
       objectReference: {fileID: 1275327881}
+    - target: {fileID: 7147627019830030533, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1275327881}
+    - target: {fileID: 7147627019830030533, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StayInJailPressed
+      objectReference: {fileID: 0}
     - target: {fileID: 7417847697213279897, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -4351,6 +4371,11 @@ PrefabInstance:
 --- !u!1 &1125839582 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2139639048758502556, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
+  m_PrefabInstance: {fileID: 1125839581}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1125839583 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5975940833609453430, guid: 44f81dda75b67744da7b713fffae2b71, type: 3}
   m_PrefabInstance: {fileID: 1125839581}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1125839584 stripped
@@ -7127,6 +7152,10 @@ PrefabInstance:
       propertyPath: mortgageButton
       value: 
       objectReference: {fileID: 1125839586}
+    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: jailButtonGroup
+      value: 
+      objectReference: {fileID: 1125839583}
     - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: removeHouseText
       value: 

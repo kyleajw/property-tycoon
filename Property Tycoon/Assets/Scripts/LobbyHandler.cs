@@ -18,7 +18,6 @@ public class LobbyHandler : MonoBehaviour
             case 0:
                 SceneManager.LoadScene("GameScene");
                 gameObject.GetComponent<GameManager>().SetGameVersion(0);
-                //Destroy(this);
                 break;
             case 1:
                 SceneManager.LoadScene("GameScene");
@@ -38,7 +37,6 @@ public class LobbyHandler : MonoBehaviour
                         gameObject.GetComponent<GameManager>().SetGameDuration(3600);
                         break;
                 }
-                //Destroy(this);
                 break;
         }
     }
@@ -65,5 +63,10 @@ public class LobbyHandler : MonoBehaviour
     void AddPlayerCardDataToPlayerList()
     {
 
+    }
+    public void ResetValues()
+    {
+        gameDurationIndex = 0;
+        gameVersion = 0;
     }
 }

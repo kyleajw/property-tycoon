@@ -1285,6 +1285,7 @@ GameObject:
   - component: {fileID: 679440060}
   - component: {fileID: 679440059}
   - component: {fileID: 679440058}
+  - component: {fileID: 679440061}
   m_Layer: 5
   m_Name: Game Duration Dropdown
   m_TagString: Untagged
@@ -1375,10 +1376,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2144210622}
-        m_TargetAssemblyTypeName: LobbyHandler, ScriptsAssembly
-        m_MethodName: SetGameDuration
-        m_Mode: 0
+      - m_Target: {fileID: 679440061}
+        m_TargetAssemblyTypeName: DurationDropdown, ScriptsAssembly
+        m_MethodName: VersionDropdownPressed
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1426,6 +1427,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 679440056}
   m_CullTransparentMesh: 1
+--- !u!114 &679440061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 679440056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8409b992b741c429a8fa38d66186c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &730139609
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,6 +1983,7 @@ GameObject:
   - component: {fileID: 962768600}
   - component: {fileID: 962768599}
   - component: {fileID: 962768598}
+  - component: {fileID: 962768601}
   m_Layer: 5
   m_Name: Game Version Dropdown
   m_TagString: Untagged
@@ -2056,10 +2070,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2144210622}
-        m_TargetAssemblyTypeName: LobbyHandler, ScriptsAssembly
-        m_MethodName: SetGameVersion
-        m_Mode: 0
+      - m_Target: {fileID: 962768601}
+        m_TargetAssemblyTypeName: VersionDropdown, ScriptsAssembly
+        m_MethodName: VersionDropdownPressed
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2107,6 +2121,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962768596}
   m_CullTransparentMesh: 1
+--- !u!114 &962768601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962768596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cc7800c41209134e97e0c9d84c275da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &991020938 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5431384252368378309, guid: b159c87428dfc6245a7cac613966de80, type: 3}
@@ -3639,17 +3665,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ba9c27146e24ab4dabe89b467642b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2144210622 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 552246316841606484, guid: 4cefc9e702abd8a42b05e007e4117e65, type: 3}
-  m_PrefabInstance: {fileID: 6462792263156998401}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b524024f6b840814caa0a16de744f75f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &3357557458780843632 stripped
