@@ -6,7 +6,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     Player[] players;
-    int gameDuration = 300;
+    int gameDuration;
     int gameVersion = 0; //0 is standard, 1 is abridged
 
     private static GameManager _instance;

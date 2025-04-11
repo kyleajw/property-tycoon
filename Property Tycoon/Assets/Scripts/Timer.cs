@@ -14,6 +14,11 @@ public class Timer : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("GameManager");
         remainingTime = gameManager.GetComponent<GameManager>().GetGameDuration();
     }
+    public void StartGame()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager");
+        remainingTime = gameManager.GetComponent<GameManager>().GetGameDuration();
+    }
     void Update()
     {
         remainingTime -= Time.deltaTime;

@@ -22,6 +22,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] public GameObject sellButton;
     [SerializeField] public GameObject buildHouseButton;
     [SerializeField] public GameObject removeHouseButton;
+    [SerializeField] public GameObject jailButtonGroup;
     [SerializeField] public GameObject houseCounter;
     [SerializeField] TextMeshProUGUI buildHouseText;
     [SerializeField] TextMeshProUGUI removeHouseText;
@@ -51,7 +52,7 @@ public class PlayerManager : MonoBehaviour
     int playersRetired = 0;
     int turnNumber = 1;
     int cyclesCompleted = 0;
-    int gameVersion = 0;
+    int gameVersion = 1;
 
     Player[] playerData;
     GameObject[] players;
@@ -83,8 +84,25 @@ public class PlayerManager : MonoBehaviour
     {
         if (gameStarted)
         {
+            if (playersRetired == players.Length)
+            {
+                isGameOver = true;
+                winnerText.gameObject.SetActive(true);
+                winnerText.SetText("Players have all retired.");
+                rollButtonGroup.SetActive(false);
+                finishTurnButton.SetActive(false);
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
+                retireButton.SetActive(false);
+                turnAnnouncer.gameObject.SetActive(false);
+                turnCounter.gameObject.SetActive(false);
+                invValueText.gameObject.SetActive(false);
+                GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ResetValues();
+                //chnage to game over screen
+                gameOverScreen.SetActive(true);
+            }
             mainCamera.gameObject.GetComponent<CameraHandler>().SetTarget(players[currentPlayersTurn]);
-
+            //abridged version
             if (gameVersion == 1)
             {
                 if (timer.GetComponent<Timer>().GetRemainingTime() <= 0)
@@ -117,6 +135,7 @@ public class PlayerManager : MonoBehaviour
                             turnAnnouncer.gameObject.SetActive(false);
                             turnCounter.gameObject.SetActive(false);
                             invValueText.gameObject.SetActive(false);
+                            GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ResetValues();
                             //chnage to game over screen
                             gameOverScreen.SetActive(true);
                         }
@@ -136,11 +155,13 @@ public class PlayerManager : MonoBehaviour
                         turnAnnouncer.gameObject.SetActive(false);
                         turnCounter.gameObject.SetActive(false);
                         invValueText.gameObject.SetActive(false);
+                        GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ResetValues();
                         //chnage to game over screen
                         gameOverScreen.SetActive(true);
                     }
                 }
             }
+            //standard
             else if (gameVersion == 0)
             {
                 if (players.Length > 1)
@@ -166,6 +187,7 @@ public class PlayerManager : MonoBehaviour
                         turnAnnouncer.gameObject.SetActive(false);
                         turnCounter.gameObject.SetActive(false);
                         invValueText.gameObject.SetActive(false);
+                        GameObject.FindGameObjectWithTag("GameManager").GetComponent<LobbyHandler>().ResetValues();
                         //chnage to game over screen
                         gameOverScreen.SetActive(true);
                     }
@@ -284,10 +306,38 @@ public class PlayerManager : MonoBehaviour
                 switch (tile.spaceName)
                 {
                     case "Income Tax":
-                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                        if (players[currentPlayersTurn].GetComponent<Player>().GetInvValue() < 200)
+                        {
+                            RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
+                        }
+                        else if (players[currentPlayersTurn].GetComponent<Player>().GetBalance()<200)
+                        {
+                            finishTurnButton.SetActive(false);
+                            Debug.Log("Must sell assets to afford fine");
+                        }
+                        else
+                        {
+                            finishTurnButton.SetActive(true);
+                            players[currentPlayersTurn].GetComponent<Player>().SetBalance(-200);
+                            players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-200);
+                        }
                         break;
                     case "Super Tax":
-                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                        if (players[currentPlayersTurn].GetComponent<Player>().GetInvValue() < 100)
+                        {
+                            RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
+                        }
+                        else if (players[currentPlayersTurn].GetComponent<Player>().GetBalance() < 100)
+                        {
+                            finishTurnButton.SetActive(false);
+                            Debug.Log("Must sell assets to afford fine");
+                        }
+                        else 
+                        {
+                            finishTurnButton.SetActive(true);
+                            players[currentPlayersTurn].GetComponent<Player>().SetBalance(-100);
+                            players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-100);
+                        }
                         break;
                 }
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
@@ -331,7 +381,7 @@ public class PlayerManager : MonoBehaviour
             default:
                 Debug.Log("Property");
 
-                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman()) //TEMP
+                if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
                 {
                     Player currentPlayer = players[currentPlayersTurn].GetComponent<Player>();
                     if (tile.purchasable && GetOwner(landedTile) == null && currentPlayer.completedCycle) {
@@ -339,11 +389,11 @@ public class PlayerManager : MonoBehaviour
                     }
                     else if (tile.purchasable && GetOwner(landedTile) != null) {
                         HandleRent(currentPlayer);
-                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn(); // temp?
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
                     }
                     else
                     {
-                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn(); // temp?
+                        players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
                     }
                 }
                 break;
@@ -385,6 +435,7 @@ public class PlayerManager : MonoBehaviour
                 if (payer == "BANK")
                 {
                     players[currentPlayersTurn].GetComponent<Player>().SetBalance(amount);
+                    players[currentPlayersTurn].GetComponent<Player>().SetInvValue(amount);
                 }
                 else if (payer == "ALL")
                 {
@@ -395,9 +446,11 @@ public class PlayerManager : MonoBehaviour
                         {
                             total += amount;
                             player.GetComponent<Player>().SetBalance(-amount);
+                            player.GetComponent<Player>().SetInvValue(-amount);
                         }
                     }
                     players[currentPlayersTurn].GetComponent<Player>().SetBalance(total);
+                    players[currentPlayersTurn].GetComponent<Player>().SetInvValue(total);
                 }
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
                 {
@@ -411,11 +464,39 @@ public class PlayerManager : MonoBehaviour
                 switch (payee)
                 {
                     case "BANK":
-                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                        if (players[currentPlayersTurn].GetComponent<Player>().GetInvValue() < amount)
+                        {
+                            RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
+                        }
+                        else if (players[currentPlayersTurn].GetComponent<Player>().GetBalance() < amount)
+                        {
+                            finishTurnButton.SetActive(false);
+                            Debug.Log("Must sell assets to afford fine");
+                        }
+                        else
+                        {
+                            finishTurnButton.SetActive(true);
+                            players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                            players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-amount);
+                        }
                         break;
                     case "PARKING":
-                        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
-                        parkingTotal += amount; // todo
+                        if (players[currentPlayersTurn].GetComponent<Player>().GetInvValue() < amount)
+                        {
+                            RetirePlayer(players[currentPlayersTurn].GetComponent<Player>());
+                        }
+                        else if (players[currentPlayersTurn].GetComponent<Player>().GetBalance() < amount)
+                        {
+                            finishTurnButton.SetActive(false);
+                            Debug.Log("Must sell assets to afford fine");
+                        }
+                        else
+                        {
+                            finishTurnButton.SetActive(true);
+                            players[currentPlayersTurn].GetComponent<Player>().SetBalance(-amount);
+                            players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-amount);
+                        }
+                        parkingTotal += amount;
                         break;
                 }
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
@@ -476,7 +557,7 @@ public class PlayerManager : MonoBehaviour
                 break;
             case "CHOICE:":
                 Debug.Log("choice dialog");
-                HandleMultiChoiceCard(card.arg.Substring(action.Length+1),choice); // should work????
+                HandleMultiChoiceCard(card.arg.Substring(action.Length+1),choice);
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
                 {
                     players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
@@ -484,7 +565,7 @@ public class PlayerManager : MonoBehaviour
                 break;
             case "VARIABLE:":
                 Debug.Log("pay per this and this");
-                HandleVariableCard(card.arg.Substring(action.Length)); // unknown if works
+                HandleVariableCard(card.arg.Substring(action.Length));
                 if (!players[currentPlayersTurn].GetComponent<Player>().IsHuman())
                 {
                     players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
@@ -496,10 +577,9 @@ public class PlayerManager : MonoBehaviour
                 {
                     players[currentPlayersTurn].GetComponent<EasyAgent>().EndTurn();
                 }
-                break;
-
+                break;           
         }
-        
+        UpdateInvValueText();
     }
     /// <summary>
     /// Gets the name of a tile from parsed string
@@ -717,6 +797,26 @@ public class PlayerManager : MonoBehaviour
                 buyButton.SetActive(false);
                 auctionButton.SetActive(false);
                 retireButton.SetActive(false);
+                jailButtonGroup.SetActive(false);
+            }
+            else if (currentPlayer.IsInJail())
+            {
+                if (currentPlayer.GetTurnsInJail() == 2)
+                {
+                    currentPlayer.isInJail = false;
+                    currentPlayer.ResetJailTurnCounter();
+                    jailButtonGroup.SetActive(false);
+                    currentPlayer.finishedTurn = true;
+                }
+                else
+                {
+                    jailButtonGroup.SetActive(true);
+                }
+                rollButtonGroup.SetActive(false);
+                finishTurnButton.SetActive(false);
+                buyButton.SetActive(false);
+                auctionButton.SetActive(false);
+                retireButton.SetActive(false);
             }
             else if (!currentPlayer.IsPlayersTurn() && rollButtonGroup.activeInHierarchy)
             {
@@ -725,6 +825,7 @@ public class PlayerManager : MonoBehaviour
                 buyButton.SetActive(false);              
                 auctionButton.SetActive(false);
                 retireButton.SetActive(false);
+                jailButtonGroup.SetActive(false);
             }
             else if (currentPlayer.IsPlayersTurn() && currentPlayer.IsMenuReady() && currentPlayer.HasPlayerThrown())
             {
@@ -732,6 +833,7 @@ public class PlayerManager : MonoBehaviour
                 if (!currentPlayer.GetDoubleRolled())
                 {
                     rollButtonGroup.SetActive(false);
+                    jailButtonGroup.SetActive(false);
                     retireButton.SetActive(true);
                     finishTurnButton.SetActive(true);
                     if (currentPlayer.GetCurrentTile().GetComponent<Tile>().tileData.purchasable)
@@ -857,6 +959,22 @@ public class PlayerManager : MonoBehaviour
         UpdateInvValueText();
         Debug.Log(players[currentPlayersTurn].GetComponent<Player>().ownedProperties);
         buyButtonPressed = true;
+    }
+
+    public void BuyOutOfJailPressed()
+    {
+        players[currentPlayersTurn].GetComponent<Player>().isInJail = false;
+        players[currentPlayersTurn].GetComponent<Player>().SetBalance(-50);
+        players[currentPlayersTurn].GetComponent<Player>().SetInvValue(-50);
+        parkingTotal += 50;
+        jailButtonGroup.SetActive(false);
+        players[currentPlayersTurn].GetComponent<Player>().finishedTurn = true;
+    }
+    public void StayInJailPressed()
+    {
+        players[currentPlayersTurn].GetComponent<Player>().SetJailTurnCounter();
+        jailButtonGroup.SetActive(false);
+        players[currentPlayersTurn].GetComponent<Player>().finishedTurn = true;
 
     }
     /// <summary>
@@ -1673,7 +1791,6 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-
             for (int i = 0; i < currentPlayer.ownedProperties.Length; i++)
             {
                 if (currentPlayer.ownedProperties[i] != null)
@@ -1682,7 +1799,6 @@ public class PlayerManager : MonoBehaviour
                     currentPlayer.ownedProperties[i].GetComponent<Property>().SetOwnedBy(null);
                     board.GetBank().properties[i] = currentPlayer.ownedProperties[i];
                     currentPlayer.ownedProperties[i] = null;
-
                 }
             }
             board.GetBank().SetBankBalance(currentPlayer.GetBalance());

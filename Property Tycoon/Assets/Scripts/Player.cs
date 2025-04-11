@@ -19,14 +19,14 @@ public class Player : MonoBehaviour
     public bool completedCycle = true; //change to false after development
     public bool isRetired = false;
     public int numberRolled = 0;
+    public bool isInJail = false;
+    public bool finishedTurn = false;
     bool isMyTurn;
     bool isHuman;
     bool menuReady = false;
     bool isMoving = false;
     bool hasThrown = false;
     bool rolled = false;
-    bool isInJail = false;
-    bool finishedTurn = false;
     bool doubleRolled = false;
     bool hasGetOutOfJailFreeCard = false;
 
@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     int dice1Value;
     int dice2Value;
     int position = 0;
+    int turnsInJail = 0;
 
     string playerName;
     private void Start()
@@ -232,11 +233,27 @@ public class Player : MonoBehaviour
         transform.position = board.GetTileArray()[position].transform.position;
         doublesThisTurn = 0;
 
-        finishedTurn = true;
+        if (hasGetOutOfJailFreeCard)
+        {
+            isInJail = false;
+        }
+        else if (GetBalance() > 50)
+        {
+            playerManager.jailButtonGroup.SetActive(true);
+        }
+        else
+        {
+            finishedTurn = true;
+        }
         if (!isHuman)
         {
             gameObject.GetComponent<EasyAgent>().EndTurn();
         }
+    }
+
+    public void SetJailTurnCounter()
+    {
+        turnsInJail++;
     }
 
     public void SetTurn(bool isTurn)
@@ -366,6 +383,14 @@ public class Player : MonoBehaviour
     public int GetPositionOnBoard()
     {
         return position;
+    }
+    public int GetTurnsInJail()
+    {
+        return turnsInJail;
+    }
+    public void ResetJailTurnCounter()
+    {
+        turnsInJail = 0;
     }
 
     /// <summary>
