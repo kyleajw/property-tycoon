@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.PlayerLoop;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -986,7 +987,33 @@ public class PlayerManager : MonoBehaviour
                                 else
                                 {
                                     //add extra house prefab here
-                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    GameObject newHouse = Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    float tileWidth = 1f;
+                                    int houseNumber = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount()-1;
+                                    float offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+                                    if(offset >= 0)
+                                    {
+                                        offset += 0.25f;
+                                    }
+                                    newHouse.transform.localPosition = newHouse.transform.localPosition + new Vector3(offset, 0, 0);
+                                    //for (int j = 0; j < players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.childCount; j++)
+                                    //{
+
+                                    //    if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).CompareTag("House"))
+                                    //    {
+                                    //        offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+
+                                    //        if (offset >= 0)
+                                    //        {
+                                    //            offset += 0.25f;
+                                    //        }
+                                    //        Debug.Log(offset);
+                                    //        GameObject house = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).gameObject;
+                                    //        house.transform.localPosition = house.transform.localPosition + new Vector3(offset, 0, 0);
+                                    //        houseNumber++;
+                                    //        Debug.Log(houseNumber);
+                                    //    }
+                                    //}
                                 }
                                 switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
                                 {
@@ -1136,6 +1163,27 @@ public class PlayerManager : MonoBehaviour
                                     Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                     Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                     Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    float tileWidth = 1f;
+                                    int houseNumber = 0;
+                                    float offset = -0.5f;
+                                    for(int j = 0; j < players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.childCount; j++)
+                                    {
+
+                                        if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).CompareTag("House"))
+                                        {
+                                            offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+
+                                            if (offset >= 0)
+                                            {
+                                                offset += 0.25f;
+                                            }
+                                            Debug.Log(offset);
+                                            GameObject house = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).gameObject;
+                                            house.transform.localPosition = house.transform.localPosition + new Vector3(offset,0,0);
+                                            houseNumber++;
+                                            Debug.Log(houseNumber);
+                                        }
+                                    }
                                 }
                                 else
                                 {
