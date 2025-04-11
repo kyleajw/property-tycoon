@@ -25,7 +25,7 @@ public class LobbyHandler : MonoBehaviour
                 switch (gameDurationIndex)
                 {
                     case 0:
-                        gameObject.GetComponent<GameManager>().SetGameDuration(30);
+                        gameObject.GetComponent<GameManager>().SetGameDuration(300);
                         break;
                     case 1:
                         gameObject.GetComponent<GameManager>().SetGameDuration(600);
