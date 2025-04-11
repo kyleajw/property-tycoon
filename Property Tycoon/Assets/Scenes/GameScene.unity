@@ -7080,6 +7080,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1523878613}
     - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: hotelPrefab
+      value: 
+      objectReference: {fileID: 5983976789074050765, guid: 71d8af581dea9e24a8469af1a6a0dc5b, type: 3}
+    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
+      propertyPath: housePrefab
+      value: 
+      objectReference: {fileID: 5983976789074050765, guid: 146384c73d31c384cb0277b1a30f0fb5, type: 3}
+    - target: {fileID: -4427131564662454175, guid: d0556e00d46f6dc41af3bf09d9fedb20, type: 3}
       propertyPath: turnCounter
       value: 
       objectReference: {fileID: 1125839584}

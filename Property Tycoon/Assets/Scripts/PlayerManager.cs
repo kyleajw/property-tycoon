@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.PlayerLoop;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -33,6 +34,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] Board board;
     [SerializeField] float diceRollForceMultiplier = 5.0f;
     [SerializeField] GameObject cardDialogPrefab;
+    [SerializeField] GameObject hotelPrefab;
+    [SerializeField] GameObject housePrefab;
+
 
     [SerializeField] GameObject playerPrefab;
     Camera mainCamera;
@@ -971,10 +975,45 @@ public class PlayerManager : MonoBehaviour
                                 {
                                     buildHouseButton.SetActive(false);
                                     //add hotel prefab here and remove all house prefabs
+                                    foreach(Transform house in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if(house.CompareTag("House"))
+                                        {
+                                            Destroy(house.gameObject);
+                                        }
+                                    }
+                                    Instantiate(hotelPrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
                                 }
                                 else
                                 {
                                     //add extra house prefab here
+                                    GameObject newHouse = Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    float tileWidth = 1f;
+                                    int houseNumber = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount()-1;
+                                    float offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+                                    if(offset >= 0)
+                                    {
+                                        offset += 0.25f;
+                                    }
+                                    newHouse.transform.localPosition = newHouse.transform.localPosition + new Vector3(offset, 0, 0);
+                                    //for (int j = 0; j < players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.childCount; j++)
+                                    //{
+
+                                    //    if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).CompareTag("House"))
+                                    //    {
+                                    //        offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+
+                                    //        if (offset >= 0)
+                                    //        {
+                                    //            offset += 0.25f;
+                                    //        }
+                                    //        Debug.Log(offset);
+                                    //        GameObject house = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).gameObject;
+                                    //        house.transform.localPosition = house.transform.localPosition + new Vector3(offset, 0, 0);
+                                    //        houseNumber++;
+                                    //        Debug.Log(houseNumber);
+                                    //    }
+                                    //}
                                 }
                                 switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
                                 {
@@ -1100,14 +1139,62 @@ public class PlayerManager : MonoBehaviour
                                 {
                                     removeHouseButton.SetActive(false);
                                     //remove last house prefab here
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("House"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
                                 }
                                 else if(players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Property>().GetHouseCount() == 4)
                                 {
                                     //remove hotel and place 4 house prefabs
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("Hotel"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    Instantiate(housePrefab, players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform, false);
+                                    float tileWidth = 1f;
+                                    int houseNumber = 0;
+                                    float offset = -0.5f;
+                                    for(int j = 0; j < players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.childCount; j++)
+                                    {
+
+                                        if (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).CompareTag("House"))
+                                        {
+                                            offset = -(tileWidth / 2) + (houseNumber * (tileWidth / 4));
+
+                                            if (offset >= 0)
+                                            {
+                                                offset += 0.25f;
+                                            }
+                                            Debug.Log(offset);
+                                            GameObject house = players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform.GetChild(j).gameObject;
+                                            house.transform.localPosition = house.transform.localPosition + new Vector3(offset,0,0);
+                                            houseNumber++;
+                                            Debug.Log(houseNumber);
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    //remove a house prefab here
+                                    foreach (Transform child in players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].transform)
+                                    {
+                                        if (child.CompareTag("House"))
+                                        {
+                                            Destroy(child.gameObject);
+                                            break;
+                                        }
+                                    }
                                 }
                                 switch (players[currentPlayersTurn].GetComponent<Player>().ownedProperties[i].GetComponent<Tile>().tileData.group)
                                 {
